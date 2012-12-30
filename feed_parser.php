@@ -103,7 +103,7 @@ foreach ($my_videos as $entry) {
 			<link>$item_url</link>
 			<description>$item_description</description>
 			<itunes:image href=\"$large_photo\" />
-			<enclosure url=\"$full_item_url\" length=\"$item_size\" type=\"video/mp4\" />
+			<enclosure url=\"$full_item_url\" length=\"$item_size\" type=\"video/mpeg\" />
 			<guid isPermaLink=\"true\">$item_url</guid>
 		</item>
 		";
