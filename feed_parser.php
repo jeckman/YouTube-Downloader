@@ -86,7 +86,7 @@ $my_videos = simplexml_load_string($rs);
 foreach ($my_videos as $entry) {	
 	$videoid = explode('/',$entry->id); 
 	$item_url = htmlentities($entry->link[0]['href']); 
-	$full_item_url = $my_install_url . 'getvideo.php?videoid='. end($videoid) .'&format=ipad';
+	$full_item_url = $my_install_url . 'getvideo.mp4?videoid='. end($videoid) .'&format=ipad';
 	$real_item_url = get_location($full_item_url); 
 	$large_photo = $entry->group->thumbnail[0]['url']; 
 	$item_size = get_size($real_item_url);
