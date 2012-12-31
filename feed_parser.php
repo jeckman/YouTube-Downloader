@@ -52,9 +52,12 @@ include_once('curl.php');
 if ($rs = curlGet($source_feed)){
 	//print_r($rs); 
 } else { die('Error: Feed file not found, dude.'); }
+
+$my_videos = simplexml_load_string($rs); 
  
 /* write out the outer shell, channel, globals */ 
-$now = date("D, d M Y H:i:s T");
+$updated = $my_videos->updated;
+$updated= date("D, d M Y H:i:s T", strtotime($updated));
 $output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 	<rss version=\"2.0\" xmlns:itunes=\"http://www.itunes.com/dtds/podcast-1.0.dtd\"
 		 xmlns:atom=\"http://www.w3.org/2005/Atom\">	
@@ -69,7 +72,8 @@ $output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 			<title>$my_title</title>
 		</image>
 		<language>en-us</language>
-		<lastBuildDate>$now</lastBuildDate>
+		<lastBuildDate>$updated</lastBuildDate>
+		<pubDate>$updated</pubDate>
 		<itunes:explicit>no</itunes:explicit>
 		<atom:link href=\"$my_feed_url\" rel=\"self\" type=\"application/rss+xml\" /> 
 
@@ -77,13 +81,10 @@ $output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 		
 		
 		
-/* now get the info on each item in the feed
- *	todo: get the description, which is not in the rss feed
- *  but could be retrieved from official.fm at the link
- * location
- */ 
-$my_videos = simplexml_load_string($rs); 
+/* now get the info on each item in the feed */ 
 foreach ($my_videos as $entry) {	
+	$pubDate = $entry->updated; 
+    $pubDate= date("D, d M Y H:i:s T", strtotime($pubDate));
 	$videoid = explode('/',$entry->id); 
 	$item_url = htmlentities($entry->link[0]['href']); 
 	$full_item_url = $my_install_url . 'getvideo.mp4?videoid='. end($videoid) .'&format=ipad';
@@ -99,6 +100,7 @@ foreach ($my_videos as $entry) {
 	/* not clear why, but sometimes there are blank entries, which we ignore */ 
 	if($item_title != '') {
 		$output .= "<item>
+			<pubDate>$pubDate</pubDate>
 			<title>$item_title</title>
 			<link>$item_url</link>
 			<description>$item_description</description>
