@@ -89,7 +89,7 @@ foreach ($my_videos as $entry) {
 	$item_url = htmlentities($entry->link[0]['href']); 
 	$full_item_url = $my_install_url . 'getvideo.mp4?videoid='. end($videoid) .'&format=ipad';
 	$real_item_url = get_location($full_item_url); 
-	$large_photo = $entry->group->thumbnail[0]['url']; 
+	$large_photo = 'http://i.ytimg.com/vi/'. end($videoid) .'/0.jpg';
 	$item_size = get_size($real_item_url);
 	$full_item_url = htmlentities($full_item_url); 
 	$item_description = htmlspecialchars($entry->content,ENT_QUOTES,'UTF-8');
