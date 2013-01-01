@@ -83,8 +83,8 @@ $output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 		
 /* now get the info on each item in the feed */ 
 foreach ($my_videos as $entry) {	
-	$pubDate = $entry->updated; 
-    $pubDate= date("D, d M Y H:i:s T", strtotime($pubDate));
+	$pubDate = $entry->published; 
+	$pubDate= date("D, d M Y H:i:s T", strtotime($pubDate));
 	$videoid = explode('/',$entry->id); 
 	$item_url = htmlentities($entry->link[0]['href']); 
 	$full_item_url = $my_install_url . 'getvideo.mp4?videoid='. end($videoid) .'&format=ipad';
