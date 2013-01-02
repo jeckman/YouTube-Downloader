@@ -91,8 +91,6 @@ if ($my_type == 'Download') {
 	echo '</ul>';
 ?>
 </form>
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>	
 <?php 
