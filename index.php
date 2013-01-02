@@ -45,7 +45,5 @@
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
 	</form>
-	<script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>	
