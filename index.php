@@ -41,7 +41,7 @@
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="VideoID" />
-		<input type="submit" name="type" id="type" value="Download" />
+		<input class="btn btn-primary" type="submit" name="type" id="type" value="Download" />
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
 	</form>
