@@ -14,6 +14,7 @@ if(isset($_REQUEST['videoid'])) {
 	echo '<p>No video id passed in</p>';
 	exit; 
 }
+
 if(isset($_REQUEST['type'])) {
 	$my_type =  $_REQUEST['type'];
 } else {
@@ -21,6 +22,7 @@ if(isset($_REQUEST['type'])) {
 }
 if ($my_type == 'Download') {
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -32,9 +34,9 @@ if ($my_type == 'Download') {
         padding-top: 40px;
         padding-bottom: 40px;
         background-color: #f5f5f5;
-      }
-
-      .download {
+	}
+    
+	  .download {
         max-width: 300px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
@@ -47,6 +49,7 @@ if ($my_type == 'Download') {
            -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
                 box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
+
       .download .download-heading {
         margin-bottom: 10px;
       }
@@ -68,11 +71,12 @@ $my_formats_array = explode(',',$url_encoded_fmt_stream_map);
 if (count($my_formats_array) == 0) {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
-} 
+}
 
 /* create an array of available download formats */ 
 $avail_formats[] = '';
 $i = 0; 
+
 foreach($my_formats_array as $format) {
 	$my_array = parse_str($format); 
 	$avail_formats[$i]['itag'] = $itag; 
@@ -82,6 +86,7 @@ foreach($my_formats_array as $format) {
 	$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig; 
 	$i++; 
 }
+
 if ($my_type == 'Download') {
 	echo '<ul>List of Available Formats for Download - right-click and choose "save as"</ul>'; 
 	/* now that we have the array, print the options */ 
@@ -93,8 +98,11 @@ if ($my_type == 'Download') {
 </form>
 </body>
 </html>	
+
 <?php 
+
 } else {
+
 /* In this else, the request didn't come from a form but from something else
  * like an RSS feed. 
  * As a result, we just want to return the best format, which depends on what 
@@ -106,6 +114,7 @@ if ($my_type == 'Download') {
  * Thanks to the python based youtube-dl for info on the formats
  *   							http://rg3.github.com/youtube-dl/
  */  
+
 $format =  $_REQUEST['format'];
 $target_formats = ''; 
 switch ($format) {
@@ -146,31 +155,6 @@ for ($i=0; $i < count($target_formats); $i++) {
 //echo '<p>Out of loop, best_format is '. $best_format .'</p>';
 $redirect_url = $avail_formats[$best_format]['url'];
 $content_type = $avail_formats[$best_format]['type'];
-switch($content_type) {
-	case 'video/webm':
-		$filename = $my_id . '.webm';
-		break;
-	case 'video/x-flv':
-		$filename = $my_id . '.flv';
-		break; 
-	case 'video/mp4':
-		$filename = $my_id . '.mp4';
-		break;
-	case 'video/3gpp':
-		$filename = $my_id . '.3gp';
-		break;
-	default:
-		$filename = $my_id . '.video';
-		break; 
-}
-/* We can't set content-disposition and filename and then redirect
- * So all files end up with the same name. 
- */ 
-//header("Content-type: $content_type");
-//header("Content-Disposition: attachment; filename=\"$filename\""); 
 header("Location: $redirect_url"); 
-
-
-
 } // end of else for type not being Download
 ?>
