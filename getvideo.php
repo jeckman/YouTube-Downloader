@@ -20,6 +20,13 @@ if(isset($_REQUEST['type'])) {
 } else {
 	$my_type = 'redirect';
 }
+
+if(isset($_REQUEST['debug'])) {
+	$debug = TRUE;
+} else {
+	$debug = FALSE; 	
+}
+
 if ($my_type == 'Download') {
 ?>
 
@@ -62,12 +69,21 @@ if ($my_type == 'Download') {
 } // end of if for type=Download
 
 /* First get the video info page for this video id */ 
-$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id .'&ps=default&eurl=&gl=US&hl=en';
+$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 $my_video_info = curlGet($my_video_info);
-$my_array = parse_str($my_video_info); 
+
+/* TODO: Check return from curl for status code */ 
+
+parse_str($my_video_info); 
+echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
 
 /* Now get the url_encoded_fmt_stream_map, and explode on comma */ 
 $my_formats_array = explode(',',$url_encoded_fmt_stream_map); 
+//if($debug) {
+//	echo '<pre>';
+//	print_r($my_formats_array);
+//	echo '</pre>';
+//}
 if (count($my_formats_array) == 0) {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
@@ -78,15 +94,24 @@ $avail_formats[] = '';
 $i = 0; 
 
 foreach($my_formats_array as $format) {
-	$my_array = parse_str($format); 
+	parse_str($format); 
 	$avail_formats[$i]['itag'] = $itag; 
 	$avail_formats[$i]['quality'] = $quality; 
 	$type = explode(';',$type); 
 	$avail_formats[$i]['type'] = $type[0];
 	$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig; 
+	parse_str(urldecode($url));
+	$avail_formats[$i]['expires'] = date("G:i:s T", $expire);
+	$avail_formats[$i]['ipbits'] = $ipbits;
+	$avail_formats[$i]['ip'] = $ip;
 	$i++; 
 }
 
+if ($debug) {
+	echo '<p>These links will expire at '. $avail_formats[0]['expires'] .'</p>';
+	echo '<p>The server was at IP address '. $avail_formats[0]['ip'] .' which is an '. $avail_formats[0]['ipbits'] .' bit IP address. ';
+	echo 'Note that when 8 bit IP addresses are used, the download links may fail.</p>';
+}
 if ($my_type == 'Download') {
 	echo '<ul>List of Available Formats for Download - right-click and choose "save as"</ul>'; 
 	/* now that we have the array, print the options */ 
