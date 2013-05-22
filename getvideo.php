@@ -77,13 +77,19 @@ $my_video_info = curlGet($my_video_info);
 parse_str($my_video_info); 
 echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
 
-/* Now get the url_encoded_fmt_stream_map, and explode on comma */ 
-$my_formats_array = explode(',',$url_encoded_fmt_stream_map); 
-//if($debug) {
-//	echo '<pre>';
-//	print_r($my_formats_array);
-//	echo '</pre>';
-//}
+if(isset($url_encoded_fmt_stream_map)) {
+	/* Now get the url_encoded_fmt_stream_map, and explode on comma */ 
+	$my_formats_array = explode(',',$url_encoded_fmt_stream_map); 
+	//if($debug) {
+	//	echo '<pre>';
+	//	print_r($my_formats_array);
+	//	echo '</pre>';
+	//}
+} else {
+	echo '<p>No encoded format stream found.</p>';
+	echo '<p>Here is what we got from YouTube:</p>';
+	echo $my_video_info; 
+}
 if (count($my_formats_array) == 0) {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
