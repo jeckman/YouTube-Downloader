@@ -11,6 +11,7 @@ function curlGet($URL) {
     curl_setopt( $ch , CURLOPT_URL , $URL );
     curl_setopt( $ch , CURLOPT_RETURNTRANSFER , 1 );
     curl_setopt( $ch , CURLOPT_CONNECTTIMEOUT , $timeout );
+	curl_setopt( $ch , CURLOPT_IPRESOLVE , CURLOPT_IPRESOLVE_V6);
     $tmp = curl_exec( $ch );
     curl_close( $ch );
     return $tmp;
