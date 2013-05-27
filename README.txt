@@ -5,11 +5,11 @@ License: GPL v2 or Later
 
 PHP Scripts to download videos from YouTube.  
 
-Your server MUST be able to connect to the youtube data servers via IPv6 - if
-your server uses ipv4 google will not allow the download to occur. 
-
-(If you want to use this script on localhost, just comment out the curlsetopt 
-for ipresolve in the curl.php file). 
+In order for direct download links to work (clicking on the file type in results list)
+your server must be using IPv6. If you are using IPv4, YouTube checks to see if the token
+matches the IP and returns an access forbidden error. If you are unable to use IPv6, you
+can use the "download" link instead, which uses a simple proxy to open the file from
+the server and read the file out to the browser. 
 
 First, you can manually visit a web form (the index.php file), enter a YouTube
 video id, and get in return a list of links showing the various formats in which
