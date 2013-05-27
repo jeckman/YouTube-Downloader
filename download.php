@@ -10,7 +10,7 @@ if (empty($_GET['mime']) OR empty($_GET['token']))
 $mime = filter_var($_GET['mime']);
 $ext  = str_replace(array('/', 'x-'), '', strstr($mime, '/'));
 $url  = base64_decode(filter_var($_GET['token']));
-$name = "videoplayback.$ext"; // @TODO: Get the actual title
+$name = urldecode($_GET['title']). '.' .$ext; 
 
 // Fetch and serve
 if ($url)

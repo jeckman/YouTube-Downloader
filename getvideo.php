@@ -85,6 +85,7 @@ $my_video_info = curlGet($my_video_info);
 
 parse_str($my_video_info);
 echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
+$my_title = $title; 
 
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
@@ -139,7 +140,7 @@ if ($my_type == 'Download') {
 				'<span class="itag">' . $avail_formats[$i]['itag'] . '</span> '.
 				'<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ' .
 				'<small>(' .  $avail_formats[$i]['quality'] . ' / ' .
-				'<a href="download.php?mime=' . $avail_formats[$i]['type'] . '&token=' . base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
+				'<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token=' . base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
 				')</small></li>';
 	}
 	echo '</ul>';
