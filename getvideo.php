@@ -69,6 +69,11 @@ if ($my_type == 'Download') {
       .itag {
       	width: 15px;
       }
+
+      .userscript {
+        float: right;
+        margin-top: 5px
+      }
     </style>
 	</head>
 <body>
@@ -85,7 +90,7 @@ $my_video_info = curlGet($my_video_info);
 
 parse_str($my_video_info);
 echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
-$my_title = $title; 
+$my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
@@ -145,7 +150,12 @@ if ($my_type == 'Download') {
 	}
 	echo '</ul>';
 ?>
-</form>
+
+<!-- @TODO: Prepend the base URI -->
+<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
+  Install Chrome Extension
+</a>
+
 </body>
 </html>
 
