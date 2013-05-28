@@ -34,10 +34,14 @@
         margin-bottom: 15px;
         padding: 7px 9px;
       }
+      .userscript {
+        float: right;
+        margin-top: 5px
+      }
 
-    </style>	
+    </style>
 	</head>
-<body>	
+<body>
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="VideoID" />
@@ -47,6 +51,11 @@
 		<input class="btn btn-primary" type="submit" name="type" id="type" value="Download" />
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
+
+    <!-- @TODO: Prepend the base URI -->
+    <a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
+      Install Chrome Extension
+    </a>
 	</form>
 </body>
-</html>	
+</html>
