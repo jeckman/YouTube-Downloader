@@ -57,6 +57,8 @@ window.location.getParam = function(name) {
 	var wrapper = document.getElementById('watch7-subscription-container'),
 		btn     = document.createElement('a'),
 		vid     = window.location.getParam('v'),
+		style   = document.createElement('style'),
+		head    = document.getElementsByTagName('head')[0],
 		// Update this to point to your own installation:
 		link    = 'http://UPDATE_THIS_IN_CODE.com/getvideo.php?videoid=' + vid + '&type=Download';
 
@@ -80,5 +82,10 @@ window.location.getParam = function(name) {
 
 		// Append it:
 		wrapper.appendChild(btn);
+
+		// Style:
+		style.type      = 'text/css';
+		style.innerHTML = '#watch7-subscription-container .yt-uix-button-subscription-container { float: left !important; margin-left: 10px !important; }';
+		head.appendChild(style);
 	}
 })();
