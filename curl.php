@@ -12,7 +12,7 @@ function curlGet($URL) {
     curl_setopt( $ch , CURLOPT_RETURNTRANSFER , 1 );
     curl_setopt( $ch , CURLOPT_CONNECTTIMEOUT , $timeout );
 	/* if you want to force to ipv6, uncomment the following line */ 
-	//curl_setopt( $ch , CURLOPT_IPRESOLVE , CURLOPT_IPRESOLVE_V6);
+	//curl_setopt( $ch , CURLOPT_IPRESOLVE , 'CURLOPT_IPRESOLVE_V6');
     $tmp = curl_exec( $ch );
     curl_close( $ch );
     return $tmp;
