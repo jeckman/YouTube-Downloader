@@ -88,6 +88,8 @@ $my_video_info = curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
 
+$thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
+
 parse_str($my_video_info);
 echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
 $my_title = $title;
@@ -113,6 +115,8 @@ if (count($my_formats_array) == 0) {
 /* create an array of available download formats */
 $avail_formats[] = '';
 $i = 0;
+$ipbits = $ip = $itag = $sig = $quality = '';
+$expire = time(); 
 
 foreach($my_formats_array as $format) {
 	parse_str($format);
@@ -213,8 +217,16 @@ for ($i=0; $i < count($target_formats); $i++) {
 }
 
 //echo '<p>Out of loop, best_format is '. $best_format .'</p>';
-$redirect_url = $avail_formats[$best_format]['url'];
-$content_type = $avail_formats[$best_format]['type'];
-header("Location: $redirect_url");
+if( (isset($best_format)) && 
+  (isset($avail_formats[$best_format]['url'])) && 
+  (isset($avail_formats[$best_format]['type'])) 
+  ) {
+	$redirect_url = $avail_formats[$best_format]['url'];
+	$content_type = $avail_formats[$best_format]['type'];
+}
+if(isset($redirect_url)) {
+	header("Location: $redirect_url"); 
+}
+
 } // end of else for type not being Download
 ?>
