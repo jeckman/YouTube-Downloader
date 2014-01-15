@@ -5,8 +5,9 @@
 //
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
-
+	// if not, some servers will show this php warning: header is already set in line 46...
 include_once('curl.php');
+ob_start();	// if not, some servers will show this php error: header is already set in line 46...
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
