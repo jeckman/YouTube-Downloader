@@ -87,13 +87,13 @@ foreach ($my_videos as $entry) {
 	$pubDate= date("D, d M Y H:i:s T", strtotime($pubDate));
 	$videoid = explode('/',$entry->id); 
 	$item_url = htmlentities($entry->link[0]['href']); 
-	$full_item_url = $my_install_url . 'getvideo.mp4?videoid='. end($videoid) .'&format=ipad';
+	$item_title = htmlspecialchars($entry->title,ENT_QUOTES,'UTF-8');
+	$full_item_url = $my_install_url . $item_title . '.mp4?videoid='. end($videoid) .'&format=ipad';
 	$real_item_url = get_location($full_item_url); 
 	$large_photo = 'http://i.ytimg.com/vi/'. end($videoid) .'/0.jpg';
 	$item_size = get_size($real_item_url);
 	$full_item_url = htmlentities($full_item_url); 
 	$item_description = htmlspecialchars($entry->content,ENT_QUOTES,'UTF-8');
-	$item_title = htmlspecialchars($entry->title,ENT_QUOTES,'UTF-8');
 	if ($item_description == '') {
 		$item_description = $item_title;
 	}
