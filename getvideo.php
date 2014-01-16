@@ -7,6 +7,16 @@
 // downloaded
 
 include_once('curl.php');
+// date_default_timezone_set("Asia/Tehran"); // if default timezone not set php shows a notice
+
+function formatBytes($bytes, $precision = 2) { 
+    $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
+    $bytes = max($bytes, 0); 
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+    $pow = min($pow, count($units) - 1); 
+    $bytes /= pow(1024, $pow);
+    return round($bytes, $precision) . '' . $units[$pow]; 
+} 
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
@@ -60,43 +70,62 @@ if ($my_type == 'Download') {
     <meta name="keywords" content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader" />
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	 <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
+      	body {
+	        padding-top: 40px;
+	        padding-bottom: 40px;
+	        background-color: #f5f5f5;
 	}
 
-	  .download {
-        max-width: 300px;
-        padding: 19px 29px 29px;
-        margin: 0 auto 20px;
-        background-color: #fff;
-        border: 1px solid #e5e5e5;
-        -webkit-border-radius: 5px;
-           -moz-border-radius: 5px;
-                border-radius: 5px;
-        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	.download {
+	        max-width: 300px;
+	        padding: 19px 29px 29px;
+	        margin: 0 auto 20px;
+	        background-color: #fff;
+	        border: 1px solid #e5e5e5;
+	        -webkit-border-radius: 5px;
+	           -moz-border-radius: 5px;
+	                border-radius: 5px;
+	        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	                box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
 
       .download .download-heading {
-        margin-bottom: 10px;
+      		text-align:center;
+        	margin-bottom: 10px;
       }
 
       .mime, .itag {
-      	width: 75px;
+      		width: 75px;
 		display: inline-block;
       }
 
       .itag {
-      	width: 15px;
+      		width: 15px;
+      }
+      
+      .size {
+      		width: 20px;
       }
 
       .userscript {
-        float: right;
-        margin-top: 5px
+        	float: right;
+       		margin-top: 5px
       }
+	  
+	  #info {
+			padding: 0 0 0 130px;
+			position: relative;
+			height:100px;
+	  }
+	  
+	  #info img{
+			left: 0;
+			position: absolute;
+			top: 0;
+			width:120px;
+			height:90px
+	  }
     </style>
 	</head>
 <body>
@@ -114,17 +143,17 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-echo '<p><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></p>';
+echo '<div id="info"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
 $my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
 	$my_formats_array = explode(',',$url_encoded_fmt_stream_map);
-	//if($debug) {
-	//	echo '<pre>';
-	//	print_r($my_formats_array);
-	//	echo '</pre>';
-	//}
+	if($debug) {
+		echo '<pre>';
+		print_r($my_formats_array);
+		echo '</pre>';
+	}
 } else {
 	echo '<p>No encoded format stream found.</p>';
 	echo '<p>Here is what we got from YouTube:</p>';
@@ -161,24 +190,24 @@ if ($debug) {
 	echo 'Note that when 8 bit IP addresses are used, the download links may fail.</p>';
 }
 if ($my_type == 'Download') {
-	echo '<ul>
-			List of available formats for download:<br>
-			<small>Right-click and choose "save as" or click "download" to use this server as proxy.</small>
-		</ul>';
+	echo '<p align="center">List of available formats for download:</p>
+		<ul>';
 
 	/* now that we have the array, print the options */
 	for ($i = 0; $i < count($avail_formats); $i++) {
 		echo '<li>' .
-				'<span class="itag">' . $avail_formats[$i]['itag'] . '</span> '.
-				'<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ' .
-				'<small>(' .  $avail_formats[$i]['quality'] . ' / ' .
-				'<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token=' . base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
-				')</small></li>';
+			'<span class="itag">' . $avail_formats[$i]['itag'] . '</span> '.
+			'<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ' .
+			'<small>(' .  $avail_formats[$i]['quality'] . ' / ' .
+				'<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token=' 		
+				.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
+			')</small> '.
+			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
+		'</li>';
 	}
-	echo '</ul>';
+	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
 ?>
 
-<!-- @TODO: Prepend the base URI -->
 <a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
   Install Chrome Extension
 </a>
