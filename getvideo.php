@@ -5,10 +5,12 @@
 //
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
-// if not, some servers will show this php warning: header is already set in line 46...
+
 include_once('curl.php');
-ob_start();
-// date_default_timezone_set("Asia/Tehran"); // if default timezone not set php shows a notice
+
+date_default_timezone_set("Asia/Tehran");/*@ToDo@ Set your default timezone in this line @ToDo@*/ // if default timezone not set php shows a notice
+ob_start(); // if not, some servers will show this php warning: header is already set in line 46...
+
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
     $bytes = max($bytes, 0); 
@@ -17,6 +19,13 @@ function formatBytes($bytes, $precision = 2) {
     $bytes /= pow(1024, $pow);
     return round($bytes, $precision) . '' . $units[$pow]; 
 } 
+function is_chrome(){
+	$agent=$_SERVER['HTTP_USER_AGENT'];
+	if (strpos($agent, 'Chrome') !== false)
+		return true;
+	else
+		return false;
+}
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
@@ -143,7 +152,7 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-echo '<div id="info"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
+echo '<div id="info"><img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
 $my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
@@ -206,11 +215,13 @@ if ($my_type == 'Download') {
 		'</li>';
 	}
 	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
-?>
 
-<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
+if(is_chrome()){
+echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages.">
   Install Chrome Extension
-</a>
+</a>';
+}
+?>
 
 </body>
 </html>
