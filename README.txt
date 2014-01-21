@@ -11,32 +11,25 @@ matches the IP and returns an access forbidden error. If you are unable to use I
 can use the "download" link instead, which uses a simple proxy to open the file from
 the server and read the file out to the browser. 
 
-First, you can manually visit a web form (the index.php file), enter a YouTube
+You can manually visit a web form (the index.php file), enter a YouTube
 video id, and get in return a list of links showing the various formats in which
 that video can be downloaded. You can simply choose "save link as" or the 
 equivalent to download the file. 
 
-Second, you can configure feed_parser.php with the details of a specific YouTube
-feed - for example, all videos by a given username - and it will return an xml
-doc usable in a podcatcher, with the links to the videos turned into proper xml
-enclosure links. (I use this with Downcast app on an iPad - your mileage may 
-vary if you use other podcatchers - in particular iTunes is quite picky about 
-what it considers valid feeds). 
+Second, you can directly target the getvideo.php script, passing in a videoID and
+preferred format, and you will get redirected to the file itself. 
 
-Once feed_parser.php is working well when called directly from a web browser,
-configure a cron job to output the rss to a file:
+http://example.com/yt/getvideo.mp4?videoid=GkvvH8pBoTg&format=ipad
 
-For example, my crontab has this line:
+Potential formats:
+ * best = just give me the largest file / best quality
+ * free = give the largest version including WebM, lower priority to FLV
+ * ipad = ignore WebM and FLV, look for best MP4 file
 
-* 3 * * * /usr/bin/php /var/www/example.com/feed_parser.php > /var/www/example.com/feed.xml
+You can also pass in a specific format number, if you know it. 
 
-(Your mileage will vary, as you'll need to set the right path to your php
-file and the right path to the directory where it can write). 
-
-Then configure podcatcher clients to point at the feed.xml
-
-Set the cronjob to the desired frequency - every time it runs, it will
-overwrite the feed.xml with new content. 
+Note this approach, because it redirects you to the file itself, currently bypasses the
+proxy option, so if your browser/server setup requires the proxy to work these will fail. 
   
 Enjoy!
 
