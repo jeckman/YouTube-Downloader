@@ -19,7 +19,7 @@ equivalent to download the file.
 Second, you can directly target the getvideo.php script, passing in a videoID and
 preferred format, and you will get redirected to the file itself. 
 
-http://example.com/yt/getvideo.mp4?videoid=GkvvH8pBoTg&format=ipad
+http://example.com/yt/getvideo.php?videoid=GkvvH8pBoTg&format=ipad
 
 Potential formats:
  * best = just give me the largest file / best quality
