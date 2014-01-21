@@ -17,6 +17,14 @@ function formatBytes($bytes, $precision = 2) {
     $bytes /= pow(1024, $pow);
     return round($bytes, $precision) . '' . $units[$pow]; 
 } 
+function is_chrome(){
+	$agent=$_SERVER['HTTP_USER_AGENT'];
+	if( preg_match("/like\sGecko\)\sChrome\//", $agent) ){	// if user agent is google chrome
+		if(!strstr($agent, 'Iron')) // but not Iron
+			return true;
+	}
+	return false;	// if isn't chrome return false
+}
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
@@ -206,11 +214,11 @@ if ($my_type == 'Download') {
 		'</li>';
 	}
 	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
-?>
 
-<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
-  Install Chrome Extension
-</a>
+if(is_chrome()){
+echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">  Install Chrome Extension</a>';
+}
+?>
 
 </body>
 </html>
