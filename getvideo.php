@@ -5,10 +5,12 @@
 //
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
-// if not, some servers will show this php warning: header is already set in line 46...
+
 include_once('curl.php');
-ob_start();
-// date_default_timezone_set("Asia/Tehran"); // if default timezone not set php shows a notice
+
+date_default_timezone_set("Asia/Tehran");/*@ToDo@ Set your default timezone in this line @ToDo@*/ // if default timezone not set php shows a notice
+ob_start(); // if not, some servers will show this php warning: header is already set in line 46...
+
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
     $bytes = max($bytes, 0); 
@@ -151,7 +153,7 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-echo '<div id="info"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
+echo '<div id="info"><img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
 $my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
