@@ -1,4 +1,8 @@
 <?PHP
+  // Set your default timezone
+  // use this link: http://php.net/manual/en/timezones.php
+  date_default_timezone_set("Asia/Tehran");
+
   // Thumbnail Image Configuration
   # $config['ThumbnailImageMode']=0;   // don't show thumbnail image
   # $config['ThumbnailImageMode']=1;   // show thumbnail image directly from YouTube
