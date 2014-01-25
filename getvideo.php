@@ -145,7 +145,17 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-echo '<div id="info"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
+
+echo '<div id="info">';
+switch($config['ThumbnailImageMode'])
+{
+  case 2: echo '<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
+  case 1: echo '<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
+  case 0:  default:  // nothing
+}
+echo '<p>'.$title.'</p>';
+echo '</div>';
+
 $my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
