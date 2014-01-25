@@ -19,8 +19,8 @@
   date_default_timezone_set("Asia/Tehran");
   
   // Debug mode
-  #$config['debug']=true; // debug mode on
-  $config['debug']=false; // debug mode off
+  #$debug=true; // debug mode on
+  $debug=false; // debug mode off
   
   
   /**********|| Don't edit below ||***************/
