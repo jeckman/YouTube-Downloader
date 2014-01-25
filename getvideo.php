@@ -207,13 +207,16 @@ if ($my_type == 'Download') {
 
 	/* now that we have the array, print the options */
 	for ($i = 0; $i < count($avail_formats); $i++) {
-		echo '<li>' .
-			'<span class="itag">' . $avail_formats[$i]['itag'] . '</span> '.
-			'<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ' .
-			'<small>(' .  $avail_formats[$i]['quality'] . ' / ' .
-				'<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token=' 		
-				.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
-			')</small> '.
+		echo '<li>';
+		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
+		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		  echo '<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+		else
+		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
+		echo '<small>(' .  $avail_formats[$i]['quality'];
+		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
+		  echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
+		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
 	}
