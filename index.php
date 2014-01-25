@@ -66,6 +66,6 @@
 	echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages."> Install Chrome Extension </a>';
     }
     ?>
-</form>
+  </form>
 </body>
 </html>
