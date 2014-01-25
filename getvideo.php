@@ -219,9 +219,8 @@ if ($my_type == 'Download') {
 	}
 	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
 
-if(is_chrome()){
-echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">  Install Chrome Extension</a>';
-}
+  if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
+    echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 ?>
 
 </body>
