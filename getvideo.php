@@ -6,9 +6,9 @@
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
 // if not, some servers will show this php warning: header is already set in line 46...
-include_once('curl.php');
+include_once('config.php');
 ob_start();
-// date_default_timezone_set("Asia/Tehran"); // if default timezone not set php shows a notice
+
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
     $bytes = max($bytes, 0); 
@@ -60,12 +60,6 @@ if(isset($_REQUEST['type'])) {
 	$my_type =  $_REQUEST['type'];
 } else {
 	$my_type = 'redirect';
-}
-
-if(isset($_REQUEST['debug'])) {
-	$debug = TRUE;
-} else {
-	$debug = FALSE;
 }
 
 if ($my_type == 'Download') {
