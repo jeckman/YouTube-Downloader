@@ -11,4 +11,7 @@
 
   // Other features
   $config['feature']['browserExtensions']=true; // show links for install browser extensions? true or false
+  
+  /**********|| Don't edit below ||***************/
+  include_once('curl.php');
 ?>
