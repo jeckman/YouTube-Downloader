@@ -6,9 +6,9 @@
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
 // if not, some servers will show this php warning: header is already set in line 46...
-include_once('curl.php');
+include_once('config.php');
 ob_start();
-// date_default_timezone_set("Asia/Tehran"); // if default timezone not set php shows a notice
+
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
     $bytes = max($bytes, 0); 
@@ -60,12 +60,6 @@ if(isset($_REQUEST['type'])) {
 	$my_type =  $_REQUEST['type'];
 } else {
 	$my_type = 'redirect';
-}
-
-if(isset($_REQUEST['debug'])) {
-	$debug = TRUE;
-} else {
-	$debug = FALSE;
 }
 
 if ($my_type == 'Download') {
@@ -151,7 +145,17 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-echo '<div id="info"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"><p>'.$title.'</p></div>';
+
+echo '<div id="info">';
+switch($config['ThumbnailImageMode'])
+{
+  case 2: echo '<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
+  case 1: echo '<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
+  case 0:  default:  // nothing
+}
+echo '<p>'.$title.'</p>';
+echo '</div>';
+
 $my_title = $title;
 
 if(isset($url_encoded_fmt_stream_map)) {
@@ -203,21 +207,23 @@ if ($my_type == 'Download') {
 
 	/* now that we have the array, print the options */
 	for ($i = 0; $i < count($avail_formats); $i++) {
-		echo '<li>' .
-			'<span class="itag">' . $avail_formats[$i]['itag'] . '</span> '.
-			'<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ' .
-			'<small>(' .  $avail_formats[$i]['quality'] . ' / ' .
-				'<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token=' 		
-				.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>' .
-			')</small> '.
+		echo '<li>';
+		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
+		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		  echo '<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+		else
+		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
+		echo '<small>(' .  $avail_formats[$i]['quality'];
+		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
+		  echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
+		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
 	}
 	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
 
-if(is_chrome()){
-echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">  Install Chrome Extension</a>';
-}
+  if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
+    echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 ?>
 
 </body>
