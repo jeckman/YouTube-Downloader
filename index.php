@@ -27,6 +27,7 @@
       .form-download .form-download-heading,
       .form-download .checkbox {
         margin-bottom: 10px;
+        text-align: center;
       }
       .form-download input[type="text"] {
         font-size: 16px;
