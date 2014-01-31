@@ -9,6 +9,11 @@
 include_once('config.php');
 ob_start();
 
+function clean($string) {
+   $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+   return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+}
+
 function formatBytes($bytes, $precision = 2) { 
     $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'); 
     $bytes = max($bytes, 0); 
@@ -157,6 +162,7 @@ echo '<p>'.$title.'</p>';
 echo '</div>';
 
 $my_title = $title;
+$cleanedtitle = clean($title);
 
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
@@ -210,17 +216,15 @@ if ($my_type == 'Download') {
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
 		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
-		  echo '<a href="' . $avail_formats[$i]['url'] . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+		  echo '<a href="' . $avail_formats[$i]['url'] . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
 		else
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
 		echo '<small>(' .  $avail_formats[$i]['quality'];
-		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
-		  echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
 		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
 	}
-	echo '</ul><small>Note that you can Right-click and choose "save as" or click "download" to use this server as proxy.</small>';
+	echo '</ul>';
 
   if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
     echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
@@ -287,7 +291,7 @@ if( (isset($best_format)) &&
   (isset($avail_formats[$best_format]['url'])) && 
   (isset($avail_formats[$best_format]['type'])) 
   ) {
-	$redirect_url = $avail_formats[$best_format]['url'];
+	$redirect_url = $avail_formats[$best_format]['url'].'&title='.$cleanedtitle;
 	$content_type = $avail_formats[$best_format]['type'];
 }
 if(isset($redirect_url)) {
