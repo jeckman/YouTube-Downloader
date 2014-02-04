@@ -220,11 +220,13 @@ if ($my_type == 'Download') {
 		else
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
 		echo '<small>(' .  $avail_formats[$i]['quality'];
+		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
+			echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
 		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
 	}
-	echo '</ul>';
+	echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
   if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
     echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
