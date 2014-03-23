@@ -243,7 +243,6 @@ foreach($my_formats_array as $format) {
 	$type = explode(';',$type);
 	$avail_formats[$i]['type'] = $type[0];
 	if(isset($s)) {
-		//$js = curlGet($html5player); 
 		$sig = decodesig($s);
 		$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
 		echo '<div> sig decoded is '. $sig .'</div>';
@@ -358,26 +357,90 @@ if(isset($redirect_url)) {
 } // end of else for type not being Download
 
 function decodesig($s) {
-	/* need to use this js to decode the s */ 
-	$sig = fE($s);
-	return $sig; 
-}
+	switch(strlen($s)) {
+		case 93:
+			return strrev(substr($s,29,57)) . substr($s,88,1) . strrev(substr($s,5,23));
+			break;
+		case 92:
+			return substr($s,25,1) . substr($s,3,22) . substr($s,0,1) . substr($s,26,16) . substr($s,79,1) . substr($s,43,36) . substr($s,91,1) . substr($s,80,3); 
+			break; 
+		case 91:
+			return strrev(substr($s,27,57)) . substr($s,86,1) . strrev(substr($s,5,21));
+			break;
+		case 90:
+			return substr($s,25,1) . substr($s,3,22) . substr($s,2,1) . substr($s,26,14) . substr($s,77,1) . substr($s,41,36) . substr($s,89,1) . substr($s,78,3); 
+			break;
+		case 89:
+			return strrev(substr($s,78,6)) . substr($s,87,1) . strrev(substr($s,60,17)) . substr($s,0,1) . strrev(substr($s,3,56));
+			break;
+		case 88:
+			return substr($s,7,21) . substr($s,87,1) . substr($s,29,16) . substr($s,55,1) . substr($s,46,9) . substr($s,2,1) . substr($s,56,31) . substr($s,28,1);
+			break;
+		case 87:
+			return substr($s,6,21) . substr($s,4,1) . substr($s,28,11) . substr($s,27,1) . substr($s,40,19) . substr($s,2,1) . substr($s,60,26);
+			break; 
+		case 86:
+			return strrev(substr($s,72,8)) . substr($s,16,1) . strrev(substr($s,39,32)) . substr($s,72,1) . strrev(substr($s,16,22)) . substr($s,82,1) . strrev(subtr($s,0,15));
+			break;
+		case 85:
+			return substr($s,3,8) . substr($s,0,1) . substr($s,12,43) . substr($s,84,1) . substr($s,56,28); 
+			break;
+		case 84:
+			return strrev(substr($s,70,8)) . substr($s,14,1) . strrev(substr($s,37,32)) . substr($s,70,1) . strrev(substr($s,14,22)) . substr($s,80,1) . strrev(substr($s,0,14));
+			break;
+		case 83:
+			return strrev(substr($s,63,17)) . substr($s,0,1) . strrev(substr($s,0,62)) . substr($s,63,1); 
+			break;
+		case 82:
+			return strrev(substr($s,37,43)) . substr($s,7,1) . strrev(substr($s,7,29)) . substr($s,0,1) . strrev(substr($s,0,6)) . substr($s,37,1);
+			break;
+		case 81:
+			return substr($s,56,1) . strrev(substr($s,56,23)) . substr($s,41,1) . strrev(substr($s,41,14)) . substr($s,80,1) . strrev(substr($s,34,6)) . substr($s,0,1) . strrev(substr($s,29,4)) . substr($s,34,1) . strrev(substr($s,9,19)) . substr($s,29,1) . strrev(substr($s,0,8)). substr($s,9,1); 
+			break; 
+		case 80:
+			return substr($s,1,18) . substr($s,0,1) . substr($s,20,48) . substr($s,19,1) . substr($s,69,11);
+			break;
+		case 79:
+			return substr($s,54,1) . strrev(substr($s,55,22)) . substr($s,39,1) . strrev(substr($s,40,13)) . substr($s,78,1) . strrev(substr($s,35,3)) . substr($s,0,1) . strrev(substr($s,30,3)) . substr($s,34,1) . strrev(substr($s,10,18)) . substr($s,29,1) . strrev(substr($s,1,7)) . substr($s,9,1);
+			break;
+	}
+	/* original functions from youtube-dl	
+	in python, single # = one character from index, two = start:end, three = start:end:step
+	
+        if len(s) == 93:
+            return s[86:29:-1] + s[88] + s[28:5:-1]
+        elif len(s) == 92:
+            return s[25] + s[3:25] + s[0] + s[26:42] + s[79] + s[43:79] + s[91] + s[80:83]
+        elif len(s) == 91:
+            return s[84:27:-1] + s[86] + s[26:5:-1]
+        elif len(s) == 90:
+            return s[25] + s[3:25] + s[2] + s[26:40] + s[77] + s[41:77] + s[89] + s[78:81]
+        elif len(s) == 89:
+            return s[84:78:-1] + s[87] + s[77:60:-1] + s[0] + s[59:3:-1]
+        elif len(s) == 88:
+            return s[7:28] + s[87] + s[29:45] + s[55] + s[46:55] + s[2] + s[56:87] + s[28]
+        elif len(s) == 87:
+            return s[6:27] + s[4] + s[28:39] + s[27] + s[40:59] + s[2] + s[60:]
+        elif len(s) == 86:
+            return s[80:72:-1] + s[16] + s[71:39:-1] + s[72] + s[38:16:-1] + s[82] + s[15::-1]
+        elif len(s) == 85:
+            return s[3:11] + s[0] + s[12:55] + s[84] + s[56:84]
+        elif len(s) == 84:
+            return s[78:70:-1] + s[14] + s[69:37:-1] + s[70] + s[36:14:-1] + s[80] + s[:14][::-1]
+        elif len(s) == 83:
+            return s[80:63:-1] + s[0] + s[62:0:-1] + s[63]
+        elif len(s) == 82:
+            return s[80:37:-1] + s[7] + s[36:7:-1] + s[0] + s[6:0:-1] + s[37]
+        elif len(s) == 81:
+            return s[56] + s[79:56:-1] + s[41] + s[55:41:-1] + s[80] + s[40:34:-1] + s[0] + s[33:29:-1] + s[34] + s[28:9:-1] + s[29] + s[8:0:-1] + s[9]
+        elif len(s) == 80:
+            return s[1:19] + s[0] + s[20:68] + s[19] + s[69:80]
+        elif len(s) == 79:
+            return s[54] + s[77:54:-1] + s[39] + s[53:39:-1] + s[78] + s[38:34:-1] + s[0] + s[33:29:-1] + s[34] + s[28:9:-1] + s[29] + s[8:0:-1] + s[9]
 
-function fE($a){
-	$a=str_split($a);
-	$a=array_slice($a,2);
-	$a=array_reverse($a);
-	$a=gE($a,39);
-	$a=gE($a,43);
-	return implode($a);
-}
-
-function gE($a,$b){
-	$c=$a[0];
-	$a[0]=$a[$b%count($a)];
-	$a[$b]=$c;
-	return $a;
-}
-
-
+        else:
+            raise ExtractorError(u'Unable to decrypt signature, key length %d not supported; retrying might work' % (len(s)))
+            }
+*/ 
+} 
 ?>
