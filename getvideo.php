@@ -141,40 +141,93 @@ $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 $my_video_info = curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
-
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
+$ytd = array();
 
-parse_str($my_video_info);
+parse_str($my_video_info,$ytd);
+
+echo '<pre>' . print_r($ytd,true) . '</pre>';
+
+/* if use_cipher_signature is not present or is false we can just proceed */ 
+if(((isset($tyd['use_cipher_signature'])) && ($ytd['use_cipher_signature'] != 'False')) || ($ytd['status'] != 'ok')) {
+	$my_video_page = 'http://www.youtube.com/watch?v=' . $my_id; 
+	$my_video_page = curlGet($my_video_page);
+
+	/* TODO: Check curl status code and handle */
+		
+	$my_ytplayer = preg_match('/ytplayer.config.=.*}};<\/script/',$my_video_page,$matches); 
+	if($my_ytplayer != 1) {
+		echo '<div>No ytplayer found </div>';
+	}
+	//echo '<div>YT Player is '. $matches[0] . '</div>';
+	$my_ytplayer = mb_substr($matches[0],18);
+	$my_ytplayer = rtrim($my_ytplayer,';</script/'); 
+	//echo '<div>YT Player JSON is '. $my_ytplayer . '</div>';
+	
+	$my_ytconfig = json_decode($my_ytplayer,true); 
+	switch (json_last_error()) {
+        case JSON_ERROR_NONE:
+            echo ' - No errors';
+        break;
+        case JSON_ERROR_DEPTH:
+            echo ' - Maximum stack depth exceeded';
+        break;
+        case JSON_ERROR_STATE_MISMATCH:
+            echo ' - Underflow or the modes mismatch';
+        break;
+        case JSON_ERROR_CTRL_CHAR:
+            echo ' - Unexpected control character found';
+        break;
+        case JSON_ERROR_SYNTAX:
+            echo ' - Syntax error, malformed JSON';
+        break;
+        case JSON_ERROR_UTF8:
+            echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+        break;
+        default:
+            echo ' - Unknown error';
+        break;
+    }
+	//echo '<div>Var dump: '. $my_ytconfig . '</div>'; 
+	//echo '<div>yt player object is <pre>'. print_r($my_ytconfig,true) . '</pre></div>';
+	$my_title = $my_ytconfig['args']['title'];
+	$my_formats_array = explode(',',$my_ytconfig['args']['url_encoded_fmt_stream_map']);
+	//echo '<div> My Formats = '. print_r($my_formats_array,true) .'</div>'; 
+	$html5player = $my_ytconfig['assets']['js'];
+	if (strpos($html5player,'//') == 0) {
+		$html5player = 'http://' . $html5player; 
+	}
+} else {
+	$my_title = $ytd['title'];
+	$my_thumbnail = $ytd['thumbnail_url'];
+	if(isset($ytd['url_encoded_fmt_stream_map'])) {
+		/* Now get the url_encoded_fmt_stream_map, and explode on comma */
+		$my_formats_array = explode(',',$ytd['url_encoded_fmt_stream_map']);
+		if($debug) {
+			echo '<pre>';
+			print_r($my_formats_array);
+			echo '</pre>';
+		}
+	} else {
+		echo '<p>No encoded format stream found.</p>';
+		echo '<p>Here is what we got from YouTube:</p>';
+		echo $my_video_info;
+	}
+	if (count($my_formats_array) == 0) {
+		echo '<p>No format stream map found - was the video id correct?</p>';
+		exit;
+	}
+}
 
 echo '<div id="info">';
 switch($config['ThumbnailImageMode'])
 {
   case 2: echo '<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
-  case 1: echo '<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
+  case 1: echo '<img src="'. $my_thumbnail .'" border="0" hspace="2" vspace="2">'; break;
   case 0:  default:  // nothing
 }
-echo '<p>'.$title.'</p>';
+echo '<p>'. $my_title .'</p>';
 echo '</div>';
-
-$my_title = $title;
-
-if(isset($url_encoded_fmt_stream_map)) {
-	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
-	$my_formats_array = explode(',',$url_encoded_fmt_stream_map);
-	if($debug) {
-		echo '<pre>';
-		print_r($my_formats_array);
-		echo '</pre>';
-	}
-} else {
-	echo '<p>No encoded format stream found.</p>';
-	echo '<p>Here is what we got from YouTube:</p>';
-	echo $my_video_info;
-}
-if (count($my_formats_array) == 0) {
-	echo '<p>No format stream map found - was the video id correct?</p>';
-	exit;
-}
 
 /* create an array of available download formats */
 $avail_formats[] = '';
@@ -182,16 +235,24 @@ $i = 0;
 $ipbits = $ip = $itag = $sig = $quality = '';
 $expire = time(); 
 
+echo '<div> My Formats array is <pre>'. print_r($my_formats_array, true) .'</pre></div>';
 foreach($my_formats_array as $format) {
 	parse_str($format);
 	$avail_formats[$i]['itag'] = $itag;
 	$avail_formats[$i]['quality'] = $quality;
 	$type = explode(';',$type);
 	$avail_formats[$i]['type'] = $type[0];
-	$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
+	if(isset($s)) {
+		//$js = curlGet($html5player); 
+		$sig = decodesig($s);
+		$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
+		echo '<div> sig decoded is '. $sig .'</div>';
+	} else {
+		$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
+	}
 	parse_str(urldecode($url));
 	$avail_formats[$i]['expires'] = date("G:i:s T", $expire);
-	$avail_formats[$i]['ipbits'] = $ipbits;
+	//$avail_formats[$i]['ipbits'] = $ipbits;
 	$avail_formats[$i]['ip'] = $ip;
 	$i++;
 }
@@ -295,4 +356,28 @@ if(isset($redirect_url)) {
 }
 
 } // end of else for type not being Download
+
+function decodesig($s) {
+	/* need to use this js to decode the s */ 
+	$sig = fE($s);
+	return $sig; 
+}
+
+function fE($a){
+	$a=str_split($a);
+	$a=array_slice($a,2);
+	$a=array_reverse($a);
+	$a=gE($a,39);
+	$a=gE($a,43);
+	return implode($a);
+}
+
+function gE($a,$b){
+	$c=$a[0];
+	$a[0]=$a[$b%count($a)];
+	$a[$b]=$c;
+	return $a;
+}
+
+
 ?>
