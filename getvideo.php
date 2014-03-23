@@ -395,7 +395,7 @@ function decodesig($s) {
 			return strrev(substr($s,37,43)) . substr($s,7,1) . strrev(substr($s,7,29)) . substr($s,0,1) . strrev(substr($s,0,6)) . substr($s,37,1);
 			break;
 		case 81:
-			return substr($s,56,1) . strrev(substr($s,56,23)) . substr($s,41,1) . strrev(substr($s,41,14)) . substr($s,80,1) . strrev(substr($s,34,6)) . substr($s,0,1) . strrev(substr($s,29,4)) . substr($s,34,1) . strrev(substr($s,9,19)) . substr($s,29,1) . strrev(substr($s,0,8)). substr($s,9,1); 
+			return substr($s,56,1) . strrev(substr($s,57,23)) . substr($s,41,1) . strrev(substr($s,42,14)) . substr($s,80,1) . strrev(substr($s,35,6)) . substr($s,0,1) . strrev(substr($s,30,4)) . substr($s,34,1) . strrev(substr($s,10,19)) . substr($s,29,1) . strrev(substr($s,1,8)). substr($s,9,1); 
 			break; 
 		case 80:
 			return substr($s,1,18) . substr($s,0,1) . substr($s,20,48) . substr($s,19,1) . substr($s,69,11);
