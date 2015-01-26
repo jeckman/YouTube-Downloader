@@ -153,12 +153,14 @@ $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 parse_str($my_video_info);
 
 echo '<div id="info">';
+$image_str='';
 switch($config['ThumbnailImageMode'])
 {
-  case 2: echo '<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
-  case 1: echo '<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
+  case 2: $image_str='<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
+  case 1: $image_str='<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
   case 0:  default:  // nothing
 }
+echo "<a href=\"./getimage.php?videoid=$my_id&sz=hd\" target=\"_blank\">$image_str</b></a>";
 echo '<p>'.$title.'</p>';
 echo '</div>';
 
@@ -227,7 +229,8 @@ if ($my_type == 'Download') {
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
 	}
-	echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
+	
+//	echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
   if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
     echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
