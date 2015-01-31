@@ -27,6 +27,7 @@
       .form-download .form-download-heading,
       .form-download .checkbox {
         margin-bottom: 10px;
+        text-align: center;
       }
       .form-download input[type="text"] {
         font-size: 16px;
@@ -45,9 +46,6 @@
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="VideoID" />
-		<label class="checkbox">
-			<input type="checkbox" name="debug" id="debug"> Show Debug Info
-		</label>
 		<input class="btn btn-primary" type="submit" name="type" id="type" value="Download" />
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
