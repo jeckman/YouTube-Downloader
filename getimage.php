@@ -46,10 +46,10 @@ if(!empty($_GET['sz'])) {
         $arg=$_GET['sz'];
 switch ($arg) {
         case 'hd':
-                $szName='maxresdefault';
+                $szName='hqdefault';
                 break;
         case 'sd':
-                $szName='sddefault';
+                $szName='default';
                 break;
         default:
         $szName=$arg;
