@@ -5,6 +5,10 @@ License: GPL v2 or Later
 
 PHP Scripts to download videos from YouTube.  
 
+NOTE: YouTube Downloader does not work with videos using a cipher signature. 
+
+See https://github.com/jeckman/YouTube-Downloader/issues/9
+
 In order for direct download links to work (clicking on the file type in results list)
 your server must be using IPv6. If you are using IPv4, YouTube checks to see if the token
 matches the IP and returns an access forbidden error. If you are unable to use IPv6, you
