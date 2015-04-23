@@ -13,6 +13,17 @@
   /**********|| features ||***************/
   $config['feature']['browserExtensions']=true; // show links for install browser extensions? true or false
   
+  /**********|| Multiple IPs ||***************/
+  $config['multipleIPs']=false; // enable multiple IPs support to bypass Youtube IP limit? true or false
+  $config['IPs'] = [
+	  //'xxx.xxx.xxx.xxx',
+	  //'xxx.xxx.xxx.xxx',
+	  //'xxx.xxx.xxx.xxx',
+	  //'xxx.xxx.xxx.xxx',
+	  //'xxx.xxx.xxx.xxx',
+	  // add as many ips as you want (they must be available in the server conf (ex: /etc/network/interfaces fro ubuntu/debian)
+  ];
+  
   /**********|| Other ||***************/
   // Set your default timezone
   // use this link: http://php.net/manual/en/timezones.php
