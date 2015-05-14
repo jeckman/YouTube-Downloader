@@ -218,7 +218,9 @@ if ($my_type == 'Download') {
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
 		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
-		  echo '<a href="' . $avail_formats[$i]['url'] . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+		$directlink = explode('.googlevideo.com/',$avail_formats[$i]['url']);
+		$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
+		  echo '<a href="' . $directlink . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
 		else
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
 		echo '<small>(' .  $avail_formats[$i]['quality'];
