@@ -9,12 +9,6 @@ NOTE: YouTube Downloader does not work with videos using a cipher signature.
 
 See https://github.com/jeckman/YouTube-Downloader/issues/9
 
-In order for direct download links to work (clicking on the file type in results list)
-your server must be using IPv6. If you are using IPv4, YouTube checks to see if the token
-matches the IP and returns an access forbidden error. If you are unable to use IPv6, you
-can use the "download" link instead, which uses a simple proxy to open the file from
-the server and read the file out to the browser. 
-
 You can manually visit a web form (the index.php file), enter a YouTube
 video id, and get in return a list of links showing the various formats in which
 that video can be downloaded. You can simply choose "save link as" or the 
