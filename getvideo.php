@@ -217,11 +217,11 @@ if ($my_type == 'Download') {
 	for ($i = 0; $i < count($avail_formats); $i++) {
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
-		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both'):
 		$directlink = explode('.googlevideo.com/',$avail_formats[$i]['url']);
 		$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
 		  echo '<a href="' . $directlink . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
-		else
+		else:
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
 		echo '<small>(' .  $avail_formats[$i]['quality'];
 		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
@@ -229,6 +229,7 @@ if ($my_type == 'Download') {
 		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
+		endif;
 	}
 	echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
