@@ -217,13 +217,13 @@ if ($my_type == 'Download') {
 	for ($i = 0; $i < count($avail_formats); $i++) {
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
-		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both'){
 		$directlink = explode('.googlevideo.com/',$avail_formats[$i]['url']);
 		$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
 		  echo '<a href="' . $directlink . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
-		else
+		}else{
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
-		echo '<small>(' .  $avail_formats[$i]['quality'];
+		echo '<small>(' .  $avail_formats[$i]['quality'];}
 		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
 			echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
 		echo ')</small> '.
