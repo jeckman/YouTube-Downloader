@@ -152,7 +152,10 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
 
 parse_str($my_video_info);
-
+if($status=='fail'){
+	echo '<p>Error in video ID</p>';
+	exit();
+}
 echo '<div id="info">';
 switch($config['ThumbnailImageMode'])
 {
