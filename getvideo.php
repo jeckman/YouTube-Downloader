@@ -173,6 +173,11 @@ if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
 	$my_formats_array = explode(',',$url_encoded_fmt_stream_map);
 	if($debug) {
+		if($config['multipleIPs'] === true) {
+			echo '<pre>Outgoing IP: ';
+			print_r($outgoing_ip);
+			echo '</pre>';
+		}
 		echo '<pre>';
 		print_r($my_formats_array);
 		echo '</pre>';
