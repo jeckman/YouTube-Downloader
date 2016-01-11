@@ -33,7 +33,7 @@ function is_chrome(){
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
-	if(strlen($my_id)>11){
+	if( preg_match('/^https:\/\/w{3}?.youtube.com\//', $my_id) ){
 		$url   = parse_url($my_id);
 		$my_id = NULL;
 		if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) ){
@@ -55,6 +55,10 @@ if(isset($_REQUEST['videoid'])) {
 			echo '<p>Invalid url</p>';
 			exit;
 		}
+	}elseif( preg_match('/^https?:\/\/youtu.be/', $my_id) ) {
+		$url   = parse_url($my_id);
+		$my_id = NULL;
+		$my_id = preg_replace('/^\//', '', $url['path']);
 	}
 } else {
 	echo '<p>No video id passed in</p>';
