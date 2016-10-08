@@ -30,6 +30,45 @@ function is_chrome(){
 	}
 	return false;	// if isn't chrome return false
 }
+// signature decoding 
+function decryptSignature($encryptedSig, $algorithm)
+    {
+        $output = false;
+        // Validate pattern of SDA rule
+        if (is_string($encryptedSig) && is_string($algorithm) &&
+            preg_match_all('/([R|S|W]{1})(\d+)/', $algorithm, $matches)
+        ) {
+            // Apply each SDA rule on encrypted signature
+            foreach ($matches[1] as $pos => $cond) {
+                $size = $matches[2][$pos];
+                switch ($cond) {
+                    case 'R':
+                        // Reverse EncSig (Encrypted Signature)
+                        $encryptedSig = strrev($encryptedSig);
+                        break;
+                    case 'S':
+                        // Splice EncSig
+                        $encryptedSig = substr($encryptedSig, $size);
+                        break;
+                    case 'W':
+                        // Swap first char and nth char on EncSig
+                        $sigArray = str_split($encryptedSig);
+                        $zeroChar = $sigArray[0];
+                        // Replace positions
+                        $sigArray[0] = @$sigArray[$size];
+                        $sigArray[$size] = $zeroChar;
+                        // Join signature
+                        $encryptedSig = implode('', $sigArray);
+                        break;
+                }
+            }
+            // Finally dump decrypted signature :)
+            $output = $encryptedSig;
+        }
+
+        return $output;
+    }
+
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
@@ -153,7 +192,7 @@ $my_video_info = curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
 
-$thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
+$thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = $use_cipher_signature = '';
 
 parse_str($my_video_info);
 if($status=='fail'){
@@ -172,7 +211,11 @@ echo '</div>';
 
 $my_title = $title;
 $cleanedtitle = clean($title);
-
+$ciphered = (isset($use_cipher_signature) && $use_cipher_signature == 'True') ? true : false;
+if($ciphered){
+	$algourl = 'http://momon.xyz/getmp3/api/lic.php';
+	$algo = file_get_contents($algourl);
+}
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
 	$my_formats_array = explode(',',$url_encoded_fmt_stream_map);
@@ -208,7 +251,10 @@ foreach($my_formats_array as $format) {
 	$avail_formats[$i]['quality'] = $quality;
 	$type = explode(';',$type);
 	$avail_formats[$i]['type'] = $type[0];
-	$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
+	if($ciphered)
+		$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . decryptSignature($s, $algo);
+	else
+		$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
 	parse_str(urldecode($url));
 	$avail_formats[$i]['expires'] = date("G:i:s T", $expire);
 	$avail_formats[$i]['ipbits'] = $ipbits;
