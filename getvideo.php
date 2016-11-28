@@ -5,9 +5,9 @@
 //
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
-
+// if not, some servers will show this php warning: header is already set in line 46...
 include_once('config.php');
-ob_start();// if not, some servers will show this php warning: header is already set in line 46...
+ob_start();
 
 function clean($string) {
    $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
@@ -29,6 +29,15 @@ function is_chrome(){
 			return true;
 	}
 	return false;	// if isn't chrome return false
+}
+// string helper function
+function strbtwn($content,$start,$end){
+	$r = explode($start, $content);
+	if (isset($r[1])){
+		$r = explode($end, $r[1]);
+		return $r[0];
+	}
+	return '';
 }
 // signature decoding 
 function decryptSignature($encryptedSig, $algorithm)
@@ -72,7 +81,7 @@ function decryptSignature($encryptedSig, $algorithm)
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
-	if( preg_match('/^https:\/\/w{3}?.youtube.com\//', $my_id) ){
+	if(strlen($my_id)>11){
 		$url   = parse_url($my_id);
 		$my_id = NULL;
 		if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) ){
@@ -94,10 +103,6 @@ if(isset($_REQUEST['videoid'])) {
 			echo '<p>Invalid url</p>';
 			exit;
 		}
-	}elseif( preg_match('/^https?:\/\/youtu.be/', $my_id) ) {
-		$url   = parse_url($my_id);
-		$my_id = NULL;
-		$my_id = preg_replace('/^\//', '', $url['path']);
 	}
 } else {
 	echo '<p>No video id passed in</p>';
@@ -118,7 +123,6 @@ if ($my_type == 'Download') {
 <head>
     <title>Youtube Downloader</title>
     <meta name="keywords" content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	 <style type="text/css">
       	body {
@@ -186,8 +190,7 @@ if ($my_type == 'Download') {
 } // end of if for type=Download
 
 /* First get the video info page for this video id */
-//$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
-$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id.'&asv=3&el=detailpage&hl=en_US'; //video details fix *1
+$my_video_info = "http://www.youtube.com/get_video_info?video_id=".$my_id."&el=vevo&el=detailpage&hl=en_US";
 $my_video_info = curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
@@ -195,15 +198,12 @@ $my_video_info = curlGet($my_video_info);
 $thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = $use_cipher_signature = '';
 
 parse_str($my_video_info);
-if($status=='fail'){
-	echo '<p>Error in video ID</p>';
-	exit();
-}
+
 echo '<div id="info">';
 switch($config['ThumbnailImageMode'])
 {
-  case 2: echo '<a href="getimage.php?videoid='. $my_id .'&sz=hd" target="_blank"><img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2"></a>'; break;
-  case 1: echo '<a href="getimage.php?videoid='. $my_id .'&sz=hd" target="_blank"><img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2"></a>'; break;
+  case 2: echo '<img src="getimage.php?videoid='. $my_id .'" border="0" hspace="2" vspace="2">'; break;
+  case 1: echo '<img src="'. $thumbnail_url .'" border="0" hspace="2" vspace="2">'; break;
   case 0:  default:  // nothing
 }
 echo '<p>'.$title.'</p>';
@@ -213,8 +213,31 @@ $my_title = $title;
 $cleanedtitle = clean($title);
 $ciphered = (isset($use_cipher_signature) && $use_cipher_signature == 'True') ? true : false;
 if($ciphered){
-	$algourl = 'http://momon.xyz/getmp3/api/lic.php';
-	$algo = file_get_contents($algourl);
+	// youtube webpage url formation
+	$yt_url = 'http://www.youtube.com/watch?v='.$my_id.'&gl=US&persist_gl=1&hl=en&persist_hl=1';
+	
+	// if cipher is true then we have to change the plan and get the details from the video's youtube wbe page
+	$yt_html = file_get_contents($yt_url);
+				
+	// parse for the script containing the configuration
+	preg_match('/ytplayer.config = {(.*?)};/',$yt_html,$match);
+	$yt_object = @json_decode('{'.$match[1].'}') ;
+	
+	/// check if we are able to parse data
+	if(!is_object($yt_object)){
+		//'Sorry! Unable to parse Data';
+		echo 'Error Code 1';
+	}else{
+			
+		// parse available formats
+		$url_encoded_fmt_stream_map = $yt_object->args->url_encoded_fmt_stream_map;
+
+		$algourl = 'http://momon.xyz/getmp3/api/lic2.php';
+		
+		$algo = file_get_contents($algourl);
+
+				
+	} 
 }
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
@@ -242,7 +265,7 @@ if (count($my_formats_array) == 0) {
 /* create an array of available download formats */
 $avail_formats[] = '';
 $i = 0;
-$ipbits = $ip = $itag = $sig = $quality = '';
+$ipbits = $ip = $itag = $sig = $s = $quality = '';
 $expire = time(); 
 
 foreach($my_formats_array as $format) {
@@ -275,13 +298,11 @@ if ($my_type == 'Download') {
 	for ($i = 0; $i < count($avail_formats); $i++) {
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
-		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both'){
-		$directlink = explode('.googlevideo.com/',$avail_formats[$i]['url']);
-		$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
-		  echo '<a href="' . $directlink . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
-		}else{
+		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		  echo '<a href="' . $avail_formats[$i]['url'] . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+		else
 		  echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
-		echo '<small>(' .  $avail_formats[$i]['quality'];}
+		echo '<small>(' .  $avail_formats[$i]['quality'];
 		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
 			echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
 		echo ')</small> '.
@@ -363,5 +384,4 @@ if(isset($redirect_url)) {
 }
 
 } // end of else for type not being Download
-// *1 = thanks to amit kumar @ bloggertale.com for sharing the fix
 ?>
