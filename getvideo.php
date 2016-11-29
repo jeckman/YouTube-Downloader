@@ -39,6 +39,17 @@ function strbtwn($content,$start,$end){
 	}
 	return '';
 }
+// change webpage to array function
+function FormToArr($content, $v1 = '&', $v2 = '=') {
+    $rply = array();
+    if (strpos($content, $v1) === false || strpos($content, $v2) === false) return $rply;
+    foreach (array_filter(array_map('trim', explode($v1, $content))) as $v) {
+        $v = array_map('trim', explode($v2, $v, 2));
+        if ($v[0] != '') $rply[$v[0]] = $v[1];
+    }
+    return $rply;
+}
+
 // signature decoding 
 function decryptSignature($encryptedSig, $algorithm)
     {
@@ -78,38 +89,40 @@ function decryptSignature($encryptedSig, $algorithm)
         return $output;
     }
 if(isset($_REQUEST['videoid'])) {
-	$my_id = $_REQUEST['videoid'];
-	if( preg_match('/^https:\/\/w{3}?.youtube.com\//', $my_id) ){
-		$url   = parse_url($my_id);
-		$my_id = NULL;
-		if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) ){
-			$parts = explode('&',$url['query']);
-			if( is_array($parts) && count($parts) > 0 ){
-				foreach( $parts as $p ){
-					$pattern = '/^v\=/';
-					if( preg_match($pattern, $p) ){
-						$my_id = preg_replace($pattern,'',$p);
-						break;
-					}
-				}
+        $my_id = ($_REQUEST['videoid']);
+        if( preg_match('/^https?:\/\/youtu.be/', $my_id) ) {
+				$url   = parse_url($my_id);
+				$my_id = NULL;
+				$my_id = preg_replace('/^\//', '', $url['path']);
 			}
-			if( !$my_id ){
-				echo '<p>No video id passed in</p>';
-				exit;
-			}
-		}else{
-			echo '<p>Invalid url</p>';
-			exit;
-		}
-	}elseif( preg_match('/^https?:\/\/youtu.be/', $my_id) ) {
-		$url   = parse_url($my_id);
-		$my_id = NULL;
-		$my_id = preg_replace('/^\//', '', $url['path']);
-	}
-} else {
-	echo '<p>No video id passed in</p>';
-	exit;
-}
+        if(strlen($my_id)>11){
+            $url   = parse_url($my_id);
+            $my_id = NULL;
+            if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) ){
+                $parts = explode('&',$url['query']);
+                if( is_array($parts) && count($parts) > 0 ){
+                    foreach( $parts as $p ){
+                        $pattern = '/^v\=/';
+                        if( preg_match($pattern, $p) ){
+                            $my_id = preg_replace($pattern,'',$p);
+                            break;
+                        }
+                    }
+                }
+                if( !$my_id ){
+                    echo '<p>No video id passed in</p><p>Please enter the right link example : </p><p>https://www.youtube.com/watch?v=UxxajLWwzqY</p><p>https://m.youtube.com/watch?v=UxxajLWwzqY</p><p>This <a href="'.$url.'" target="_blank">'.$url.'</a> is wrong link</p>';
+                    exit;
+                }
+            }else{
+                echo '<p>Invalid url</p>';
+                exit;
+            }
+        }
+    } else {
+        echo '<p>No video id passed in</p>';
+        exit;
+    }
+
 if(isset($_REQUEST['type'])) {
 	$my_type =  $_REQUEST['type'];
 } else {
@@ -133,7 +146,7 @@ if ($my_type == 'Download') {
 	}
 
 	.download {
-	        max-width: 300px;
+	        max-width: 325px;
 	        padding: 19px 29px 29px;
 	        margin: 0 auto 20px;
 	        background-color: #fff;
@@ -191,18 +204,17 @@ if ($my_type == 'Download') {
 } // end of if for type=Download
 
 /* First get the video info page for this video id */
-$my_video_info = "http://www.youtube.com/get_video_info?video_id=".$my_id."&el=vevo&el=detailpage&hl=en_US";
-$my_video_info = curlGet($my_video_info);
+$page = curlGet('https://www.youtube.com/get_video_info?video_id='.$my_id.'&asv=3&el=ve'.'vo&hl=en_US&s'.'t'.'s'.'='.(!empty($sts) ? urlencode($sts) : 0));
+$response = array_map('urldecode', FormToArr(substr($page, strpos($page, "\r\n\r\n") + 4)));
 
-/* TODO: Check return from curl for status code */
-
-$thumbnail_url = $title = $url_encoded_fmt_stream_map = $adaptive_fmts = $type = $url = $use_cipher_signature = '';
-
-parse_str($my_video_info);
-if($status=='fail'){
+if($response['status'] == 'fail'){
 	echo '<p>Error in video ID</p>';
 	exit();
 }
+
+$thumbnail_url = $response['thumbnail_url'];
+$title = $response['title'];
+$use_cipher_signature = $response['use_cipher_signature'];
 
 echo '<div id="info">';
 switch($config['ThumbnailImageMode'])
@@ -218,33 +230,34 @@ $my_title = $title;
 $cleanedtitle = clean($title);
 $ciphered = (isset($use_cipher_signature) && $use_cipher_signature == 'True') ? true : false;
 if($ciphered){
-	// youtube webpage url formation
-	$yt_url = 'http://www.youtube.com/watch?v='.$my_id.'&gl=US&persist_gl=1&hl=en&persist_hl=1';
-	
-	// if cipher is true then we have to change the plan and get the details from the video's youtube wbe page
-	$yt_html = file_get_contents($yt_url);
-				
-	// parse for the script containing the configuration
-	preg_match('/ytplayer.config = {(.*?)};/',$yt_html,$match);
-	$yt_object = @json_decode('{'.$match[1].'}') ;
-	
-	/// check if we are able to parse data
-	if(!is_object($yt_object)){
-		//'Sorry! Unable to parse Data';
-		echo 'Error Code 1';
-	}else{
-			
-		// parse available formats
-		$url_encoded_fmt_stream_map = $yt_object->args->url_encoded_fmt_stream_map;
-		$adaptive_fmts = $yt_object->args->adaptive_fmts;
+	$yt_url = 'https://www.youtube.com/embed/'.$my_id;
 
-		$algourl = 'http://momon.xyz/getmp3/api/lic2.php';
-		
-		$algo = file_get_contents($algourl);
+    // if cipher is true then we have to change the plan and get the details from the video's youtube wbe page
+    $yt_html = file_get_contents($yt_url);
 
-				
-	} 
+    if (!preg_match('@"sts"\s*:\s*(\d+)@i', $yt_html, $sts)) die('Signature timestamp not found.');
+    $sts = $sts[1];
+
+    
+    $page = curlGet('https://www.youtube.com/get_video_info?video_id='.$my_id.'&asv=3&el=ve'.'vo&hl=en_US&s'.'t'.'s'.'='.(!empty($sts) ? urlencode($sts) : 0));
+
+    $response = array_map('urldecode', FormToArr(substr($page, strpos($page, "\r\n\r\n") + 4)));
+
+	$algourl = 'http://momon.xyz/getmp3/api/lic2.php';
+	
+	$algo = file_get_contents($algourl);
 }
+
+// //uncomment this block for viewing response of the curl
+// echo '<pre>';
+// print_r($response);
+// echo '</pre>';
+
+
+//insert response to variable
+$url_encoded_fmt_stream_map = $response['url_encoded_fmt_stream_map'];
+$adaptive_fmts = $response['adaptive_fmts'];
+
 
 if(isset($url_encoded_fmt_stream_map)) {
 	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
@@ -262,7 +275,7 @@ if(isset($url_encoded_fmt_stream_map)) {
 } else {
 	echo '<p>No encoded format stream found.</p>';
 	echo '<p>Here is what we got from YouTube:</p>';
-	echo $my_video_info;
+	echo $page;
 }
 if (count($my_formats_array) == 0) {
 	echo '<p>No format stream map found - was the video id correct?</p>';
@@ -285,7 +298,7 @@ if(isset($adaptive_fmts)) {
 } else {
 	echo '<p>No encoded format stream found.</p>';
 	echo '<p>Here is what we got from YouTube:</p>';
-	echo $my_video_info;
+	echo $page;
 }
 if (count($my_formats_array2) == 0) {
 	echo '<p>No format stream map found - was the video id correct?</p>';
@@ -320,8 +333,9 @@ foreach($my_formats_array as $format) {
 foreach($my_formats_array2 as $formatsb) {
 	parse_str($formatsb);
 	$avail_formats2[$j]['itag'] = $itag;
+	$avail_formats2[$j]['size'] = $size;
 	$avail_formats2[$j]['quality'] = $quality_label;
-
+	$avail_formats2[$j]['clen'] = $clen;
 
 	$axt = explode(';',$type);
     // $raw = strtoupper(strbtwn($axt[0].'|', '/', '|'));
@@ -370,21 +384,23 @@ if ($my_type == 'Download') {
 
 	echo '</ul><p align="center">List of adaptive formats for download:</p>
 		<ul>';
+	// show the adaptive format
 	for ($j = 0; $j < count($avail_formats2); $j++) {
 		$url = urldecode($avail_formats2[$j]['url']);
         $redirg = strbtwn($url,'://','.');
         $urld = str_replace($redirg,'redirector',$url);
 		echo '<li>';
 		echo '<span class="itag">' . $avail_formats2[$j]['itag'] . '</span> ';
-		if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
-		  echo '<a href="' . $urld . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats2[$j]['type'] . '</a> ';
-		else
+		// adaptive format only can be download by using save link as and using proxy with file download.php
+		// if($config['VideoLinkMode']=='direct'||$config['VideoLinkMode']=='both')
+		  // echo '<a href="' . $urld . '&title='.$cleanedtitle.'" class="mime">' . $avail_formats2[$j]['type'] . '</a> ';
+		// else
 		  echo '<span class="mime">' . $avail_formats2[$j]['type'] . '</span> ';
-		echo '<small>(' .  $avail_formats2[$j]['quality'];
+		echo '<small>(' .  $avail_formats2[$j]['size'];
 		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
 			echo ' / ' . '<a href="download.php?mime=' . $avail_formats2[$j]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($urld) . '" class="dl">download</a>';
 		echo ')</small> '.
-			'<small><span class="size">' . formatBytes(get_size($urld)) . '</span></small>'.
+			'<small><span class="size">' . formatBytes($avail_formats2[$j]['clen']) . '</span></small>'.
 		'</li>';
 	}
 
