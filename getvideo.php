@@ -79,7 +79,6 @@ if ($my_type == 'Download') {
 <head>
     <title>Youtube Downloader</title>
     <meta name="keywords" content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	 <style type="text/css">
       	body {
