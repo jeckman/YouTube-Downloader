@@ -5,9 +5,9 @@
 //
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
-
+// if not, some servers will show this php warning: header is already set in line 46...
 include_once('config.php');
-ob_start();// if not, some servers will show this php warning: header is already set in line 46...
+ob_start();
 
 function clean($string) {
    $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
