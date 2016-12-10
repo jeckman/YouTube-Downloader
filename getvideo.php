@@ -147,8 +147,7 @@ if ($my_type == 'Download') {
 } // end of if for type=Download
 
 /* First get the video info page for this video id */
-//$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
-$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id.'&asv=3&el=detailpage&hl=en_US'; //video details fix *1
+$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 $my_video_info = curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
@@ -317,5 +316,4 @@ if(isset($redirect_url)) {
 }
 
 } // end of else for type not being Download
-// *1 = thanks to amit kumar @ bloggertale.com for sharing the fix
 ?>
