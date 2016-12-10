@@ -27,7 +27,6 @@
       .form-download .form-download-heading,
       .form-download .checkbox {
         margin-bottom: 10px;
-        text-align: center;
       }
       .form-download input[type="text"] {
         font-size: 16px;
@@ -46,24 +45,17 @@
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="VideoID" />
+		<label class="checkbox">
+			<input type="checkbox" name="debug" id="debug"> Show Debug Info
+		</label>
 		<input class="btn btn-primary" type="submit" name="type" id="type" value="Download" />
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
 
     <!-- @TODO: Prepend the base URI -->
-    <?PHP
-    include_once('config.php');
-    function is_chrome(){
-	$agent=$_SERVER['HTTP_USER_AGENT'];
-	if( preg_match("/like\sGecko\)\sChrome\//", $agent) ){	// if user agent is google chrome
-		if(!strstr($agent, 'Iron')) // but not Iron
-			return true;
-	}
-	return false;	// if isn't chrome return false
-    }
-    if(($config['feature']['browserExtensions']==true)&&(is_chrome()))
-      echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
-    ?>
-  </form>
+    <a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages.">
+      Install Chrome Extension
+    </a>
+	</form>
 </body>
 </html>
