@@ -31,17 +31,17 @@
 // ------------------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------------------
-window.location.getParam = function(name) {
-	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+window.location.getParam = function (name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 
-	var regex  = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-		result = regex.exec(window.location.search);
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        result = regex.exec(window.location.search);
 
-	if (result == null) {
-		return false;
-	}
+    if (result == null) {
+        return false;
+    }
 
-	return decodeURIComponent(result[1].replace(/\+/g, ' '));
+    return decodeURIComponent(result[1].replace(/\+/g, ' '));
 };
 
 // ------------------------------------------------------------------------
@@ -52,26 +52,26 @@ window.location.getParam = function(name) {
  * @see http://wiki.greasespot.net/API_reference
  * @see http://wiki.greasespot.net/Metadata_Block
  */
-(function() {
+(function () {
 
-	var wrapper = document.getElementById('watch7-subscription-container'),
-		btn     = document.createElement('a'),
-		vid     = window.location.getParam('v'),
-		style   = document.createElement('style'),
-		head    = document.getElementsByTagName('head')[0],
-		// Update this to point to your own installation:
-		link    = 'http://UPDATE_THIS_IN_CODE.com/getvideo.php?videoid=' + vid + '&type=Download';
+    var wrapper = document.getElementById('watch7-subscription-container'),
+        btn = document.createElement('a'),
+        vid = window.location.getParam('v'),
+        style = document.createElement('style'),
+        head = document.getElementsByTagName('head')[0],
+        // Update this to point to your own installation:
+        link = 'http://UPDATE_THIS_IN_CODE.com/getvideo.php?videoid=' + vid + '&type=Download';
 
-	if (wrapper && vid) {
-		// Assemble the button:
-		btn.type = 'button';
-		btn.setAttribute('href',  link);
-		btn.setAttribute('role',  'button');
-		btn.setAttribute('style', 'line-height:inherit;height:23px;border-color:#b3b3b3 !important');
-		btn.setAttribute('class', 'yt-uix-subscription-button yt-uix-button yt-uix-button-subscribe-branded');
+    if (wrapper && vid) {
+        // Assemble the button:
+        btn.type = 'button';
+        btn.setAttribute('href', link);
+        btn.setAttribute('role', 'button');
+        btn.setAttribute('style', 'line-height:inherit;height:23px;border-color:#b3b3b3 !important');
+        btn.setAttribute('class', 'yt-uix-subscription-button yt-uix-button yt-uix-button-subscribe-branded');
 
-		// Child elements:
-		btn.innerHTML = '<span class="yt-uix-button-icon-wrapper" style="background:#b3b3b3;border-color:#b3b3b3">\
+        // Child elements:
+        btn.innerHTML = '<span class="yt-uix-button-icon-wrapper" style="background:#b3b3b3;border-color:#b3b3b3">\
 			<img class="guide-management-plus-icon" src="//s.ytimg.com/yts/img/pixel-vfl3z5WfW.gif">\
 			<span class="yt-uix-button-valign"></span>\
 		</span>\
@@ -80,12 +80,12 @@ window.location.getParam = function(name) {
 			<span class="unsubscribe-label"></span>\
 		</span>';
 
-		// Append it:
-		wrapper.appendChild(btn);
+        // Append it:
+        wrapper.appendChild(btn);
 
-		// Style:
-		style.type      = 'text/css';
-		style.innerHTML = '#watch7-subscription-container .yt-uix-button-subscription-container { float: left !important; margin-left: 10px !important; }';
-		head.appendChild(style);
-	}
+        // Style:
+        style.type = 'text/css';
+        style.innerHTML = '#watch7-subscription-container .yt-uix-button-subscription-container { float: left !important; margin-left: 10px !important; }';
+        head.appendChild(style);
+    }
 })();
