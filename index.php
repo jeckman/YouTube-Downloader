@@ -53,8 +53,6 @@
 			<li><b>youtube.com/watch?v=...</b></li>
 			<li><b>youtu.be/...</b></li>
 		</ul>
-		<p>Put in just the ID bit, the part after v=.</p>
-		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
 
     <!-- @TODO: Prepend the base URI -->
     <?PHP
