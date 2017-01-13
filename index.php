@@ -45,8 +45,14 @@
 <body>
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
-		<input type="text" name="videoid" id="videoid" size="40" placeholder="VideoID" />
+		<input type="text" name="videoid" id="videoid" size="40" placeholder="YouTube Link or VideoID" />
 		<input class="btn btn-primary" type="submit" name="type" id="type" value="Download" />
+		<p>Valid inputs are YouTube links or VideoIDs:</p>
+		<ul>
+			<li>youtube.com/watch?v=<b>aBCdEFGhIJk</b></li>
+			<li><b>youtube.com/watch?v=...</b></li>
+			<li><b>youtu.be/...</b></li>
+		</ul>
 		<p>Put in just the ID bit, the part after v=.</p>
 		<p>Example: http://www.youtube.com/watch?v=<b>Fw-BM-Mqgeg</b></p>
 
