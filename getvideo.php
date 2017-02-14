@@ -89,7 +89,7 @@ if ($my_type == 'Download') {
 	}
 
 	.download {
-	        max-width: 300px;
+	        max-width: 500px;
 	        padding: 19px 29px 29px;
 	        margin: 0 auto 20px;
 	        background-color: #fff;
@@ -238,6 +238,7 @@ if ($my_type == 'Download') {
 		echo '<small>(' .  $avail_formats[$i]['quality'];}
 		if($config['VideoLinkMode']=='proxy'||$config['VideoLinkMode']=='both')
 			echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
+                        echo ' / ' . '<a href="downloadOnServer.php?mime=' . $avail_formats[$i]['type'] .'&title='. urlencode($my_title) .'&token='.base64_encode($avail_formats[$i]['url']) . '" class="dl">Download On Server</a>';
 		echo ')</small> '.
 			'<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>'.
 		'</li>';
