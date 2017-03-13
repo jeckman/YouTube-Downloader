@@ -41,7 +41,7 @@ function is_chrome()
 
 if (isset($_REQUEST['videoid'])) {
     $my_id = $_REQUEST['videoid'];
-    if (preg_match('/^https:\/\/w{3}?.youtube.com\//', $my_id)) {
+    if (preg_match('/^https?:\/\/w{3}?.youtube.com\//', $my_id)) {
         $url = parse_url($my_id);
         $my_id = NULL;
         if (is_array($url) && count($url) > 0 && isset($url['query']) && !empty($url['query'])) {
