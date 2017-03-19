@@ -15,6 +15,17 @@ function clean($string)
     return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
 }
 
+function isMobileUrl($string) {
+    if (strpos($string, "m."))
+        return true;
+    return false;
+}
+
+function treatMobileUrl($string) {
+    $string = str_replace("m.", "www.");
+    return $string;
+}
+
 function formatBytes($bytes, $precision = 2)
 {
     $units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -41,6 +52,9 @@ function is_chrome()
 
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
+	if(isMobileUrl($my_id)) {
+		treatMobileUl($my_id);
+	}
 	if( preg_match('/^(https?:\/\/)?(w{3}\.)?youtube.com\//', $my_id) ){
 		$url   = parse_url($my_id);
 		$my_id = NULL;
