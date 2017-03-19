@@ -53,7 +53,7 @@ function is_chrome()
 if(isset($_REQUEST['videoid'])) {
 	$my_id = $_REQUEST['videoid'];
 	if(isMobileUrl($my_id)) {
-		treatMobileUl($my_id);
+		treatMobileUrl($my_id);
 	}
 	if( preg_match('/^(https?:\/\/)?(w{3}\.)?youtube.com\//', $my_id) ){
 		$url   = parse_url($my_id);
