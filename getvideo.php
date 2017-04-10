@@ -158,6 +158,7 @@ $my_video_info = \YoutubeDownloader\YoutubeDownloader::curlGet($my_video_info);
 /* TODO: Check return from curl for status code */
 
 parse_str($my_video_info, $video_info);
+
 /** @var $status */
 if ($video_info['status'] == 'fail')
 {
@@ -193,7 +194,7 @@ if ( ! isset($video_info['url_encoded_fmt_stream_map']) )
 }
 
 /* Now get the url_encoded_fmt_stream_map, and explode on comma */
-$my_formats_array = explode(',', $video_info['url_encoded_fmt_stream_map']);
+$stream_map = \YoutubeDownloader\YoutubeDownloader::createStreamMapFromVideoInfo($video_info);
 
 if ($config['debug'])
 {
@@ -205,37 +206,18 @@ if ($config['debug'])
 	}
 
 	echo '<pre>';
-	print_r($my_formats_array);
+	print_r($stream_map);
 	echo '</pre>';
 }
 
-if (count($my_formats_array) == 0)
+if (count($stream_map) == 0)
 {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
 }
 
 /* create an array of available download formats */
-$avail_formats = [];
-$sig = '';
-
-foreach ($my_formats_array as $format)
-{
-	parse_str($format, $format_info);
-	parse_str(urldecode($format_info['url']), $url_info);
-
-	$type = explode(';', $format_info['type']);
-
-	$avail_formats[] = [
-		'itag' => $format_info['itag'],
-		'quality' => $format_info['quality'],
-		'type' => $type[0],
-		'url' => urldecode($format_info['url']) . '&signature=' . $sig,
-		'expires' => date("G:i:s T", $url_info['expire']),
-		'ipbits' => $url_info['ipbits'],
-		'ip' => $url_info['ip'],
-	];
-}
+$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map);
 
 if ($config['debug'])
 {

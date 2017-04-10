@@ -228,4 +228,35 @@ class YoutubeDownloader
 
 		return $redirect_url;
 	}
+
+	public static function createStreamMapFromVideoInfo(array $video_info)
+	{
+		return explode(',', $video_info['url_encoded_fmt_stream_map']);
+	}
+
+	public static function parseStreamMapToFormats(array $stream_map)
+	{
+		$avail_formats = [];
+		$sig = '';
+
+		foreach ($stream_map as $format)
+		{
+			parse_str($format, $format_info);
+			parse_str(urldecode($format_info['url']), $url_info);
+
+			$type = explode(';', $format_info['type']);
+
+			$avail_formats[] = [
+				'itag' => $format_info['itag'],
+				'quality' => $format_info['quality'],
+				'type' => $type[0],
+				'url' => urldecode($format_info['url']) . '&signature=' . $sig,
+				'expires' => date("G:i:s T", $url_info['expire']),
+				'ipbits' => $url_info['ipbits'],
+				'ip' => $url_info['ip'],
+			];
+		}
+
+		return $avail_formats;
+	}
 }
