@@ -6,7 +6,7 @@
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
 
-include_once('config.php');
+include_once('common.php');
 ob_start();// if not, some servers will show this php warning: header is already set in line 46...
 
 function clean($string)
@@ -35,19 +35,6 @@ function formatBytes($bytes, $precision = 2)
     $bytes /= pow(1024, $pow);
 
     return round($bytes, $precision) . '' . $units[$pow];
-}
-
-function is_chrome()
-{
-    $agent = $_SERVER['HTTP_USER_AGENT'];
-    if (preg_match("/like\sGecko\)\sChrome\//", $agent)) {    // if user agent is google chrome
-        if (!strstr($agent, 'Iron')) // but not Iron
-        {
-            return true;
-        }
-    }
-
-    return false;    // if isn't chrome return false
 }
 
 if(isset($_REQUEST['videoid'])) {
@@ -277,7 +264,8 @@ if ($my_type == 'Download') {
     }
     echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
-    if (($config['feature']['browserExtensions'] == true) && (is_chrome())) {
+    if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config['feature']['browserExtensions'] == true )
+    {
         echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
     }
     ?>

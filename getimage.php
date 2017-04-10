@@ -1,5 +1,5 @@
 <?PHP
-include_once('config.php');
+include_once('common.php');
 
 $my_id = $_GET["videoid"];
 if (isset($_REQUEST['videoid'])) {

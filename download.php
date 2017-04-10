@@ -1,9 +1,11 @@
 <?php
 
-include_once('config.php');
+include_once('common.php');
+
 // Check download token
-if (empty($_GET['mime']) OR empty($_GET['token'])) {
-    exit('Invalid download token 8{');
+if (empty($_GET['mime']) OR empty($_GET['token']))
+{
+	exit('Invalid download token 8{');
 }
 
 // Set operation params
@@ -28,9 +30,9 @@ if ($url)
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 		header('Pragma: public');
 	}
-    
-    readfile($url);
-    exit;
+
+	readfile($url);
+	exit;
 }
 
 // Not found
