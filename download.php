@@ -17,7 +17,7 @@ $name = urldecode($_GET['title']) . '.' . $ext;
 // Fetch and serve
 if ($url)
 {
-	$size = get_size($url);
+	$size = \YoutubeDownloader\YoutubeDownloader::get_size($url);
 	// Generate the server headers
 	header('Content-Type: "' . $mime . '"');
 	header('Content-Disposition: attachment; filename="' . $name . '"');
@@ -25,6 +25,7 @@ if ($url)
 	header('Expires: 0');
 	header('Content-Length: '.$size);
 	header('Pragma: no-cache');
+
 	if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== FALSE)
 	{
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

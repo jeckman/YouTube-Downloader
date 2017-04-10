@@ -159,7 +159,7 @@ if ($my_type == 'Download') {
     /* First get the video info page for this video id */
     //$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
     $my_video_info = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US'; //video details fix *1
-    $my_video_info = curlGet($my_video_info);
+    $my_video_info = \YoutubeDownloader\YoutubeDownloader::curlGet($my_video_info);
 
     /* TODO: Check return from curl for status code */
 
@@ -259,7 +259,7 @@ if ($my_type == 'Download') {
                 ) . '&token=' . base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
         }
         echo ')</small> ' .
-            '<small><span class="size">' . formatBytes(get_size($avail_formats[$i]['url'])) . '</span></small>' .
+            '<small><span class="size">' . formatBytes(\YoutubeDownloader\YoutubeDownloader::get_size($avail_formats[$i]['url'])) . '</span></small>' .
             '</li>';
     }
     echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';

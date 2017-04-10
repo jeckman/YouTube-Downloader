@@ -92,8 +92,3 @@ date_default_timezone_set("Asia/Tehran");
 // Debug mode
 #$debug=true; // debug mode on
 $debug = false; // debug mode off
-
-
-/**********|| Don't edit below ||***************/
-include_once('curl.php');
-?>
