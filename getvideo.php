@@ -24,8 +24,8 @@ if( \YoutubeDownloader\YoutubeDownloader::isMobileUrl($my_id) )
 
 if( preg_match('/^(https?:\/\/)?(w{3}\.)?youtube.com\//', $my_id) )
 {
-	$url   = parse_url($my_id);
-	$my_id = NULL;
+	$url = parse_url($my_id);
+	$my_id = null;
 
 	if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) )
 	{
@@ -60,10 +60,9 @@ if( preg_match('/^(https?:\/\/)?(w{3}\.)?youtube.com\//', $my_id) )
 elseif( preg_match('/^(https?:\/\/)?youtu.be/', $my_id) )
 {
 	$url   = parse_url($my_id);
-	$my_id = NULL;
+	$my_id = null;
 	$my_id = preg_replace('/^(youtu\.be)?\//', '', $url['path']);
 }
-
 
 if (isset($_GET['type']))
 {
@@ -158,11 +157,9 @@ $my_video_info = \YoutubeDownloader\YoutubeDownloader::curlGet($my_video_info);
 
 /* TODO: Check return from curl for status code */
 
-$thumbnail_url = $title = $url_encoded_fmt_stream_map = $type = $url = '';
-
-parse_str($my_video_info);
+parse_str($my_video_info, $video_info);
 /** @var $status */
-if ($status == 'fail')
+if ($video_info['status'] == 'fail')
 {
 	echo '<p>Error in video ID</p>';
 	exit();
@@ -176,44 +173,40 @@ switch ($config['ThumbnailImageMode'])
 		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="getimage.php?videoid=' . $my_id . '" border="0" hspace="2" vspace="2"></a>';
 		break;
 	case 1:
-		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="' . $thumbnail_url . '" border="0" hspace="2" vspace="2"></a>';
+		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="' . $video_info['thumbnail_url'] . '" border="0" hspace="2" vspace="2"></a>';
 		break;
 	case 0:
 	default:  // nothing
 }
 
-echo '<p>' . $title . '</p>';
+echo '<p>' . $video_info['title'] . '</p>';
 echo '</div>';
 
-$my_title = $title;
-$cleanedtitle = \YoutubeDownloader\YoutubeDownloader::clean($title);
+$my_title = $video_info['title'];
+$cleanedtitle = \YoutubeDownloader\YoutubeDownloader::clean($video_info['title']);
 
-$my_formats_array = [];
-
-if (isset($url_encoded_fmt_stream_map))
-{
-	/* Now get the url_encoded_fmt_stream_map, and explode on comma */
-	$my_formats_array = explode(',', $url_encoded_fmt_stream_map);
-
-	if ($debug)
-	{
-		if ($config['multipleIPs'] === true)
-		{
-			echo '<pre>Outgoing IP: ';
-			print_r($outgoing_ip);
-			echo '</pre>';
-		}
-
-		echo '<pre>';
-		print_r($my_formats_array);
-		echo '</pre>';
-	}
-}
-else
+if ( ! isset($video_info['url_encoded_fmt_stream_map']) )
 {
 	echo '<p>No encoded format stream found.</p>';
 	echo '<p>Here is what we got from YouTube:</p>';
 	echo $my_video_info;
+}
+
+/* Now get the url_encoded_fmt_stream_map, and explode on comma */
+$my_formats_array = explode(',', $video_info['url_encoded_fmt_stream_map']);
+
+if ($config['debug'])
+{
+	if ($config['multipleIPs'] === true)
+	{
+		echo '<pre>Outgoing IP: ';
+		print_r($outgoing_ip);
+		echo '</pre>';
+	}
+
+	echo '<pre>';
+	print_r($my_formats_array);
+	echo '</pre>';
 }
 
 if (count($my_formats_array) == 0)
@@ -223,27 +216,28 @@ if (count($my_formats_array) == 0)
 }
 
 /* create an array of available download formats */
-$avail_formats[] = '';
-$i = 0;
-$ipbits = $ip = $itag = $sig = $quality = '';
-$expire = time();
+$avail_formats = [];
+$sig = '';
 
 foreach ($my_formats_array as $format)
 {
-	parse_str($format);
-	$avail_formats[$i]['itag'] = $itag;
-	$avail_formats[$i]['quality'] = $quality;
-	$type = explode(';', $type);
-	$avail_formats[$i]['type'] = $type[0];
-	$avail_formats[$i]['url'] = urldecode($url) . '&signature=' . $sig;
-	parse_str(urldecode($url));
-	$avail_formats[$i]['expires'] = date("G:i:s T", $expire);
-	$avail_formats[$i]['ipbits'] = $ipbits;
-	$avail_formats[$i]['ip'] = $ip;
-	$i++;
+	parse_str($format, $format_info);
+	parse_str(urldecode($format_info['url']), $url_info);
+
+	$type = explode(';', $format_info['type']);
+
+	$avail_formats[] = [
+		'itag' => $format_info['itag'],
+		'quality' => $format_info['quality'],
+		'type' => $type[0],
+		'url' => urldecode($format_info['url']) . '&signature=' . $sig,
+		'expires' => date("G:i:s T", $url_info['expire']),
+		'ipbits' => $url_info['ipbits'],
+		'ip' => $url_info['ip'],
+	];
 }
 
-if ($debug)
+if ($config['debug'])
 {
 	echo '<p>These links will expire at ' . $avail_formats[0]['expires'] . '</p>';
 	echo '<p>The server was at IP address ' . $avail_formats[0]['ip'] . ' which is an ' . $avail_formats[0]['ipbits'] . ' bit IP address. ';
@@ -256,31 +250,31 @@ if ($my_type == 'Download')
 		<ul>';
 
 	/* now that we have the array, print the options */
-	for ($i = 0; $i < count($avail_formats); $i++)
+	foreach ($avail_formats as $avail_format)
 	{
 		echo '<li>';
-		echo '<span class="itag">' . $avail_formats[$i]['itag'] . '</span> ';
+		echo '<span class="itag">' . $avail_format['itag'] . '</span> ';
 
 		if ($config['VideoLinkMode'] == 'direct' || $config['VideoLinkMode'] == 'both')
 		{
-			$directlink = explode('.googlevideo.com/', $avail_formats[$i]['url']);
+			$directlink = explode('.googlevideo.com/', $avail_format['url']);
 			$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
-			echo '<a href="' . $directlink . '&title=' . $cleanedtitle . '" class="mime">' . $avail_formats[$i]['type'] . '</a> ';
+			echo '<a href="' . $directlink . '&title=' . $cleanedtitle . '" class="mime">' . $avail_format['type'] . '</a> ';
 		}
 		else
 		{
-			echo '<span class="mime">' . $avail_formats[$i]['type'] . '</span> ';
-			echo '<small>(' . $avail_formats[$i]['quality'];
+			echo '<span class="mime">' . $avail_format['type'] . '</span> ';
+			echo '<small>(' . $avail_format['quality'];
 		}
 
 		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
 		{
-			echo ' / ' . '<a href="download.php?mime=' . $avail_formats[$i]['type'] . '&title=' . urlencode(
+			echo ' / ' . '<a href="download.php?mime=' . $avail_format['type'] . '&title=' . urlencode(
 					$my_title
-				) . '&token=' . base64_encode($avail_formats[$i]['url']) . '" class="dl">download</a>';
+				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
 		}
 
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_formats[$i]['url']);
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
 
 		echo ')</small> ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
@@ -293,10 +287,10 @@ if ($my_type == 'Download')
 	{
 		echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 	}
-?>
+
+	echo '
 </body>
-</html>
-<?php
+</html>';
 }
 else
 {
@@ -312,57 +306,9 @@ else
 	 *   							http://rg3.github.com/youtube-dl/
 	 */
 
-	$format = $_GET['format'];
-	$target_formats = '';
-	switch ($format) {
-		case "best":
-			/* largest formats first */
-			$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
-			break;
-		case "free":
-			/* Here we include WebM but prefer it over FLV */
-			$target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
-			break;
-		case "ipad":
-			/* here we leave out WebM video and FLV - looking for MP4 */
-			$target_formats = ['37', '22', '18', '17'];
-			break;
-		default:
-			/* If they passed in a number use it */
-			if (is_numeric($format)) {
-				$target_formats[] = $format;
-			} else {
-				$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
-			}
-			break;
-	}
+	$redirect_url = \YoutubeDownloader\YoutubeDownloader::getDownloadUrlByFormats($avail_formats, $_GET['format']);
 
-	/* Now we need to find our best format in the list of available formats */
-	$best_format = '';
-
-	for ($i = 0; $i < count($target_formats); $i++)
-	{
-		for ($j = 0; $j < count($avail_formats); $j++)
-		{
-			if ($target_formats[$i] == $avail_formats[$j]['itag'])
-			{
-				//echo '<p>Target format found, it is '. $avail_formats[$j]['itag'] .'</p>';
-				$best_format = $j;
-				break 2;
-			}
-		}
-	}
-
-//echo '<p>Out of loop, best_format is '. $best_format .'</p>';
-	if ((isset($best_format)) &&
-		(isset($avail_formats[$best_format]['url'])) &&
-		(isset($avail_formats[$best_format]['type']))
-	) {
-		$redirect_url = $avail_formats[$best_format]['url'] . '&title=' . $cleanedtitle;
-		$content_type = $avail_formats[$best_format]['type'];
-	}
-
-	if (isset($redirect_url))
+	if ( $redirect_url !== null )
 	{
 		header("Location: $redirect_url");
 	}

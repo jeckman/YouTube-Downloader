@@ -166,4 +166,66 @@ class YoutubeDownloader
 
 		return '';
 	}
+
+	public static function getDownloadUrlByFormats($avail_formats, $format)
+	{
+		$target_formats = '';
+
+		switch ($format)
+		{
+			case "best":
+				/* largest formats first */
+				$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				break;
+			case "free":
+				/* Here we include WebM but prefer it over FLV */
+				$target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+				break;
+			case "ipad":
+				/* here we leave out WebM video and FLV - looking for MP4 */
+				$target_formats = ['37', '22', '18', '17'];
+				break;
+			default:
+				/* If they passed in a number use it */
+				if (is_numeric($format))
+				{
+					$target_formats[] = $format;
+				}
+				else
+				{
+					$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				}
+				break;
+		}
+
+		/* Now we need to find our best format in the list of available formats */
+		$best_format = '';
+
+		for ($i = 0; $i < count($target_formats); $i++)
+		{
+			for ($j = 0; $j < count($avail_formats); $j++)
+			{
+				if ($target_formats[$i] == $avail_formats[$j]['itag'])
+				{
+					//echo '<p>Target format found, it is '. $avail_formats[$j]['itag'] .'</p>';
+					$best_format = $j;
+					break 2;
+				}
+			}
+		}
+
+		$redirect_url = null;
+
+		if (
+			(isset($best_format)) &&
+			(isset($avail_formats[$best_format]['url'])) &&
+			(isset($avail_formats[$best_format]['type']))
+		)
+		{
+			$redirect_url = $avail_formats[$best_format]['url'] . '&title=' . $cleanedtitle;
+			$content_type = $avail_formats[$best_format]['type'];
+		}
+
+		return $redirect_url;
+	}
 }

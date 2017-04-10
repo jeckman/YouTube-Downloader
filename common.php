@@ -1,7 +1,5 @@
 <?php
 
-//error_reporting(E_ALL);
-
 /**
  * PSR-4 autoloader
  *
@@ -42,6 +40,12 @@ spl_autoload_register(function ($class)
 
 include_once('config.php');
 
+// Show all errors on debug
+if ( $config['debug'] )
+{
+	error_reporting(E_ALL);
+}
+
 /*
  * If multipleIPs mode is enabled, select randomly one IP from
  * the config IPs array and put it in $outgoing_ip variable.
@@ -51,3 +55,5 @@ if (isset($config['multipleIPs']) && $config['multipleIPs'] === true)
 	// randomly select an ip from the $config['IPs'] array
 	$outgoing_ip = $config['IPs'][mt_rand(0, count($config['IPs']) - 1)];
 }
+
+date_default_timezone_set($config['default_timezone']);
