@@ -1,47 +1,19 @@
 <?PHP
 include_once('common.php');
 
-$my_id = $_GET["videoid"];
-if ( ! isset($_REQUEST['videoid']) )
+if ( ! isset($_GET['videoid']) )
 {
 	echo '<p>No video id passed in</p>';
 	exit;
 }
 
-$my_id = $_REQUEST['videoid'];
+$my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($_GET['videoid']);
 
-if (strlen($my_id) > 11)
+
+if ( $my_id === null )
 {
-	$url = parse_url($my_id);
-	$my_id = NULL;
-
-	if ( ! is_array($url) or count($url) === 0 or ! isset($url['query']) or empty($url['query']) )
-	{
-		echo '<p>Invalid url</p>';
-		exit;
-	}
-
-	$parts = explode('&', $url['query']);
-
-	if (is_array($parts) && count($parts) > 0)
-	{
-		foreach ($parts as $p)
-		{
-			$pattern = '/^v\=/';
-
-			if (preg_match($pattern, $p))
-			{
-				$my_id = preg_replace($pattern, '', $p);
-				break;
-			}
-		}
-	}
-
-	if ( ! $my_id )
-	{
-		echo '<p>No video id passed in</p>';
-		exit;
-	}
+	echo '<p>Invalid video id passed in</p>';
+	exit;
 }
 
 $szName = 'default';

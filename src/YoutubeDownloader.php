@@ -7,6 +7,86 @@ namespace YoutubeDownloader;
  */
 class YoutubeDownloader
 {
+	/**
+	 * Validates a video ID
+	 *
+	 * @param string $video_id
+	 * @param string|null The validated video ID or null, if the video ID is invalid
+	 */
+	public static function validateVideoId($video_id)
+	{
+		if (strlen($video_id) <= 11)
+		{
+			return $video_id;
+		}
+
+		$url = parse_url($video_id);
+		$video_id = null;
+
+		if ( ! is_array($url) or count($url) === 0 or ! isset($url['query']) or empty($url['query']) )
+		{
+			return null;
+		}
+
+		$parts = explode('&', $url['query']);
+
+		if (is_array($parts) && count($parts) > 0)
+		{
+			foreach ($parts as $p)
+			{
+				$pattern = '/^v\=/';
+
+				if (preg_match($pattern, $p))
+				{
+					$video_id = preg_replace($pattern, '', $p);
+					break;
+				}
+			}
+		}
+
+		if ( ! $video_id )
+		{
+			return null;
+		}
+
+		return $video_id;
+	}
+
+	public static function clean($string)
+	{
+		// Replaces all spaces with hyphens.
+		$string = str_replace(' ', '-', $string);
+
+		// Removes special chars.
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}
+
+	public static function isMobileUrl($string)
+	{
+		if (strpos($string, "m."))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public static function treatMobileUrl($string)
+	{
+		return str_replace("m.", "www.");
+	}
+
+	public static function formatBytes($bytes, $precision = 2)
+	{
+		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+		$bytes /= pow(1024, $pow);
+
+		return round($bytes, $precision) . '' . $units[$pow];
+	}
+
 	public static function is_chrome()
 	{
 		$agent = $_SERVER['HTTP_USER_AGENT'];
