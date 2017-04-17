@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 /**********|| Thumbnail Image Configuration ||***************/
 # $config['ThumbnailImageMode']=0;   // don't show thumbnail image
@@ -87,13 +87,8 @@ $config['IPs'] = [
 /**********|| Other ||***************/
 // Set your default timezone
 // use this link: http://php.net/manual/en/timezones.php
-date_default_timezone_set("Asia/Tehran");
+$config['default_timezone'] = 'Asia/Tehran';
 
 // Debug mode
-#$debug=true; // debug mode on
-$debug = false; // debug mode off
-
-
-/**********|| Don't edit below ||***************/
-include_once('curl.php');
-?>
+//$config['debug'] = true; // debug mode on
+$config['debug'] = false; // debug mode off

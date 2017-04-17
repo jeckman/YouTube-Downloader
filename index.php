@@ -58,26 +58,15 @@
 			<li><b>youtu.be/...</b></li>
 		</ul>
 
-    <!-- @TODO: Prepend the base URI -->
-    <?PHP
-    include_once('config.php');
-    function is_chrome()
-    {
-        $agent = $_SERVER['HTTP_USER_AGENT'];
-        if (preg_match("/like\sGecko\)\sChrome\//", $agent)) {    // if user agent is google chrome
-            if (!strstr($agent, 'Iron')) // but not Iron
-            {
-                return true;
-            }
-        }
+	<!-- @TODO: Prepend the base URI -->
+<?php
+include_once('common.php');
 
-        return false;    // if isn't chrome return false
-    }
-
-    if ((isset($config['feature']['browserExtensions']) && $config['feature']['browserExtensions'] == true) && (is_chrome())) {
-        echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
-    }
-    ?>
+if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and (isset($config['feature']['browserExtensions']) && $config['feature']['browserExtensions'] == true) )
+{
+	echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
+}
+?>
 </form>
 </body>
 </html>
