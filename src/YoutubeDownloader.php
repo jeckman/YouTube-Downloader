@@ -141,7 +141,7 @@ class YoutubeDownloader
 	{
 		global $config;
 
-		$my_ch = curl_init();
+		$my_ch = curl_init($url);
 
 		if ($config['multipleIPs'] === true)
 		{
@@ -149,11 +149,12 @@ class YoutubeDownloader
 			curl_setopt($my_ch, \CURLOPT_INTERFACE, $outgoing_ip);
 		}
 
-		curl_setopt($my_ch, \CURLOPT_URL, $url);
 		curl_setopt($my_ch, \CURLOPT_HEADER, true);
 		curl_setopt($my_ch, \CURLOPT_NOBODY, true);
 		curl_setopt($my_ch, \CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($my_ch, \CURLOPT_TIMEOUT, 10);
+    	curl_setopt($my_ch, \CURLOPT_FOLLOWLOCATION, 1);
+    	curl_setopt($my_ch, \CURLOPT_SSL_VERIFYPEER, 0);
 		$r = curl_exec($my_ch);
 
 		foreach (explode("\n", $r) as $header)
@@ -231,29 +232,29 @@ class YoutubeDownloader
 
 	public static function createStreamMapFromVideoInfo(array $video_info)
 	{
-		return explode(',', $video_info['url_encoded_fmt_stream_map']);
+		return [explode(',', $video_info['url_encoded_fmt_stream_map']), explode(',', $video_info['adaptive_fmts'])];
 	}
 
 	public static function parseStreamMapToFormats(array $stream_map)
 	{
 		$avail_formats = [];
-		$sig = '';
 
 		foreach ($stream_map as $format)
 		{
 			parse_str($format, $format_info);
 			parse_str(urldecode($format_info['url']), $url_info);
+			if(isset($format_info['bitrate'])) $quality = isset($format_info['quality_label'])?$format_info['quality_label']:round($format_info['bitrate']/1000).'k';
+			else $quality =  isset($format_info['quality'])?$format_info['quality']:'';
 
 			$type = explode(';', $format_info['type']);
-
 			$avail_formats[] = [
 				'itag' => $format_info['itag'],
-				'quality' => $format_info['quality'],
+				'quality' => $quality,
 				'type' => $type[0],
-				'url' => urldecode($format_info['url']) . '&signature=' . $sig,
-				'expires' => date("G:i:s T", $url_info['expire']),
-				'ipbits' => $url_info['ipbits'],
-				'ip' => $url_info['ip'],
+				'url' => $format_info['url'],
+				'expires' => isset($url_info['expire'])?date("G:i:s T", $url_info['expire']):'',
+				'ipbits' => isset($url_info['ipbits'])?$url_info['ipbits']:'',
+				'ip' => isset($url_info['ip'])?$url_info['ip']:'',
 			];
 		}
 

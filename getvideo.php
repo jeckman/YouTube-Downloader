@@ -92,7 +92,7 @@ if ($my_type == 'Download')
 		}
 
 		.download {
-			max-width: 300px;
+			max-width: 400px;
 			padding: 19px 29px 29px;
 			margin: 0 auto 20px;
 			background-color: #fff;
@@ -217,7 +217,7 @@ if (count($stream_map) == 0)
 }
 
 /* create an array of available download formats */
-$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map);
+$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[0]);
 
 if ($config['debug'])
 {
@@ -235,18 +235,19 @@ if ($my_type == 'Download')
 	foreach ($avail_formats as $avail_format)
 	{
 		echo '<li>';
-		echo '<span class="itag">' . $avail_format['itag'] . '</span> ';
 
 		if ($config['VideoLinkMode'] == 'direct' || $config['VideoLinkMode'] == 'both')
 		{
-			$directlink = explode('.googlevideo.com/', $avail_format['url']);
-			$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
+			$directlink = $avail_format['url'];
+			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
+			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
 			echo '<a href="' . $directlink . '&title=' . $cleanedtitle . '" class="mime">' . $avail_format['type'] . '</a> ';
+			echo '(quality: ' . $avail_format['quality'];
 		}
 		else
 		{
 			echo '<span class="mime">' . $avail_format['type'] . '</span> ';
-			echo '<small>(' . $avail_format['quality'];
+			echo '(quality: ' . $avail_format['quality'];
 		}
 
 		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
@@ -258,12 +259,48 @@ if ($my_type == 'Download')
 
 		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
 
-		echo ')</small> ' .
+		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
+	echo '</ul> <p  align="center">Separated video and audio format: </p><ul>';
 
-	echo '</ul><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
+	$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[1]);
+
+	foreach ($avail_formats as $avail_format)
+	{
+		echo '<li>';
+
+		if ($config['VideoLinkMode'] == 'direct' || $config['VideoLinkMode'] == 'both')
+		{
+			$directlink = $avail_format['url'];
+			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
+			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
+			echo '<a href="' . $directlink . '&title=' . $cleanedtitle . '" class="mime">' . $avail_format['type'] . '</a> ';
+			echo '(quality: ' . $avail_format['quality'];
+		}
+		else
+		{
+			echo '<span class="mime">' . $avail_format['type'] . '</span> ';
+			echo '(quality: ' . $avail_format['quality'];
+		}
+
+		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
+		{
+			echo ' / ' . '<a href="download.php?mime=' . $avail_format['type'] . '&title=' . urlencode(
+					$my_title
+				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
+		}
+
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
+
+		echo ') ' .
+			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
+			'</li>';
+	}
+	echo '</ul>';
+
+	echo '<small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
 	if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config['feature']['browserExtensions'] == true )
 	{
