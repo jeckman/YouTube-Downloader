@@ -242,11 +242,12 @@ if ($my_type == 'Download')
 			$directlink = explode('.googlevideo.com/', $avail_format['url']);
 			$directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '';
 			echo '<a href="' . $directlink . '&title=' . $cleanedtitle . '" class="mime">' . $avail_format['type'] . '</a> ';
+			echo '(quality: ' . $avail_format['quality'];
 		}
 		else
 		{
 			echo '<span class="mime">' . $avail_format['type'] . '</span> ';
-			echo '<small>(' . $avail_format['quality'];
+			echo '(quality: ' . $avail_format['quality'];
 		}
 
 		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
@@ -258,7 +259,7 @@ if ($my_type == 'Download')
 
 		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
 
-		echo ')</small> ' .
+		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
