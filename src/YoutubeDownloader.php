@@ -141,7 +141,7 @@ class YoutubeDownloader
 	{
 		global $config;
 
-		$my_ch = curl_init();
+		$my_ch = curl_init($url);
 
 		if ($config['multipleIPs'] === true)
 		{
@@ -149,11 +149,12 @@ class YoutubeDownloader
 			curl_setopt($my_ch, \CURLOPT_INTERFACE, $outgoing_ip);
 		}
 
-		curl_setopt($my_ch, \CURLOPT_URL, $url);
 		curl_setopt($my_ch, \CURLOPT_HEADER, true);
 		curl_setopt($my_ch, \CURLOPT_NOBODY, true);
 		curl_setopt($my_ch, \CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($my_ch, \CURLOPT_TIMEOUT, 10);
+    		curl_setopt($my_ch, \CURLOPT_FOLLOWLOCATION, 1);
+    		curl_setopt($my_ch, \CURLOPT_SSL_VERIFYPEER, 0);
 		$r = curl_exec($my_ch);
 
 		foreach (explode("\n", $r) as $header)
