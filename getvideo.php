@@ -92,7 +92,7 @@ if ($my_type == 'Download')
 		}
 
 		.download {
-			max-width: 300px;
+			max-width: 400px;
 			padding: 19px 29px 29px;
 			margin: 0 auto 20px;
 			background-color: #fff;
