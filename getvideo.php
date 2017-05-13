@@ -22,46 +22,12 @@ if( \YoutubeDownloader\YoutubeDownloader::isMobileUrl($my_id) )
 	$my_id = \YoutubeDownloader\YoutubeDownloader::treatMobileUrl($my_id);
 }
 
-if( preg_match('/^(https?:\/\/)?(w{3}\.)?youtube.com\//', $my_id) )
+$my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($my_id);
+
+if ( $my_id === null )
 {
-	$url = parse_url($my_id);
-	$my_id = null;
-
-	if( is_array($url) && count($url)>0 && isset($url['query']) && !empty($url['query']) )
-	{
-		$parts = explode('&',$url['query']);
-
-		if( is_array($parts) && count($parts) > 0 )
-		{
-			foreach( $parts as $p )
-			{
-				$pattern = '/^v\=/';
-
-				if( preg_match($pattern, $p) )
-				{
-					$my_id = preg_replace($pattern,'',$p);
-					break;
-				}
-			}
-		}
-
-		if( !$my_id )
-		{
-			echo '<p>No video id passed in</p>';
-			exit;
-		}
-	}
-	else
-	{
-		echo '<p>Invalid url</p>';
-		exit;
-	}
-}
-elseif( preg_match('/^(https?:\/\/)?youtu.be/', $my_id) )
-{
-	$url   = parse_url($my_id);
-	$my_id = null;
-	$my_id = preg_replace('/^(youtu\.be)?\//', '', $url['path']);
+    echo '<p>Invalid url</p>';
+    exit;
 }
 
 if (isset($_GET['type']))

@@ -12,6 +12,7 @@ class YoutubeDownloader
 	 *
 	 * @param string $video_id
 	 * @param string|null The validated video ID or null, if the video ID is invalid
+     * @return mixed|null
 	 */
 	public static function validateVideoId($video_id)
 	{
@@ -20,37 +21,14 @@ class YoutubeDownloader
 			return $video_id;
 		}
 
-		$url = parse_url($video_id);
-		$video_id = null;
+        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $video_id, $match)) {
+            if (is_array($match) && count($match) > 1){
+                return $match[1];
+            }
+        }
 
-		if ( ! is_array($url) or count($url) === 0 or ! isset($url['query']) or empty($url['query']) )
-		{
-			return null;
-		}
-
-		$parts = explode('&', $url['query']);
-
-		if (is_array($parts) && count($parts) > 0)
-		{
-			foreach ($parts as $p)
-			{
-				$pattern = '/^v\=/';
-
-				if (preg_match($pattern, $p))
-				{
-					$video_id = preg_replace($pattern, '', $p);
-					break;
-				}
-			}
-		}
-
-		if ( ! $video_id )
-		{
-			return null;
-		}
-
-		return $video_id;
-	}
+        return null;
+    }
 
 	public static function clean($string)
 	{
