@@ -210,7 +210,14 @@ class YoutubeDownloader
 
 	public static function createStreamMapFromVideoInfo(array $video_info)
 	{
-		return [explode(',', $video_info['url_encoded_fmt_stream_map']), explode(',', $video_info['adaptive_fmts'])];
+    if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts'])) {
+      return [
+        explode(',', $video_info['url_encoded_fmt_stream_map']),
+        explode(',', $video_info['adaptive_fmts'])
+      ];
+    }
+
+    return [];
 	}
 
 	public static function parseStreamMapToFormats(array $stream_map)
