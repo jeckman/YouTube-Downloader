@@ -5,46 +5,7 @@
     <meta name="keywords"
           content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader"/>
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-        body {
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
-        .form-download {
-            max-width: 300px;
-            padding: 19px 29px 29px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            border: 1px solid #e5e5e5;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-        }
-
-        .form-download .form-download-heading,
-        .form-download .checkbox {
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .form-download input[type="text"] {
-            font-size: 16px;
-            height: auto;
-            margin-bottom: 15px;
-            padding: 7px 9px;
-        }
-
-        .userscript {
-            float: right;
-            margin-top: 5px
-        }
-
-    </style>
+    <link href="css/custom.css" rel="stylesheet">
 </head>
 <body>
 	<form class="form-download" method="get" id="download" action="getvideo.php">
