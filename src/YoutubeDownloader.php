@@ -227,20 +227,23 @@ class YoutubeDownloader
 		foreach ($stream_map as $format)
 		{
 			parse_str($format, $format_info);
-			parse_str(urldecode($format_info['url']), $url_info);
-			if(isset($format_info['bitrate'])) $quality = isset($format_info['quality_label'])?$format_info['quality_label']:round($format_info['bitrate']/1000).'k';
-			else $quality =  isset($format_info['quality'])?$format_info['quality']:'';
 
-			$type = explode(';', $format_info['type']);
-			$avail_formats[] = [
-				'itag' => $format_info['itag'],
-				'quality' => $quality,
-				'type' => $type[0],
-				'url' => $format_info['url'],
-				'expires' => isset($url_info['expire'])?date("G:i:s T", $url_info['expire']):'',
-				'ipbits' => isset($url_info['ipbits'])?$url_info['ipbits']:'',
-				'ip' => isset($url_info['ip'])?$url_info['ip']:'',
-			];
+			if (count($format_info)) {
+        parse_str(urldecode($format_info['url']), $url_info);
+        if(isset($format_info['bitrate'])) $quality = isset($format_info['quality_label'])?$format_info['quality_label']:round($format_info['bitrate']/1000).'k';
+        else $quality =  isset($format_info['quality'])?$format_info['quality']:'';
+
+        $type = explode(';', $format_info['type']);
+        $avail_formats[] = [
+          'itag' => $format_info['itag'],
+          'quality' => $quality,
+          'type' => $type[0],
+          'url' => $format_info['url'],
+          'expires' => isset($url_info['expire'])?date("G:i:s T", $url_info['expire']):'',
+          'ipbits' => isset($url_info['ipbits'])?$url_info['ipbits']:'',
+          'ip' => isset($url_info['ip'])?$url_info['ip']:'',
+        ];
+      }
 		}
 
 		return $avail_formats;
