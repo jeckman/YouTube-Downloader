@@ -252,16 +252,19 @@ class YoutubeDownloader
 	 * @return array
 	 */
 	public static function createStreamMapFromVideoInfo(array $video_info)
-	{
-		if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts'])) {
-		  return [
-			explode(',', $video_info['url_encoded_fmt_stream_map']),
-			explode(',', $video_info['adaptive_fmts'])
-		  ];
-		}
+  {
 
-		return [];
-	}
+    $avail_streams = array(0 => [], 1 => []);
+
+    if (isset($video_info['url_encoded_fmt_stream_map'])) {
+      $avail_streams[0] = explode(',', $video_info['url_encoded_fmt_stream_map']);
+    }
+    if (isset($video_info['adaptive_fmts'])) {
+      $avail_streams[1] = explode(',', $video_info['adaptive_fmts']);
+    }
+
+    return $avail_streams;
+  }
 
 	/**
 	 * @param array $stream_map
