@@ -10,9 +10,10 @@ class YoutubeDownloader
 	/**
 	 * Validates a video ID
 	 *
+	 * This can be an url, embedding url or embedding html code
+	 *
 	 * @param string $video_id
-	 * @param string|null The validated video ID or null, if the video ID is invalid
-     * @return mixed|null
+	 * @return string|null The validated video ID or null, if the video ID is invalid
 	 */
 	public static function validateVideoId($video_id)
 	{
@@ -21,15 +22,23 @@ class YoutubeDownloader
 			return $video_id;
 		}
 
-        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $video_id, $match)) {
-            if (is_array($match) && count($match) > 1){
-                return $match[1];
-            }
-        }
+		if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $video_id, $match))
+		{
+			if (is_array($match) && count($match) > 1)
+			{
+				return $match[1];
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
+	/**
+	 * Cleans a title
+	 *
+	 * @param string $string
+	 * @return string
+	 */
 	public static function clean($string)
 	{
 		// Replaces all spaces with hyphens.
@@ -39,6 +48,12 @@ class YoutubeDownloader
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}
 
+	/**
+	 * Check if a string is from mobile ulr
+	 *
+	 * @param string $string
+	 * @return bool
+	 */
 	public static function isMobileUrl($string)
 	{
 		if (strpos($string, "m."))
@@ -49,11 +64,20 @@ class YoutubeDownloader
 		return false;
 	}
 
+	/**
+	 * @param string $string
+	 * @return string
+	 */
 	public static function treatMobileUrl($string)
 	{
 		return str_replace("m.", "www.");
 	}
 
+	/**
+	 * @param int $bytes
+	 * @param int $precision
+	 * @return string
+	 */
 	public static function formatBytes($bytes, $precision = 2)
 	{
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -65,6 +89,9 @@ class YoutubeDownloader
 		return round($bytes, $precision) . '' . $units[$pow];
 	}
 
+	/**
+	 * @return bool
+	 */
 	public static function is_chrome()
 	{
 		$agent = $_SERVER['HTTP_USER_AGENT'];
@@ -87,7 +114,10 @@ class YoutubeDownloader
 	 * function to get via cUrl
 	 *
 	 * From lastRSS 0.9.1 by Vojtech Semecky, webmaster @ webdot . cz
-	 * See	  http://lastrss.webdot.cz/
+	 * See http://lastrss.webdot.cz/
+	 *
+	 * @param string $url
+	 * @return string
 	 */
 	public static function curlGet($URL)
 	{
@@ -115,6 +145,10 @@ class YoutubeDownloader
 		return $tmp;
 	}
 
+	/**
+	 * @param string $url
+	 * @return string
+	 */
 	public static function get_size($url)
 	{
 		global $config;
@@ -131,8 +165,8 @@ class YoutubeDownloader
 		curl_setopt($my_ch, \CURLOPT_NOBODY, true);
 		curl_setopt($my_ch, \CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($my_ch, \CURLOPT_TIMEOUT, 10);
-    	curl_setopt($my_ch, \CURLOPT_FOLLOWLOCATION, 1);
-    	curl_setopt($my_ch, \CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($my_ch, \CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($my_ch, \CURLOPT_SSL_VERIFYPEER, 0);
 		$r = curl_exec($my_ch);
 
 		foreach (explode("\n", $r) as $header)
@@ -146,7 +180,12 @@ class YoutubeDownloader
 		return '';
 	}
 
-	public static function getDownloadUrlByFormats($avail_formats, $format)
+	/**
+	 * @param array $avail_formats
+	 * @param string $format
+	 * @return bool
+	 */
+	public static function getDownloadUrlByFormats(array $avail_formats, $format)
 	{
 		$target_formats = '';
 
@@ -208,18 +247,26 @@ class YoutubeDownloader
 		return $redirect_url;
 	}
 
+	/**
+	 * @param array $video_info
+	 * @return array
+	 */
 	public static function createStreamMapFromVideoInfo(array $video_info)
 	{
-    if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts'])) {
-      return [
-        explode(',', $video_info['url_encoded_fmt_stream_map']),
-        explode(',', $video_info['adaptive_fmts'])
-      ];
-    }
+		if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts'])) {
+		  return [
+			explode(',', $video_info['url_encoded_fmt_stream_map']),
+			explode(',', $video_info['adaptive_fmts'])
+		  ];
+		}
 
-    return [];
+		return [];
 	}
 
+	/**
+	 * @param array $stream_map
+	 * @return array
+	 */
 	public static function parseStreamMapToFormats(array $stream_map)
 	{
 		$avail_formats = [];
