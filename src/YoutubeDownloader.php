@@ -34,21 +34,6 @@ class YoutubeDownloader
 	}
 
 	/**
-	 * Cleans a title
-	 *
-	 * @param string $string
-	 * @return string
-	 */
-	public static function clean($string)
-	{
-		// Replaces all spaces with hyphens.
-		$string = str_replace(' ', '-', $string);
-
-		// Removes special chars.
-		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-	}
-
-	/**
 	 * Check if a string is from mobile ulr
 	 *
 	 * @param string $string
@@ -253,11 +238,12 @@ class YoutubeDownloader
 	 */
 	public static function createStreamMapFromVideoInfo(array $video_info)
 	{
-		if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts'])) {
-		  return [
-			explode(',', $video_info['url_encoded_fmt_stream_map']),
-			explode(',', $video_info['adaptive_fmts'])
-		  ];
+		if (isset($video_info['url_encoded_fmt_stream_map']) && isset($video_info['adaptive_fmts']))
+		{
+			return [
+				explode(',', $video_info['url_encoded_fmt_stream_map']),
+				explode(',', $video_info['adaptive_fmts'])
+			];
 		}
 
 		return [];
@@ -275,10 +261,18 @@ class YoutubeDownloader
 		{
 			parse_str($format, $format_info);
 			parse_str(urldecode($format_info['url']), $url_info);
-			if(isset($format_info['bitrate'])) $quality = isset($format_info['quality_label'])?$format_info['quality_label']:round($format_info['bitrate']/1000).'k';
-			else $quality =  isset($format_info['quality'])?$format_info['quality']:'';
+
+			if (isset($format_info['bitrate']))
+			{
+				$quality = isset($format_info['quality_label']) ? $format_info['quality_label'] : round($format_info['bitrate']/1000).'k';
+			}
+			else
+			{
+				$quality =  isset($format_info['quality']) ? $format_info['quality'] : '';
+			}
 
 			$type = explode(';', $format_info['type']);
+
 			$avail_formats[] = [
 				'itag' => $format_info['itag'],
 				'quality' => $quality,

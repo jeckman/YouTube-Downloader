@@ -41,26 +41,6 @@ class YoutubeDownloaderTest extends \PHPUnit\Framework\TestCase
 	}
 
 	/**
-	 * @test clean()
-	 * @dataProvider CleanProvider
-	 */
-	public function clean($str, $expected)
-	{
-		$this->assertSame($expected, YoutubeDownloader::clean($str));
-	}
-
-	/**
-	 * dataprovider for clean()
-	 */
-	public function CleanProvider()
-	{
-		return [
-			['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
-			['Как делать бэкапы. Cobian Backup.', '---Cobian-Backup'], // Removes special chars.
-		];
-	}
-
-	/**
 	 * @test isMobileUrl()
 	 * @dataProvider MobileUrlProvider
 	 */
