@@ -11,7 +11,7 @@ class VideoInfoTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function createFromString()
 	{
-		$this->assertInstanceOf(VideoInfo::class, VideoInfo::createFromString(''));
+		$this->assertInstanceOf('YoutubeDownloader\VideoInfo', VideoInfo::createFromString(''));
 	}
 
 	/**
