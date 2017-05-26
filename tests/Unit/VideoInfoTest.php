@@ -1,10 +1,10 @@
 <?php
 
-namespace YoutubeDownloader\Tests;
+namespace YoutubeDownloader\Tests\Unit;
 
 use YoutubeDownloader\VideoInfo;
 
-class VideoInfoTest extends \PHPUnit\Framework\TestCase
+class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
 	 * @test createFromString()

@@ -1,10 +1,10 @@
 <?php
 
-namespace YoutubeDownloader\Tests;
+namespace YoutubeDownloader\Tests\Unit;
 
 use YoutubeDownloader\YoutubeDownloader;
 
-class YoutubeDownloaderTest extends \PHPUnit\Framework\TestCase
+class YoutubeDownloaderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
 	 * @test validateVideoId()

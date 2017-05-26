@@ -1,10 +1,10 @@
 <?php
 
-namespace YoutubeDownloader\Tests;
+namespace YoutubeDownloader\Tests\Unit;
 
 use YoutubeDownloader\StreamMap;
 
-class StreamMapTest extends \PHPUnit\Framework\TestCase
+class StreamMapTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
 	 * @test createFromVideoInfo()
