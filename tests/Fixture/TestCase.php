@@ -24,7 +24,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 			->disableOriginalConstructor()
 			->disableOriginalClone()
 			->disableArgumentCloning()
-			->disallowMockingUnknownTypes()
 			->getMock();
 	}
 }
