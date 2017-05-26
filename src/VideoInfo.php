@@ -119,6 +119,12 @@ namespace YoutubeDownloader;
  * - 'swf_player_response',
  * - 'author',
  * - 'avg_rating',
+ *
+ * Possible array keys in an error response could be:
+ * - 'status',
+ * - 'errorcode',
+ * - 'reason',
+ * - 'errordetail',
  */
 class VideoInfo
 {
@@ -138,10 +144,11 @@ class VideoInfo
 	private $data = [];
 
 	/**
-	 * Set the necessary keys 
+	 * Set the necessary keys
 	 */
 	private $allowed_keys = [
 		'status',
+		'reason',
 		'thumbnail_url',
 		'title',
 		'url_encoded_fmt_stream_map',
@@ -177,6 +184,16 @@ class VideoInfo
 	public function getStatus()
 	{
 		return $this->data['status'];
+	}
+
+	/**
+	 * Get the error reason
+	 *
+	 * @return string
+	 */
+	public function getErrorReason()
+	{
+		return $this->data['reason'];
 	}
 
 	/**

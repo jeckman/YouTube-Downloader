@@ -25,6 +25,16 @@ class VideoInfoTest extends \PHPUnit\Framework\TestCase
 	}
 
 	/**
+	 * @test getErrorReason()
+	 */
+	public function getErrorReason()
+	{
+		$video_info = VideoInfo::createFromString('reason=This video is unavailable.');
+
+		$this->assertSame('This video is unavailable.', $video_info->getErrorReason());
+	}
+
+	/**
 	 * @test getThumbnailUrl()
 	 */
 	public function getThumbnailUrl()

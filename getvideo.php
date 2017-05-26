@@ -126,7 +126,14 @@ $video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string)
 
 if ($video_info->getStatus() == 'fail')
 {
-	echo '<p>Error in video ID</p>';
+	echo '<p>Error in video ID: ' . $video_info->getErrorReason() . '</p>';
+
+	if ($config['debug'])
+	{
+		echo '<pre>';
+		var_dump($video_info);
+		echo '</pre>';
+	}
 	exit();
 }
 
