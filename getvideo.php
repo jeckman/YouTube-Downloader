@@ -166,13 +166,7 @@ if ( $video_info->getStreamMapString() === null )
 	echo '</pre>';
 }
 
-/* Now get the url_encoded_fmt_stream_map, and explode on comma */
-$video_info_array = [
-	'url_encoded_fmt_stream_map' => $video_info->getStreamMapString(),
-	'adaptive_fmts' => $video_info->getAdaptiveFormatsString(),
-];
-
-$stream_map = \YoutubeDownloader\YoutubeDownloader::createStreamMapFromVideoInfo($video_info_array);
+$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 
 if ($config['debug'])
 {
@@ -188,14 +182,14 @@ if ($config['debug'])
 	echo '</pre>';
 }
 
-if (count($stream_map) == 0)
+if (count($stream_map->getStreams()) == 0)
 {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
 }
 
 /* create an array of available download formats */
-$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[0]);
+$avail_formats = $stream_map->getStreams();
 
 if ($config['debug'])
 {
@@ -241,11 +235,10 @@ if ($my_type == 'Download')
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
-	echo '</ul> <p  align="center">Separated video and audio format: </p><ul>';
 
-	$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[1]);
+	echo '</ul><p align="center">Separated video and audio format:</p><ul>';
 
-	foreach ($avail_formats as $avail_format)
+	foreach ($stream_map->getFormats() as $avail_format)
 	{
 		echo '<li>';
 
@@ -276,6 +269,7 @@ if ($my_type == 'Download')
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
+
 	echo '</ul>';
 
 	echo '<small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
