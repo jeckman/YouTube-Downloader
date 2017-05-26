@@ -1,10 +1,10 @@
 <?php
 
-namespace YoutubeDownloader\Tests;
+namespace YoutubeDownloader\Tests\Unit;
 
 use YoutubeDownloader\YoutubeDownloader;
 
-class YoutubeDownloaderTest extends \PHPUnit\Framework\TestCase
+class YoutubeDownloaderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
 	 * @test validateVideoId()
@@ -37,26 +37,6 @@ class YoutubeDownloaderTest extends \PHPUnit\Framework\TestCase
 			['http://www.youtube.com/v/dQw4w9WgXcQ?fs=1&hl=en_US', $id],
 			['https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', $id],
 			['<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>', $id],
-		];
-	}
-
-	/**
-	 * @test clean()
-	 * @dataProvider CleanProvider
-	 */
-	public function clean($str, $expected)
-	{
-		$this->assertSame($expected, YoutubeDownloader::clean($str));
-	}
-
-	/**
-	 * dataprovider for clean()
-	 */
-	public function CleanProvider()
-	{
-		return [
-			['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
-			['Как делать бэкапы. Cobian Backup.', '---Cobian-Backup'], // Removes special chars.
 		];
 	}
 

@@ -23,7 +23,7 @@
             "YoutubeDownloader\\": "src/"
         }
     },
-    "autoload-de": {
+    "autoload-dev": {
         "psr-4": {
             "YoutubeDownloader\\Tests\\": "tests/"
         }

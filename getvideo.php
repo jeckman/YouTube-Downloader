@@ -116,19 +116,24 @@ if ($my_type == 'Download')
 } // end of if for type=Download
 
 /* First get the video info page for this video id */
-//$my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
-//video details fix *1
-$my_video_info = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
-$my_video_info = \YoutubeDownloader\YoutubeDownloader::curlGet($my_video_info);
+// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
+// thanks to amit kumar @ bloggertale.com for sharing the fix
+$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
+$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url);
 
 /* TODO: Check return from curl for status code */
+$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
 
-parse_str($my_video_info, $video_info);
-
-/** @var $status */
-if ($video_info['status'] == 'fail')
+if ($video_info->getStatus() == 'fail')
 {
-	echo '<p>Error in video ID</p>';
+	echo '<p>Error in video ID: ' . $video_info->getErrorReason() . '</p>';
+
+	if ($config['debug'])
+	{
+		echo '<pre>';
+		var_dump($video_info);
+		echo '</pre>';
+	}
 	exit();
 }
 
@@ -140,27 +145,28 @@ switch ($config['ThumbnailImageMode'])
 		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="getimage.php?videoid=' . $my_id . '" border="0" hspace="2" vspace="2"></a>';
 		break;
 	case 1:
-		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="' . $video_info['thumbnail_url'] . '" border="0" hspace="2" vspace="2"></a>';
+		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="' . $video_info->getThumbnailUrl() . '" border="0" hspace="2" vspace="2"></a>';
 		break;
 	case 0:
 	default:  // nothing
 }
 
-echo '<p>' . $video_info['title'] . '</p>';
+echo '<p>' . $video_info->getTitle() . '</p>';
 echo '</div>';
 
-$my_title = $video_info['title'];
-$cleanedtitle = \YoutubeDownloader\YoutubeDownloader::clean($video_info['title']);
+$my_title = $video_info->getTitle();
+$cleanedtitle = $video_info->getCleanedTitle();
 
-if ( ! isset($video_info['url_encoded_fmt_stream_map']) )
+if ( $video_info->getStreamMapString() === null )
 {
 	echo '<p>No encoded format stream found.</p>';
 	echo '<p>Here is what we got from YouTube:</p>';
-	echo $my_video_info;
+	echo '<pre>';
+	var_dump($video_info_string);
+	echo '</pre>';
 }
 
-/* Now get the url_encoded_fmt_stream_map, and explode on comma */
-$stream_map = \YoutubeDownloader\YoutubeDownloader::createStreamMapFromVideoInfo($video_info);
+$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 
 if ($config['debug'])
 {
@@ -172,18 +178,18 @@ if ($config['debug'])
 	}
 
 	echo '<pre>';
-	print_r($stream_map);
+	var_dump($stream_map);
 	echo '</pre>';
 }
 
-if (count($stream_map) == 0)
+if (count($stream_map->getStreams()) == 0)
 {
 	echo '<p>No format stream map found - was the video id correct?</p>';
 	exit;
 }
 
 /* create an array of available download formats */
-$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[0]);
+$avail_formats = $stream_map->getStreams();
 
 if ($config['debug'])
 {
@@ -229,11 +235,10 @@ if ($my_type == 'Download')
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
-	echo '</ul> <p  align="center">Separated video and audio format: </p><ul>';
 
-	$avail_formats = \YoutubeDownloader\YoutubeDownloader::parseStreamMapToFormats($stream_map[1]);
+	echo '</ul><p align="center">Separated video and audio format:</p><ul>';
 
-	foreach ($avail_formats as $avail_format)
+	foreach ($stream_map->getFormats() as $avail_format)
 	{
 		echo '<li>';
 
@@ -264,6 +269,7 @@ if ($my_type == 'Download')
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
+
 	echo '</ul>';
 
 	echo '<small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
@@ -299,4 +305,3 @@ else
 	}
 
 } // end of else for type not being Download
-// *1 = thanks to amit kumar @ bloggertale.com for sharing the fix
