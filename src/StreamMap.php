@@ -49,6 +49,11 @@ class StreamMap
 	{
 		$formats = [];
 
+		if (count($streams) === 1 and $streams[0] === '' )
+		{
+			return $formats;
+		}
+
 		foreach ($streams as $format)
 		{
 			parse_str($format, $format_info);
