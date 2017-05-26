@@ -252,19 +252,19 @@ class YoutubeDownloader
 	 * @return array
 	 */
 	public static function createStreamMapFromVideoInfo(array $video_info)
-  {
+	{
 
-    $avail_streams = array(0 => [], 1 => []);
+		$avail_streams = array(0 => [], 1 => []);
 
-    if (isset($video_info['url_encoded_fmt_stream_map'])) {
-      $avail_streams[0] = explode(',', $video_info['url_encoded_fmt_stream_map']);
-    }
-    if (isset($video_info['adaptive_fmts'])) {
-      $avail_streams[1] = explode(',', $video_info['adaptive_fmts']);
-    }
+		if (isset($video_info['url_encoded_fmt_stream_map'])) {
+			$avail_streams[0] = explode(',', $video_info['url_encoded_fmt_stream_map']);
+		}
+		if (isset($video_info['adaptive_fmts'])) {
+			$avail_streams[1] = explode(',', $video_info['adaptive_fmts']);
+		}
 
-    return $avail_streams;
-  }
+		return $avail_streams;
+	}
 
 	/**
 	 * @param array $stream_map
@@ -274,26 +274,25 @@ class YoutubeDownloader
 	{
 		$avail_formats = [];
 
-		foreach ($stream_map as $format)
-		{
+		foreach ($stream_map as $format) {
 			parse_str($format, $format_info);
 
 			if (count($format_info)) {
-        parse_str(urldecode($format_info['url']), $url_info);
-        if(isset($format_info['bitrate'])) $quality = isset($format_info['quality_label'])?$format_info['quality_label']:round($format_info['bitrate']/1000).'k';
-        else $quality =  isset($format_info['quality'])?$format_info['quality']:'';
+				parse_str(urldecode($format_info['url']), $url_info);
+				if (isset($format_info['bitrate'])) $quality = isset($format_info['quality_label']) ? $format_info['quality_label'] : round($format_info['bitrate'] / 1000) . 'k';
+				else $quality = isset($format_info['quality']) ? $format_info['quality'] : '';
 
-        $type = explode(';', $format_info['type']);
-        $avail_formats[] = [
-          'itag' => $format_info['itag'],
-          'quality' => $quality,
-          'type' => $type[0],
-          'url' => $format_info['url'],
-          'expires' => isset($url_info['expire'])?date("G:i:s T", $url_info['expire']):'',
-          'ipbits' => isset($url_info['ipbits'])?$url_info['ipbits']:'',
-          'ip' => isset($url_info['ip'])?$url_info['ip']:'',
-        ];
-      }
+				$type = explode(';', $format_info['type']);
+				$avail_formats[] = [
+					'itag' => $format_info['itag'],
+					'quality' => $quality,
+					'type' => $type[0],
+					'url' => $format_info['url'],
+					'expires' => isset($url_info['expire']) ? date("G:i:s T", $url_info['expire']) : '',
+					'ipbits' => isset($url_info['ipbits']) ? $url_info['ipbits'] : '',
+					'ip' => isset($url_info['ip']) ? $url_info['ip'] : '',
+				];
+			}
 		}
 
 		return $avail_formats;
