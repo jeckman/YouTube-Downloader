@@ -223,11 +223,8 @@ class VideoInfo
 	 */
 	public function getCleanedTitle()
 	{
-		// Replaces all spaces with hyphens.
-		$string = str_replace(' ', '-', $this->getTitle());
-
-		// Removes special chars.
-		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+		// Removes non-alphanumeric and unicode character.
+	        return preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
 	}
 
 	/**
