@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name          	Youtube Downloader
+// @name            Youtube Downloader
 // @description     Adds a link on youtube pages to download the video via proxy server.
 //
-// @author			Sepehr Lajevardi <me@sepehr.ws>
+// @author          Sepehr Lajevardi <me@sepehr.ws> modded by ewwink
 // @namespace       http://github.com/sepehr
 //
-// @version         1.0
+// @version         1.1
 // @license         GPLv3 - http://www.gnu.org/licenses/gpl-3.0.txt
 // @copyright       Copyright (C) 2013, by Sepehr Lajevardi <me@sepehr.ws>
 //
 // @include         http*://*.youtube.com/*
-//
+// @grant           none
 // ==/UserScript==
 
 /**
@@ -31,7 +31,7 @@
 // ------------------------------------------------------------------------
 // Helpers
 // ------------------------------------------------------------------------
-window.location.getParam = function (name) {
+window.location.getParam = function(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
 
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -43,7 +43,6 @@ window.location.getParam = function (name) {
 
     return decodeURIComponent(result[1].replace(/\+/g, ' '));
 };
-
 // ------------------------------------------------------------------------
 
 /**
@@ -52,7 +51,8 @@ window.location.getParam = function (name) {
  * @see http://wiki.greasespot.net/API_reference
  * @see http://wiki.greasespot.net/Metadata_Block
  */
-(function () {
+
+function YoutubeDownloader() {
 
     var wrapper = document.getElementById('watch7-subscription-container'),
         btn = document.createElement('a'),
@@ -88,4 +88,18 @@ window.location.getParam = function (name) {
         style.innerHTML = '#watch7-subscription-container .yt-uix-button-subscription-container { float: left !important; margin-left: 10px !important; }';
         head.appendChild(style);
     }
-})();
+}
+
+var fireOnHashChangesToo = true;
+var oldWatchCount = document.getElementsByClassName('watch-view-count')[0].innerHTML;
+var pageURLCheckTimer = setInterval(function() {
+    var newWatchCount = document.getElementsByClassName('watch-view-count')[0].innerHTML;
+    if (this.lastPathStr !== location.pathname || this.lastQueryStr !== location.search || (fireOnHashChangesToo && this.lastHashStr !== location.hash || oldWatchCount != newWatchCount)) {
+        oldWatchCount = newWatchCount;
+        this.lastPathStr = location.pathname;
+        this.lastQueryStr = location.search;
+        this.lastHashStr = location.hash;
+        console.log('page changed');
+        YoutubeDownloader();
+    }
+}, 500);
