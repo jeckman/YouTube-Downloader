@@ -1,9 +1,9 @@
 # YouTube Downloader
 
 [![Author](http://img.shields.io/badge/author-jeckman-blue.svg)](https://github.com/jeckman)
-[![Source Code](http://img.shields.io/badge/source-jeckman/YouTube-Downloader-blue.svg)](https://github.com/jeckman/YouTube-Downloader)
-[![Software License][https://img.shields.io/badge/license-GPL2-brightgreen.svg]](LICENSE)
-[![Build Status][https://img.shields.io/travis/jeckman/YouTube-Downloader/master.svg]][https://travis-ci.org/jeckman/YouTube-Downloader]
+[![Source Code](http://img.shields.io/badge/source-jeckman/YouTubeDownloader-blue.svg)](https://github.com/jeckman/YouTube-Downloader)
+[![Software License](https://img.shields.io/badge/license-GPL2-brightgreen.svg)](LICENSE)
+[![Build Status](https://img.shields.io/travis/jeckman/YouTube-Downloader/master.svg)](https://travis-ci.org/jeckman/YouTube-Downloader)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jeckman/YouTube-Downloader)
 
 PHP Scripts to download videos from YouTube.  
