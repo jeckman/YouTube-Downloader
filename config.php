@@ -10,6 +10,28 @@ $config['ThumbnailImageMode'] = 2;    // show thumbnail image by proxy from this
 #$config['VideoLinkMode']='proxy'; // show only by proxy download link
 $config['VideoLinkMode'] = 'both'; // show both direct and by proxy download links
 
+/**********|| MP3 Download Link Configuration || 
+*
+* Basic method for converting Youtube Video or Audio to .mp3
+* require server processing for running ffmpeg and aria2, also you may need to edit php "max_execution_time"
+*
+* FFMPEG for converting video or audio to .mp3
+* Install: https://ffmpeg.org/download.html
+*
+* ARIA2 command line downloader with multi connection, using single connection (ffmpeg or curl) server download from youtube limited to 56KBps
+* install: https://github.com/aria2/aria2/releases
+*
+***********************************************/
+$config['MP3Enable'] = false; // enable or disable media conversion and download to mp3
+$config['MP3ConvertVideo'] = false; // 'false' download adaptive audio only to save bandwidth.
+                                    // 'true' failover to video download if adaptive audio format not available
+$config['MP3Quality'] = '128k'; // 'number(k)' (64k, 80k, 96k, 112k, 128k, 160k, 192k) or 'high': bitrate quality of converted mp3
+                                // set to 'high' to get and set highest quality
+                                // info: highest Youtube audio bitrate is 160k, higher than that is maybe useless
+$config['MP3TempDir'] = 'mp3temp'; // temporary download location for media  
+$config['ffmpegPath'] = 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe'; // ffmpeg location path
+$config['aria2Path'] = 'C:\cygwin\bin\aria2c.exe'; // aria2 location path, 
+
 /**********|| features ||***************/
 $config['feature']['browserExtensions'] = true; // show links for install browser extensions? true or false
 
