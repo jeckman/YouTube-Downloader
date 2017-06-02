@@ -1,5 +1,4 @@
 <?php
-
 include_once('common.php');
 
 // Check download token
@@ -17,7 +16,53 @@ $name = urldecode($_GET['title']) . '.' . $ext;
 // Fetch and serve
 if ($url)
 {
-	$size = \YoutubeDownloader\YoutubeDownloader::get_size($url);
+	global $config;
+	// prevent unauthorized download
+	if($config['VideoLinkMode'] === "direct" and !isset($_GET['getmp3']))
+	{
+		exit('VideoLinkMode: proxy download not enabled');
+	}
+	if($config['VideoLinkMode'] !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
+	{
+		exit("unauthorized access (^_^)");
+	}
+	
+	// check if request for mp3 download
+	if(isset($_GET['getmp3']))		
+	{
+		if($config['MP3Enable'])
+		{
+			$mp3_info = array();
+			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url);	
+			if(isset($mp3_info['mp3']))
+			{
+				$url = $mp3_info['mp3'];
+			}
+			else
+			{
+				if($config['debug'] && isset($mp3_info['debugMessage']))
+				{
+					var_dump($mp3_info['debugMessage']);
+				}
+				exit($mp3_info['message']);	
+			}
+		}
+		else
+		{
+			exit("Option for MP3 download is not enabled.");	
+		}
+	}
+	
+	
+	if(isset($mp3_info['mp3']))
+	{
+		$size = filesize($mp3_info['mp3']);
+	}
+	else
+	{
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($url);	
+	}
+	
 	// Generate the server headers
 	header('Content-Type: "' . $mime . '"');
 	header('Content-Disposition: attachment; filename="' . $name . '"');

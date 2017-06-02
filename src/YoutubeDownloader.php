@@ -231,4 +231,81 @@ class YoutubeDownloader
 
 		return $redirect_url;
 	}
+	
+	public static function getDownloadMP3($video_id)
+	{
+		global $config;
+		// generate new url, we can re-use previously generated link and pass it to "token" parameter but it too dangerous to use it with exec()
+		// TODO: Background conversion, Ajax and Caching
+		// @ewwink
+		$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $video_id. '&asv=3&el=detailpage&hl=en_US';
+		$video_info_string = self::curlGet($video_info_url);
+		$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
+		$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
+		$audio_quality = 0;
+		$media_url = "";
+		$media_type = "";
+
+		$formats = $stream_map->getFormats();
+		// find audio with highest quality
+		foreach($formats as $format)
+		{
+			if(strpos($format['type'], 'audio') !== false && intval($format['quality']) > intval($audio_quality))
+			{
+				$audio_quality = $format['quality'];
+				$media_url = $format['url'];
+				$media_type = str_replace("audio/", "", $format['type']);
+			}
+		}
+		
+		if(empty($media_url))
+		{	
+			if($config['MP3ConvertVideo'] === true )
+			{
+				// some video does not have adaptive or dash format, downloading video instead
+				$formats = $stream_map->getStreams();
+				$media_url = $formats[0]['url'];
+				$media_type = str_replace("audio/", "", $formats[0]['type']);
+			}
+			else
+			{
+				return array("status" => "failed",
+						 "message" => "Failed, adaptive audio format not available, try to set <strong>\$config['MP3ConvertVideo'] = true;</strong>");
+			}
+		}
+
+		$mp3dir = realpath($config['MP3TempDir']);
+		$mediaName = $_GET['title'] . '.' . $media_type;
+		// -x4: set 4 connection for each download
+		$cmd = '"' . $config['aria2Path'] . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
+		exec($cmd, $output);
+
+		if(strpos(implode(" ", $output), "download completed") !== FALSE)
+		{
+			// Download media from youtube success
+			$mp3Name = $_GET['title'] . '.mp3';
+			if($config['MP3Quality'] !== "high" || $audio_quality === 0)
+			{
+				$audio_quality = intval($config['MP3Quality']) > intval($audio_quality) ? $audio_quality : $config['MP3Quality'];
+			}
+			
+			$cmd = '"' . $config['ffmpegPath'] . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
+			
+			exec($cmd, $output);
+			if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3dir/$mp3Name"))
+			{
+				// Convert media to .mp3 success
+				return array("status" => "success",
+								"message" => "Convert media to .mp3 success",
+								"mp3" => "$mp3dir/$mp3Name",
+								"debugMessage" => $output);
+			}
+		}
+		else
+		{
+			return array("status" => "failed",
+							"message" => "Download media url from youtube failed.",
+							"debugMessage" => $output);
+		}
+	}
 }

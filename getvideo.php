@@ -235,7 +235,12 @@ if ($my_type == 'Download')
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
-
+	if($config['MP3Enable'])
+	{
+		echo '</ul><p align="center">Convert and Download to .mp3</p><ul>';
+		printf('<li><strong><a href="download.php?mime=audio/mp3&token=%s&title=%s&getmp3=true" class="mime">audio/mp3</a> (quality: %s)</strong></li>',
+			base64_encode($my_id), $cleanedtitle, $config['MP3Quality']);
+	}
 	echo '</ul><p align="center">Separated video and audio format:</p><ul>';
 
 	foreach ($stream_map->getFormats() as $avail_format)
