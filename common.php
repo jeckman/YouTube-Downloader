@@ -38,19 +38,23 @@ spl_autoload_register(function ($class)
 	}
 });
 
-$createConfig = function()
-{
-	$ds = DIRECTORY_SEPARATOR;
+/**
+ * Closure to create a config class
+ */
+$config = call_user_func_array(
+	function($custom = 'custom')
+	{
+		$ds = DIRECTORY_SEPARATOR;
 
-	$config_dir = realpath(__DIR__) . $ds . 'config' . $ds;
+		$config_dir = realpath(__DIR__) . $ds . 'config' . $ds;
 
-	return \YoutubeDownloader\Config::createFromFiles(
-		$config_dir . 'default.php',
-		$config_dir . 'custom.php'
-	);
-};
-
-$config = $createConfig();
+		return \YoutubeDownloader\Config::createFromFiles(
+			$config_dir . 'default.php',
+			$config_dir . $custom . '.php'
+		);
+	},
+	[getenv('CONFIG_ENV') ?: 'custom']
+);
 
 // Show all errors on debug
 if ( $config->get('debug') === true )
