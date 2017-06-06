@@ -279,7 +279,7 @@ if ($my_type == 'Download')
 
 	echo '<small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
-	if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config->get('feature')['browserExtensions'] == true )
+	if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config->get('showBrowserExtensions') == true )
 	{
 		echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 	}
