@@ -72,7 +72,7 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	{
 		return [
 			['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
-			['Как делать бэкапы. Cobian Backup.', '---Cobian-Backup'], // Removes special chars.
+			['Как делать бэкапы. Cobian Backup.', 'Cobian-Backup'], // Removes special chars.
 		];
 	}
 
