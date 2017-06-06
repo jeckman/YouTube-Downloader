@@ -119,7 +119,7 @@ if ($my_type == 'Download')
 // $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 // thanks to amit kumar @ bloggertale.com for sharing the fix
 $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
-$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url);
+$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url, $config);
 
 /* TODO: Check return from curl for status code */
 $video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
@@ -173,7 +173,7 @@ if ($config->get('debug'))
 	if ($config->get('multipleIPs') === true)
 	{
 		echo '<pre>Outgoing IP: ';
-		print_r($outgoing_ip);
+		print_r(\YoutubeDownloader\StreamMap::getRandomIp($config));
 		echo '</pre>';
 	}
 
@@ -229,7 +229,7 @@ if ($my_type == 'Download')
 				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
 		}
 
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
 
 		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
@@ -268,7 +268,7 @@ if ($my_type == 'Download')
 				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
 		}
 
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
 
 		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .

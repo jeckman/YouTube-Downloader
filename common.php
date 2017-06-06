@@ -63,15 +63,4 @@ if ( $config->get('debug') === true )
 	ini_set('display_errors', 1);
 }
 
-/*
- * If multipleIPs mode is enabled, select randomly one IP from
- * the config IPs array and put it in $outgoing_ip variable.
- */
-if ($config->get('multipleIPs') === true)
-{
-	// randomly select an ip from the $config->get('IPs') array
-	$ips = $config->get('IPs');
-	$outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
-}
-
 date_default_timezone_set($config->get('default_timezone'));

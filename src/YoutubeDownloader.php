@@ -8,6 +8,38 @@ namespace YoutubeDownloader;
 class YoutubeDownloader
 {
 	/**
+	 * @var string random IP
+	 */
+	private static $outgoing_ip;
+
+	/**
+	 * Select random IP from config
+	 *
+	 * If multipleIPs mode is enabled, select randomly one IP from
+	 * the config IPs array and put it in $outgoing_ip variable.
+	 *
+	 * @param Config $config
+	 * @return string|null The IP or null
+	 */
+	public static function getRandomIp(Config $config)
+	{
+		if ($config->get('multipleIPs') !== true)
+		{
+			return null;
+		}
+
+		if (static::$outgoing_ip === null)
+		{
+			// randomly select an ip from the $config->get('IPs') array
+			$ips = $config->get('IPs');
+			static::$outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
+		}
+
+		return static::$outgoing_ip;
+	}
+
+
+	/**
 	 * Validates a video ID
 	 *
 	 * This can be an url, embedding url or embedding html code
@@ -102,11 +134,11 @@ class YoutubeDownloader
 	 * See http://lastrss.webdot.cz/
 	 *
 	 * @param string $url
+	 * @param Config $config
 	 * @return string
 	 */
-	public static function curlGet($URL)
+	public static function curlGet($url, Config $config)
 	{
-		global $config; // get global $config to know if $config->get('multipleIPs') is true
 
 		$ch = curl_init();
 		$timeout = 3;
@@ -114,11 +146,10 @@ class YoutubeDownloader
 		if ($config->get('multipleIPs') === true)
 		{
 			// if $config->get('multipleIPs') is true set outgoing ip to $outgoing_ip
-			global $outgoing_ip;
-			curl_setopt($ch, CURLOPT_INTERFACE, $outgoing_ip);
+			curl_setopt($ch, CURLOPT_INTERFACE, static::getRandomIp($config));
 		}
 
-		curl_setopt($ch, CURLOPT_URL, $URL);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 
@@ -132,18 +163,16 @@ class YoutubeDownloader
 
 	/**
 	 * @param string $url
+	 * @param Config $config
 	 * @return string
 	 */
-	public static function get_size($url)
+	public static function get_size($url, Config $config)
 	{
-		global $config;
-
 		$my_ch = curl_init($url);
 
 		if ($config->get('multipleIPs') === true)
 		{
-			global $outgoing_ip;
-			curl_setopt($my_ch, \CURLOPT_INTERFACE, $outgoing_ip);
+			curl_setopt($my_ch, \CURLOPT_INTERFACE, static::getRandomIp($config));
 		}
 
 		curl_setopt($my_ch, \CURLOPT_HEADER, true);
@@ -232,14 +261,13 @@ class YoutubeDownloader
 		return $redirect_url;
 	}
 
-	public static function getDownloadMP3($video_id)
+	public static function getDownloadMP3($video_id, Config $config)
 	{
-		global $config;
 		// generate new url, we can re-use previously generated link and pass it to "token" parameter but it too dangerous to use it with exec()
 		// TODO: Background conversion, Ajax and Caching
 		// @ewwink
 		$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $video_id. '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = self::curlGet($video_info_url);
+		$video_info_string = self::curlGet($video_info_url, $config);
 		$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
 		$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 		$audio_quality = 0;

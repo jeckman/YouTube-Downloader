@@ -6,7 +6,6 @@
  * Instead copy this file to `config/custom.php` and make your changes there!
  */
 
-
 return [
     /**
      * Thumbnail Image Configuration

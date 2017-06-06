@@ -26,14 +26,14 @@ if ($url)
 	{
 		exit("unauthorized access (^_^)");
 	}
-	
+
 	// check if request for mp3 download
-	if(isset($_GET['getmp3']))		
+	if(isset($_GET['getmp3']))
 	{
 		if($config->get('MP3Enable'))
 		{
 			$mp3_info = array();
-			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url);	
+			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url, $config);
 			if(isset($mp3_info['mp3']))
 			{
 				$url = $mp3_info['mp3'];
@@ -44,25 +44,25 @@ if ($url)
 				{
 					var_dump($mp3_info['debugMessage']);
 				}
-				exit($mp3_info['message']);	
+				exit($mp3_info['message']);
 			}
 		}
 		else
 		{
-			exit("Option for MP3 download is not enabled.");	
+			exit("Option for MP3 download is not enabled.");
 		}
 	}
-	
-	
+
+
 	if(isset($mp3_info['mp3']))
 	{
 		$size = filesize($mp3_info['mp3']);
 	}
 	else
 	{
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($url);	
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($url, $config);
 	}
-	
+
 	// Generate the server headers
 	header('Content-Type: "' . $mime . '"');
 	header('Content-Disposition: attachment; filename="' . $name . '"');
