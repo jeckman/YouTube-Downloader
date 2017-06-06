@@ -224,7 +224,8 @@ class VideoInfo
 	public function getCleanedTitle()
 	{
 		// Removes non-alphanumeric and unicode character.
-	        return preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
+	    $title = preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
+		return trim($title, "-");
 	}
 
 	/**
