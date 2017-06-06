@@ -38,10 +38,22 @@ spl_autoload_register(function ($class)
 	}
 });
 
-include_once('config.php');
+$createConfig = function()
+{
+	$ds = DIRECTORY_SEPARATOR;
+
+	$config_dir = realpath(__DIR__) . $ds . 'config' . $ds;
+
+	return \YoutubeDownloader\Config::createFromFiles(
+		$config_dir . 'default.php',
+		$config_dir . 'custom.php'
+	);
+};
+
+$config = $createConfig();
 
 // Show all errors on debug
-if ( $config['debug'] )
+if ( $config->get('debug') === true )
 {
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
@@ -51,10 +63,11 @@ if ( $config['debug'] )
  * If multipleIPs mode is enabled, select randomly one IP from
  * the config IPs array and put it in $outgoing_ip variable.
  */
-if (isset($config['multipleIPs']) && $config['multipleIPs'] === true)
+if ($config->get('multipleIPs') === true)
 {
-	// randomly select an ip from the $config['IPs'] array
-	$outgoing_ip = $config['IPs'][mt_rand(0, count($config['IPs']) - 1)];
+	// randomly select an ip from the $config->get('IPs') array
+	$ips = $config->get('IPs');
+	$outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
 }
 
-date_default_timezone_set($config['default_timezone']);
+date_default_timezone_set($config->get('default_timezone'));

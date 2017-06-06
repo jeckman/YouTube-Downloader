@@ -106,14 +106,14 @@ class YoutubeDownloader
 	 */
 	public static function curlGet($URL)
 	{
-		global $config; // get global $config to know if $config['multipleIPs'] is true
+		global $config; // get global $config to know if $config->get('multipleIPs') is true
 
 		$ch = curl_init();
 		$timeout = 3;
 
-		if ($config['multipleIPs'] === true)
+		if ($config->get('multipleIPs') === true)
 		{
-			// if $config['multipleIPs'] is true set outgoing ip to $outgoing_ip
+			// if $config->get('multipleIPs') is true set outgoing ip to $outgoing_ip
 			global $outgoing_ip;
 			curl_setopt($ch, CURLOPT_INTERFACE, $outgoing_ip);
 		}
@@ -140,7 +140,7 @@ class YoutubeDownloader
 
 		$my_ch = curl_init($url);
 
-		if ($config['multipleIPs'] === true)
+		if ($config->get('multipleIPs') === true)
 		{
 			global $outgoing_ip;
 			curl_setopt($my_ch, \CURLOPT_INTERFACE, $outgoing_ip);
@@ -231,7 +231,7 @@ class YoutubeDownloader
 
 		return $redirect_url;
 	}
-	
+
 	public static function getDownloadMP3($video_id)
 	{
 		global $config;
@@ -257,10 +257,10 @@ class YoutubeDownloader
 				$media_type = str_replace("audio/", "", $format['type']);
 			}
 		}
-		
+
 		if(empty($media_url))
-		{	
-			if($config['MP3ConvertVideo'] === true )
+		{
+			if($config->get('MP3ConvertVideo') === true )
 			{
 				// some video does not have adaptive or dash format, downloading video instead
 				$formats = $stream_map->getStreams();
@@ -270,27 +270,27 @@ class YoutubeDownloader
 			else
 			{
 				return array("status" => "failed",
-						 "message" => "Failed, adaptive audio format not available, try to set <strong>\$config['MP3ConvertVideo'] = true;</strong>");
+					"message" => "Failed, adaptive audio format not available, try to set <strong>\$config->get('MP3ConvertVideo') = true;</strong>");
 			}
 		}
 
-		$mp3dir = realpath($config['MP3TempDir']);
+		$mp3dir = realpath($config->get('MP3TempDir'));
 		$mediaName = $_GET['title'] . '.' . $media_type;
 		// -x4: set 4 connection for each download
-		$cmd = '"' . $config['aria2Path'] . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
+		$cmd = '"' . $config->get('aria2Path') . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
 		exec($cmd, $output);
 
 		if(strpos(implode(" ", $output), "download completed") !== FALSE)
 		{
 			// Download media from youtube success
 			$mp3Name = $_GET['title'] . '.mp3';
-			if($config['MP3Quality'] !== "high" || $audio_quality === 0)
+			if($config->get('MP3Quality') !== "high" || $audio_quality === 0)
 			{
-				$audio_quality = intval($config['MP3Quality']) > intval($audio_quality) ? $audio_quality : $config['MP3Quality'];
+				$audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
 			}
-			
-			$cmd = '"' . $config['ffmpegPath'] . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
-			
+
+			$cmd = '"' . $config->get('ffmpegPath') . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
+
 			exec($cmd, $output);
 			if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3dir/$mp3Name"))
 			{

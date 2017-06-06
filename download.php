@@ -18,11 +18,11 @@ if ($url)
 {
 	global $config;
 	// prevent unauthorized download
-	if($config['VideoLinkMode'] === "direct" and !isset($_GET['getmp3']))
+	if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
 	{
 		exit('VideoLinkMode: proxy download not enabled');
 	}
-	if($config['VideoLinkMode'] !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
+	if($config->get('VideoLinkMode') !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
 	{
 		exit("unauthorized access (^_^)");
 	}
@@ -30,7 +30,7 @@ if ($url)
 	// check if request for mp3 download
 	if(isset($_GET['getmp3']))		
 	{
-		if($config['MP3Enable'])
+		if($config->get('MP3Enable'))
 		{
 			$mp3_info = array();
 			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url);	
@@ -40,7 +40,7 @@ if ($url)
 			}
 			else
 			{
-				if($config['debug'] && isset($mp3_info['debugMessage']))
+				if($config->get('debug') && isset($mp3_info['debugMessage']))
 				{
 					var_dump($mp3_info['debugMessage']);
 				}

@@ -1,3 +1,4 @@
+/config/custom.php
 /vendor
 composer.phar
 composer.lock
