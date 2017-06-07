@@ -8,6 +8,38 @@ namespace YoutubeDownloader;
 class YoutubeDownloader
 {
 	/**
+	 * @var string random IP
+	 */
+	private static $outgoing_ip;
+
+	/**
+	 * Select random IP from config
+	 *
+	 * If multipleIPs mode is enabled, select randomly one IP from
+	 * the config IPs array and put it in $outgoing_ip variable.
+	 *
+	 * @param Config $config
+	 * @return string|null The IP or null
+	 */
+	public static function getRandomIp(Config $config)
+	{
+		if ($config->get('multipleIPs') !== true)
+		{
+			return null;
+		}
+
+		if (static::$outgoing_ip === null)
+		{
+			// randomly select an ip from the $config->get('IPs') array
+			$ips = $config->get('IPs');
+			static::$outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
+		}
+
+		return static::$outgoing_ip;
+	}
+
+
+	/**
 	 * Validates a video ID
 	 *
 	 * This can be an url, embedding url or embedding html code
@@ -102,23 +134,22 @@ class YoutubeDownloader
 	 * See http://lastrss.webdot.cz/
 	 *
 	 * @param string $url
+	 * @param Config $config
 	 * @return string
 	 */
-	public static function curlGet($URL)
+	public static function curlGet($url, Config $config)
 	{
-		global $config; // get global $config to know if $config['multipleIPs'] is true
 
 		$ch = curl_init();
 		$timeout = 3;
 
-		if ($config['multipleIPs'] === true)
+		if ($config->get('multipleIPs') === true)
 		{
-			// if $config['multipleIPs'] is true set outgoing ip to $outgoing_ip
-			global $outgoing_ip;
-			curl_setopt($ch, CURLOPT_INTERFACE, $outgoing_ip);
+			// if $config->get('multipleIPs') is true set outgoing ip to $outgoing_ip
+			curl_setopt($ch, CURLOPT_INTERFACE, static::getRandomIp($config));
 		}
 
-		curl_setopt($ch, CURLOPT_URL, $URL);
+		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 
@@ -132,18 +163,16 @@ class YoutubeDownloader
 
 	/**
 	 * @param string $url
+	 * @param Config $config
 	 * @return string
 	 */
-	public static function get_size($url)
+	public static function get_size($url, Config $config)
 	{
-		global $config;
-
 		$my_ch = curl_init($url);
 
-		if ($config['multipleIPs'] === true)
+		if ($config->get('multipleIPs') === true)
 		{
-			global $outgoing_ip;
-			curl_setopt($my_ch, \CURLOPT_INTERFACE, $outgoing_ip);
+			curl_setopt($my_ch, \CURLOPT_INTERFACE, static::getRandomIp($config));
 		}
 
 		curl_setopt($my_ch, \CURLOPT_HEADER, true);
@@ -231,15 +260,14 @@ class YoutubeDownloader
 
 		return $redirect_url;
 	}
-	
-	public static function getDownloadMP3($video_id)
+
+	public static function getDownloadMP3($video_id, Config $config)
 	{
-		global $config;
 		// generate new url, we can re-use previously generated link and pass it to "token" parameter but it too dangerous to use it with exec()
 		// TODO: Background conversion, Ajax and Caching
 		// @ewwink
 		$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $video_id. '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = self::curlGet($video_info_url);
+		$video_info_string = self::curlGet($video_info_url, $config);
 		$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
 		$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 		$audio_quality = 0;
@@ -257,10 +285,10 @@ class YoutubeDownloader
 				$media_type = str_replace("audio/", "", $format['type']);
 			}
 		}
-		
+
 		if(empty($media_url))
-		{	
-			if($config['MP3ConvertVideo'] === true )
+		{
+			if($config->get('MP3ConvertVideo') === true )
 			{
 				// some video does not have adaptive or dash format, downloading video instead
 				$formats = $stream_map->getStreams();
@@ -270,27 +298,27 @@ class YoutubeDownloader
 			else
 			{
 				return array("status" => "failed",
-						 "message" => "Failed, adaptive audio format not available, try to set <strong>\$config['MP3ConvertVideo'] = true;</strong>");
+					"message" => "Failed, adaptive audio format not available, try to set <strong>\$config->get('MP3ConvertVideo') = true;</strong>");
 			}
 		}
 
-		$mp3dir = realpath($config['MP3TempDir']);
+		$mp3dir = realpath($config->get('MP3TempDir'));
 		$mediaName = $_GET['title'] . '.' . $media_type;
 		// -x4: set 4 connection for each download
-		$cmd = '"' . $config['aria2Path'] . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
+		$cmd = '"' . $config->get('aria2Path') . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
 		exec($cmd, $output);
 
 		if(strpos(implode(" ", $output), "download completed") !== FALSE)
 		{
 			// Download media from youtube success
 			$mp3Name = $_GET['title'] . '.mp3';
-			if($config['MP3Quality'] !== "high" || $audio_quality === 0)
+			if($config->get('MP3Quality') !== "high" || $audio_quality === 0)
 			{
-				$audio_quality = intval($config['MP3Quality']) > intval($audio_quality) ? $audio_quality : $config['MP3Quality'];
+				$audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
 			}
-			
-			$cmd = '"' . $config['ffmpegPath'] . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
-			
+
+			$cmd = '"' . $config->get('ffmpegPath') . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
+
 			exec($cmd, $output);
 			if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3dir/$mp3Name"))
 			{

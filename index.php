@@ -25,7 +25,7 @@
 <?php
 include_once('common.php');
 
-if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and (isset($config['feature']['browserExtensions']) && $config['feature']['browserExtensions'] == true) )
+if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config->get('showBrowserExtensions') == true )
 {
 	echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 }

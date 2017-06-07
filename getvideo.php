@@ -119,7 +119,7 @@ if ($my_type == 'Download')
 // $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 // thanks to amit kumar @ bloggertale.com for sharing the fix
 $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
-$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url);
+$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url, $config);
 
 /* TODO: Check return from curl for status code */
 $video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
@@ -128,7 +128,7 @@ if ($video_info->getStatus() == 'fail')
 {
 	echo '<p>Error in video ID: ' . $video_info->getErrorReason() . '</p>';
 
-	if ($config['debug'])
+	if ($config->get('debug'))
 	{
 		echo '<pre>';
 		var_dump($video_info);
@@ -139,7 +139,7 @@ if ($video_info->getStatus() == 'fail')
 
 echo '<div id="info">';
 
-switch ($config['ThumbnailImageMode'])
+switch ($config->get('ThumbnailImageMode'))
 {
 	case 2:
 		echo '<a href="getimage.php?videoid=' . $my_id . '&sz=hd" target="_blank"><img src="getimage.php?videoid=' . $my_id . '" border="0" hspace="2" vspace="2"></a>';
@@ -168,12 +168,12 @@ if ( $video_info->getStreamMapString() === null )
 
 $stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 
-if ($config['debug'])
+if ($config->get('debug'))
 {
-	if ($config['multipleIPs'] === true)
+	if ($config->get('multipleIPs') === true)
 	{
 		echo '<pre>Outgoing IP: ';
-		print_r($outgoing_ip);
+		print_r(\YoutubeDownloader\StreamMap::getRandomIp($config));
 		echo '</pre>';
 	}
 
@@ -191,7 +191,7 @@ if (count($stream_map->getStreams()) == 0)
 /* create an array of available download formats */
 $avail_formats = $stream_map->getStreams();
 
-if ($config['debug'])
+if ($config->get('debug'))
 {
 	echo '<p>These links will expire at ' . $avail_formats[0]['expires'] . '</p>';
 	echo '<p>The server was at IP address ' . $avail_formats[0]['ip'] . ' which is an ' . $avail_formats[0]['ipbits'] . ' bit IP address. ';
@@ -208,7 +208,7 @@ if ($my_type == 'Download')
 	{
 		echo '<li>';
 
-		if ($config['VideoLinkMode'] == 'direct' || $config['VideoLinkMode'] == 'both')
+		if ($config->get('VideoLinkMode') == 'direct' || $config->get('VideoLinkMode') == 'both')
 		{
 			$directlink = $avail_format['url'];
 			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
@@ -222,24 +222,24 @@ if ($my_type == 'Download')
 			echo '(quality: ' . $avail_format['quality'];
 		}
 
-		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
+		if ($config->get('VideoLinkMode') == 'proxy' || $config->get('VideoLinkMode') == 'both')
 		{
 			echo ' / ' . '<a href="download.php?mime=' . $avail_format['type'] . '&title=' . urlencode(
 					$my_title
 				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
 		}
 
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
 
 		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
 			'</li>';
 	}
-	if($config['MP3Enable'])
+	if($config->get('MP3Enable'))
 	{
 		echo '</ul><p align="center">Convert and Download to .mp3</p><ul>';
 		printf('<li><strong><a href="download.php?mime=audio/mp3&token=%s&title=%s&getmp3=true" class="mime">audio/mp3</a> (quality: %s)</strong></li>',
-			base64_encode($my_id), $cleanedtitle, $config['MP3Quality']);
+			base64_encode($my_id), $cleanedtitle, $config->get('MP3Quality'));
 	}
 	echo '</ul><p align="center">Separated video and audio format:</p><ul>';
 
@@ -247,7 +247,7 @@ if ($my_type == 'Download')
 	{
 		echo '<li>';
 
-		if ($config['VideoLinkMode'] == 'direct' || $config['VideoLinkMode'] == 'both')
+		if ($config->get('VideoLinkMode') == 'direct' || $config->get('VideoLinkMode') == 'both')
 		{
 			$directlink = $avail_format['url'];
 			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
@@ -261,14 +261,14 @@ if ($my_type == 'Download')
 			echo '(quality: ' . $avail_format['quality'];
 		}
 
-		if ($config['VideoLinkMode'] == 'proxy' || $config['VideoLinkMode'] == 'both')
+		if ($config->get('VideoLinkMode') == 'proxy' || $config->get('VideoLinkMode') == 'both')
 		{
 			echo ' / ' . '<a href="download.php?mime=' . $avail_format['type'] . '&title=' . urlencode(
 					$my_title
 				) . '&token=' . base64_encode($avail_format['url']) . '" class="dl">download</a>';
 		}
 
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url']);
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
 
 		echo ') ' .
 			'<small><span class="size">' . \YoutubeDownloader\YoutubeDownloader::formatBytes($size) . '</span></small>' .
@@ -279,7 +279,7 @@ if ($my_type == 'Download')
 
 	echo '<small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small>';
 
-	if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config['feature']['browserExtensions'] == true )
+	if ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config->get('showBrowserExtensions') == true )
 	{
 		echo '<a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a \'Download\' link to this application on Youtube video pages."> Install Chrome Extension </a>';
 	}

@@ -18,51 +18,51 @@ if ($url)
 {
 	global $config;
 	// prevent unauthorized download
-	if($config['VideoLinkMode'] === "direct" and !isset($_GET['getmp3']))
+	if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
 	{
 		exit('VideoLinkMode: proxy download not enabled');
 	}
-	if($config['VideoLinkMode'] !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
+	if($config->get('VideoLinkMode') !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
 	{
 		exit("unauthorized access (^_^)");
 	}
-	
+
 	// check if request for mp3 download
-	if(isset($_GET['getmp3']))		
+	if(isset($_GET['getmp3']))
 	{
-		if($config['MP3Enable'])
+		if($config->get('MP3Enable'))
 		{
 			$mp3_info = array();
-			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url);	
+			$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url, $config);
 			if(isset($mp3_info['mp3']))
 			{
 				$url = $mp3_info['mp3'];
 			}
 			else
 			{
-				if($config['debug'] && isset($mp3_info['debugMessage']))
+				if($config->get('debug') && isset($mp3_info['debugMessage']))
 				{
 					var_dump($mp3_info['debugMessage']);
 				}
-				exit($mp3_info['message']);	
+				exit($mp3_info['message']);
 			}
 		}
 		else
 		{
-			exit("Option for MP3 download is not enabled.");	
+			exit("Option for MP3 download is not enabled.");
 		}
 	}
-	
-	
+
+
 	if(isset($mp3_info['mp3']))
 	{
 		$size = filesize($mp3_info['mp3']);
 	}
 	else
 	{
-		$size = \YoutubeDownloader\YoutubeDownloader::get_size($url);	
+		$size = \YoutubeDownloader\YoutubeDownloader::get_size($url, $config);
 	}
-	
+
 	// Generate the server headers
 	header('Content-Type: "' . $mime . '"');
 	header('Content-Disposition: attachment; filename="' . $name . '"');
