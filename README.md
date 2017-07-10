@@ -12,6 +12,14 @@ NOTE: YouTube Downloader does not work with videos using a cipher signature.
 
 See https://github.com/jeckman/YouTube-Downloader/issues/9
 
+## Goals
+
+- Create a library that delivers data and download links for youtube videos.
+- Create a UI for downloading the videos.
+- Have no external dependencies to other services.
+- Have no external dependencies to other libraries in production.
+- Installation should be foolproof (unzip on server and go)
+
 ## Usage
 
 You can manually visit a web form (the index.php file), enter a YouTube
