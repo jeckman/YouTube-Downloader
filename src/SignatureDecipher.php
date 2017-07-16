@@ -6,21 +6,27 @@
 
 	class SignatureDecipher
 	{
-		public static function decipherSignature($videoID, $signature){
-			ob_start(); //For debugging
-			echo("==== Load player script and execute patterns ====\n\n");
+		public static function downloadPlayerScript($videoID){
 			$playerID = self::loadURL("https://www.youtube.com/watch?v=$videoID");
 			$playerID = explode("\/yts\/jsbin\/player-", $playerID)[1];
 			$playerURL = str_replace('\/', '/', explode('"', $playerID)[0]);
 			$playerID = explode('/', $playerURL)[0];
-			echo('playerID = '.$playerID."\n");
 	
-			// Save player cache or load if exist
 			if(!file_exists("playerscript")) mkdir("playerscript");
-			if(!file_exists("playerscript/$playerID")) {
-				$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
-				file_put_contents("playerscript/$playerID", $decipherScript);
-			} else $decipherScript = file_get_contents("playerscript/$playerID");
+			$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
+			file_put_contents("playerscript/$playerID", $decipherScript);
+
+			return $playerID;
+		}
+
+		public static function decipherSignature($playerID, $signature){
+			ob_start(); //For debugging
+			echo("==== Load player script and execute patterns ====\n\n");
+			echo("Loading player ID = $playerID\n");
+
+			if(file_exists("playerscript/$playerID")) {
+				$decipherScript = file_get_contents("playerscript/$playerID");
+			} else die("\n==== Player script was not found for id: $playerID ====");
 	
 			// Some preparation
 			$signatureCall = explode('("signature",', $decipherScript);
@@ -78,7 +84,7 @@
 			echo("\n\n\n==== Result ====\n");
 			echo("Signature  : ".$signature."\n");
 			echo("Deciphered : ".$decipheredSignature);
-			//file_put_contents("Deciphers".time().".log", ob_get_contents()); // If you need to debug all video
+			//file_put_contents("Deciphers".rand(1, 100000).".log", ob_get_contents()); // If you need to debug all video
 			file_put_contents("Deciphers.log", ob_get_contents());
 			ob_end_clean();
 	
