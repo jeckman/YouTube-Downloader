@@ -13,8 +13,10 @@
 			$playerID = explode('/', $playerURL)[0];
 	
 			if(!file_exists("playerscript")) mkdir("playerscript");
-			$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
-			file_put_contents("playerscript/$playerID", $decipherScript);
+			if(!file_exists("playerscript/$playerID")) {
+				$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
+				file_put_contents("playerscript/$playerID", $decipherScript);
+			}
 
 			return $playerID;
 		}
