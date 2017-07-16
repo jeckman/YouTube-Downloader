@@ -147,6 +147,7 @@ class VideoInfo
 	 * Set the necessary keys
 	 */
 	private $allowed_keys = [
+		'video_id',
 		'status',
 		'reason',
 		'thumbnail_url',
@@ -174,6 +175,16 @@ class VideoInfo
 				$this->data[$key] = null;
 			}
 		}
+	}
+
+	/**
+	 * Get the video_id
+	 *
+	 * @return string
+	 */
+	public function getVideoId()
+	{
+		return $this->data['video_id'];
 	}
 
 	/**

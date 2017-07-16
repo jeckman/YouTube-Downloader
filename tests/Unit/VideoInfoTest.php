@@ -15,6 +15,16 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	}
 
 	/**
+	 * @test getVideoId()
+	 */
+	public function getVideoId()
+	{
+		$video_info = VideoInfo::createFromString('video_id=123abc');
+
+		$this->assertSame('123abc', $video_info->getVideoId());
+	}
+
+	/**
 	 * @test getStatus()
 	 */
 	public function getStatus()
