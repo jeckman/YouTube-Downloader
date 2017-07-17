@@ -114,14 +114,20 @@
 	
 				//Handle non deciphers pattern
 				if(strpos($patterns[$i], '->')===false){
-					if(strpos($patterns[$i], '.split("")')!==false){
+					if(strpos($patterns[$i], '.split("")')!==false)
+					{
 						$processSignature = str_split($processSignature);
 						echo("String splitted\n");
-					} else if(strpos($patterns[$i], '.join("")')!==false) {
+					}
+					else if(strpos($patterns[$i], '.join("")')!==false)
+					{
 						$processSignature = implode('', $processSignature);
 						echo("String combined\n");
 					}
-				} else {
+					else die("\n==== Decipher dictionary was not found ====");
+				} 
+				else
+				{
 					//Separate commands
 					$executes = explode('->', $patterns[$i]);
 	
@@ -133,19 +139,25 @@
 	
 					//Find matched command dictionary
 					echo("Executing $executes[0] -> $number");
-					if($execute=="a.reverse()"){
-						$processSignature = array_reverse($processSignature);
-						echo(" (Reversing array)\n");
-					} else if($execute=="var c=a[0];a[0]=a[b%a.length];a[b]=c"){
-						$c = $processSignature[0];
-						$processSignature[0] = $processSignature[$number%count($processSignature)];
-						$processSignature[$number] = $c;
-						echo(" (Swapping array)\n");
-					} else if($execute=="a.splice(0,b)"){
-						$processSignature = array_splice($processSignature, 0, $number);
-						echo(" (Removing array)\n");
-					} else 
-						die("\n==== Decipher dictionary was not found ====");
+					switch($execute){
+						case "a.reverse()":
+							$processSignature = array_reverse($processSignature);
+							echo(" (Reversing array)\n");
+						break;
+						case "var c=a[0];a[0]=a[b%a.length];a[b]=c":
+							$c = $processSignature[0];
+							$processSignature[0] = $processSignature[$number%count($processSignature)];
+							$processSignature[$number] = $c;
+							echo(" (Swapping array)\n");
+						break;
+						case "a.splice(0,b)":
+							$processSignature = array_slice($processSignature, $number);
+							echo(" (Removing array)\n");
+						break;
+						default:
+							die("\n==== Decipher dictionary was not found ====");
+						break;
+					}
 				}
 			}
 			return $processSignature;
