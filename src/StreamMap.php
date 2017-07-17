@@ -19,7 +19,7 @@ class StreamMap
 		$streams = explode(',', $video_info->getStreamMapString());
 		$formats = explode(',', $video_info->getAdaptiveFormatsString());
 
-		return new self($streams, $formats);
+		return new self($streams, $formats, $video_info->getVideoId());
 	}
 
 	private $streams = [];
@@ -33,10 +33,12 @@ class StreamMap
 	 * @param array $formats
 	 * @return self
 	 */
-	private function __construct(array $streams, array $formats)
+	private function __construct(array $streams, array $formats, $video_id)
 	{
-		$this->streams = $this->parseStreams($streams);
-		$this->formats = $this->parseStreams($formats);
+		$playerID = '';
+		//$playerID = SignatureDecipher::downloadPlayerScript($video_id);
+		$this->streams = $this->parseStreams($streams, $playerID);
+		$this->formats = $this->parseStreams($formats, $playerID);
 	}
 
 	/**
@@ -45,9 +47,10 @@ class StreamMap
 	 * @param array $streams
 	 * @return array
 	 */
-	private function parseStreams(array $streams)
+	private function parseStreams(array $streams, $playerID)
 	{
 		$formats = [];
+		$signature = '';
 
 		if (count($streams) === 1 and $streams[0] === '' )
 		{
@@ -68,13 +71,18 @@ class StreamMap
 				$quality =  isset($format_info['quality']) ? $format_info['quality'] : '';
 			}
 
+			//The video signature need to be deciphered
+			if(isset($format_info['s'])){
+				//$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $format_info['s']);
+			}
+
 			$type = explode(';', $format_info['type']);
 
 			$formats[] = [
 				'itag' => $format_info['itag'],
 				'quality' => $quality,
 				'type' => $type[0],
-				'url' => $format_info['url'],
+				'url' => $format_info['url'].$signature,
 				'expires' => isset($url_info['expire']) ? date("G:i:s T", $url_info['expire']) : '',
 				'ipbits' => isset($url_info['ipbits']) ? $url_info['ipbits'] : '',
 				'ip' => isset($url_info['ip']) ? $url_info['ip'] : '',
