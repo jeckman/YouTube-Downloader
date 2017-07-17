@@ -35,7 +35,8 @@ class StreamMap
 	 */
 	private function __construct(array $streams, array $formats, $video_id)
 	{
-		$playerID = SignatureDecipher::downloadPlayerScript($video_id);
+		$playerID = '';
+		//$playerID = SignatureDecipher::downloadPlayerScript($video_id);
 		$this->streams = $this->parseStreams($streams, $playerID);
 		$this->formats = $this->parseStreams($formats, $playerID);
 	}
@@ -72,7 +73,7 @@ class StreamMap
 
 			//The video signature need to be deciphered
 			if(isset($format_info['s'])){
-				$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $format_info['s']);
+				//$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $format_info['s']);
 			}
 
 			$type = explode(';', $format_info['type']);
