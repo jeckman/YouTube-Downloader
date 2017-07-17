@@ -3,7 +3,6 @@
 namespace YoutubeDownloader\Tests\Unit;
 
 use org\bovigo\vfs\vfsStream;
-use YoutubeDownloader\Template\Engine;
 use YoutubeDownloader\Template\Template;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
@@ -19,7 +18,7 @@ class TemplateTest extends TestCase
 	 */
 	public function construct()
 	{
-		$engine = $this->createMock(Engine::class);
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 
 		$this->assertInstanceOf('YoutubeDownloader\Template\Template', new Template($engine, 'template.php'));
 	}
@@ -30,7 +29,7 @@ class TemplateTest extends TestCase
 	 */
 	public function get($data, $key, $default, $expected)
 	{
-		$engine = $this->createMock(Engine::class);
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 
 		$template = new Template($engine, 'template.php');
 		$template->setData($data);
@@ -57,7 +56,7 @@ class TemplateTest extends TestCase
 	*/
 	public function render($filename, $file_content, $data, $expected)
 	{
-		$engine = $this->createMock(Engine::class);
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -95,7 +94,7 @@ class TemplateTest extends TestCase
 	*/
 	public function renderCannotFindFile()
 	{
-		$engine = $this->createMock(Engine::class);
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -115,7 +114,7 @@ class TemplateTest extends TestCase
 	*/
 	public function renderRethrowExceptionFromFile()
 	{
-		$engine = $this->createMock(Engine::class);
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -123,7 +122,7 @@ class TemplateTest extends TestCase
 			'template.php' => '<?php throw new \Exception(\'exception message\'); ?>',
 		]);
 
-		$this->expectException('Exception');
+		$this->expectException('\\Exception');
 		$this->expectExceptionMessage('exception message');
 
 		$template = new Template($engine, 'template.php');

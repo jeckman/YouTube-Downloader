@@ -61,7 +61,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 		if ( $this->lastExpectedException === null )
 		{
-			$this->lastExpectedException = \Exception::class;
+			$this->lastExpectedException = '\\Exception';
 		}
 
 		$this->setExpectedException(
