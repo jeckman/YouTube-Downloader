@@ -28,7 +28,7 @@ class StreamMapTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 		$video_info->method('getStreamMapString')->willReturn($streams_data);
 		$video_info->method('getAdaptiveFormatsString')->willReturn($streams_data);
 
-		$stream_map = StreamMap::createFromVideoInfo($video_info, 'videoID');
+		$stream_map = StreamMap::createFromVideoInfo($video_info);
 
 		$this->assertInstanceOf('YoutubeDownloader\StreamMap', $stream_map);
 
