@@ -166,7 +166,7 @@ if ( $video_info->getStreamMapString() === null )
 	echo '</pre>';
 }
 
-$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info, $my_id);
+$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 
 if ($config->get('debug'))
 {
