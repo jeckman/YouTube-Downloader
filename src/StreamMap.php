@@ -13,13 +13,13 @@ class StreamMap
 	 * @param VideoInfo $video_info
 	 * @return StreamMap
 	 */
-	public static function createFromVideoInfo(VideoInfo $video_info, $video_id)
+	public static function createFromVideoInfo(VideoInfo $video_info)
 	{
 		// get the url_encoded_fmt_stream_map, and explode on comma
 		$streams = explode(',', $video_info->getStreamMapString());
 		$formats = explode(',', $video_info->getAdaptiveFormatsString());
 
-		return new self($streams, $formats, $video_id);
+		return new self($streams, $formats, $video_info->getVideoId());
 	}
 
 	private $streams = [];
