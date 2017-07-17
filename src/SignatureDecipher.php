@@ -8,7 +8,12 @@
 	{
 		public static function downloadPlayerScript($videoID){
 			$playerID = self::loadURL("https://www.youtube.com/watch?v=$videoID");
-			$playerID = explode("\/yts\/jsbin\/player-", $playerID)[1];
+			$playerID = explode("\/yts\/jsbin\/player-", $playerID);
+			if(count($playerID)<=1){
+				echo("Failed to retrieve player script for video id: $videoID");
+				return false;
+			}
+			$playerID = $playerID[1];
 			$playerURL = str_replace('\/', '/', explode('"', $playerID)[0]);
 			$playerID = explode('/', $playerURL)[0];
 	
@@ -25,6 +30,8 @@
 			ob_start(); //For debugging
 			echo("==== Load player script and execute patterns ====\n\n");
 			echo("Loading player ID = $playerID\n");
+			
+			if(!$playerID) return;
 
 			if(file_exists("playerscript/$playerID")) {
 				$decipherScript = file_get_contents("playerscript/$playerID");
