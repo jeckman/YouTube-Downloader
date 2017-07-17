@@ -1,5 +1,4 @@
 <?php
-	// Created by StefansArya for contribute to PHP Youtube-Downloader
 	// Because we will processing 1MB of file I will not use RegExp for processing strings
 
 	namespace YoutubeDownloader;
@@ -17,7 +16,6 @@
 			$playerURL = str_replace('\/', '/', explode('"', $playerID)[0]);
 			$playerID = explode('/', $playerURL)[0];
 	
-			if(!file_exists("playerscript")) mkdir("playerscript");
 			if(!file_exists("playerscript/$playerID")) {
 				$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
 				file_put_contents("playerscript/$playerID", $decipherScript);
@@ -163,4 +161,3 @@
 			return $data;
 		}
 	}
-?>
