@@ -4,7 +4,10 @@ include_once('common.php');
 // Check download token
 if (empty($_GET['mime']) OR empty($_GET['token']))
 {
-	exit('Invalid download token 8{');
+	echo $template->render('error.php', [
+		'error_message' => 'Invalid download token 8{',
+	]);
+	exit();
 }
 
 // Set operation params
@@ -20,11 +23,17 @@ if ($url)
 	// prevent unauthorized download
 	if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
 	{
-		exit('VideoLinkMode: proxy download not enabled');
+		echo $template->render('error.php', [
+			'error_message' => 'VideoLinkMode: proxy download not enabled',
+		]);
+		exit;
 	}
 	if($config->get('VideoLinkMode') !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
 	{
-		exit("unauthorized access (^_^)");
+		echo $template->render('error.php', [
+			'error_message' => 'unauthorized access (^_^)',
+		]);
+		exit;
 	}
 
 	// check if request for mp3 download
@@ -44,15 +53,20 @@ if ($url)
 				{
 					var_dump($mp3_info['debugMessage']);
 				}
-				exit($mp3_info['message']);
+				echo $template->render('error.php', [
+					'error_message' => $mp3_info['message'],
+				]);
+				exit;
 			}
 		}
 		else
 		{
-			exit("Option for MP3 download is not enabled.");
+			echo $template->render('error.php', [
+				'error_message' => 'Option for MP3 download is not enabled.',
+			]);
+			exit;
 		}
 	}
-
 
 	if(isset($mp3_info['mp3']))
 	{
@@ -82,4 +96,7 @@ if ($url)
 }
 
 // Not found
-exit('File not found 8{');
+echo $template->render('error.php', [
+	'error_message' => 'File not found 8{',
+]);
+exit;

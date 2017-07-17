@@ -63,4 +63,8 @@ if ( $config->get('debug') === true )
 	ini_set('display_errors', 1);
 }
 
+$template = \YoutubeDownloader\Template\Engine::createFromDirectory(
+	__DIR__ . DIRECTORY_SEPARATOR . 'templates'
+);
+
 date_default_timezone_set($config->get('default_timezone'));
