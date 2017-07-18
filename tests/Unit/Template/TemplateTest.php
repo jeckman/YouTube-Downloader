@@ -90,6 +90,34 @@ class TemplateTest extends TestCase
 	}
 
 	/**
+	* @test include()
+	*/
+	public function include()
+	{
+		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine->method('getTemplateDirectory')
+			->willReturn(vfsStream::url('templates'));
+		$engine->method('render')
+			->with('header.php', ['title' => 'Hello world!'])
+			->willReturn('<html><head><title>Hello world!</title></head>');
+
+		vfsStream::create([
+			'index.php' => '<?php echo $this->include(\'header.php\', $this->get(\'header_data\')); ?><body></body></html>',
+			'header.php' => '<html><head><title><?php echo $this->get(\'title\'); ?></title></head>',
+		]);
+
+		$template = new Template($engine, 'index.php');
+
+		$expected = '<html><head><title>Hello world!</title></head><body></body></html>';
+
+		$this->assertSame($expected, $template->render([
+			'header_data' => [
+				'title' => 'Hello world!',
+			],
+		]));
+	}
+
+	/**
 	* @test render()
 	*/
 	public function renderCannotFindFile()
