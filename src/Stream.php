@@ -92,6 +92,7 @@ class Stream
 		// The video signature need to be deciphered
 		if (isset($this->raw_data['s']))
 		{
+			// Uncomment the following 2 lines to activate signature decipher
 			//$playerID = SignatureDecipher::downloadPlayerScript($this->getVideoId());
 			//$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $this->raw_data['s']);
 		}

@@ -49,12 +49,12 @@ class StreamTest extends TestCase
 	 */
 	public function getVideoId()
 	{
-		// We cannot use depends on createFromArray because of a bug in PHPUnit 4,
-		// that will removed the mocked methods in the mocked VideoInfo.
+		// We cannot use @depends on createFromArray because of a bug in
+		// PHPUnit 4 that remove the mocked methods in the mocked VideoInfo.
 		// Instead we call $this->createFromArray() directly.
 		$stream = $this->createFromArray();
 
-		$this->assertSame('ScNNfyq3d_w', $stream->getVideoId(), 'video_id return wrong string');
+		$this->assertSame('ScNNfyq3d_w', $stream->getVideoId());
 	}
 
 	/**
