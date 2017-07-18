@@ -4,6 +4,7 @@ namespace YoutubeDownloader\Tests\Unit\Container;
 
 use YoutubeDownloader\Container\SimpleContainer;
 use YoutubeDownloader\Tests\Fixture\TestCase;
+use YoutubeDownloader\Tests\Fixture\Container\Psr11ContainerAdapter;
 
 class SimpleContainerTest extends TestCase
 {
@@ -15,6 +16,19 @@ class SimpleContainerTest extends TestCase
 		$container = new SimpleContainer();
 
 		$this->assertInstanceOf('\\YoutubeDownloader\\Container\\Container', $container);
+	}
+
+	/**
+	 * @test SimpleContainer is campatible with Psr\Container\ContainerInterface
+	 */
+	public function isPsr11Compatible()
+	{
+		$container = new SimpleContainer();
+
+		$adapter = new Psr11ContainerAdapter($container);
+
+		$this->assertInstanceOf('\\Psr\\Container\\ContainerInterface', $adapter);
+		$this->assertInstanceOf('\\YoutubeDownloader\\Container\\Container', $adapter);
 	}
 
 	/**
