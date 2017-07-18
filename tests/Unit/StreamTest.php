@@ -7,6 +7,18 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class StreamTest extends TestCase
 {
+	public function setUp()
+	{
+
+		$this->tz_backup = date_default_timezone_get();
+		date_default_timezone_set('UTC');
+	}
+
+	public function tearDown()
+	{
+		date_default_timezone_set($this->tz_backup);
+	}
+
 	/**
 	 * @test createFromArray()
 	 */
@@ -22,23 +34,27 @@ class StreamTest extends TestCase
 			'ip' => '211.12.135.54',
 		];
 
-		$video_info = $this->createMock('YoutubeDownloader\VideoInfo');
+		$video_info = $this->createMock('\\YoutubeDownloader\\VideoInfo');
 		$video_info->method('getVideoId')->willReturn('ScNNfyq3d_w');
 
 		$stream = Stream::createFromArray($video_info, $stream_data);
 
-		$this->assertInstanceOf('YoutubeDownloader\Stream', $stream);
+		$this->assertInstanceOf('\\YoutubeDownloader\\Stream', $stream);
 
 		return $stream;
 	}
 
 	/**
 	 * @test getVideoId()
-	 * @depends createFromArray
 	 */
-	public function getVideoId(Stream $stream)
+	public function getVideoId()
 	{
-		$this->assertSame('ScNNfyq3d_w', $stream->getVideoId());
+		// We cannot use depends on createFromArray because of a bug in PHPUnit 4,
+		// that will removed the mocked methods in the mocked VideoInfo.
+		// Instead we call $this->createFromArray() directly.
+		$stream = $this->createFromArray();
+
+		$this->assertSame('ScNNfyq3d_w', $stream->getVideoId(), 'video_id return wrong string');
 	}
 
 	/**
