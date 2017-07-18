@@ -1,6 +1,6 @@
 <?php
 
-namespace YoutubeDownloader\Tests\Unit;
+namespace YoutubeDownloader\Tests\Unit\Template;
 
 use org\bovigo\vfs\vfsStream;
 use YoutubeDownloader\Template\Engine;
