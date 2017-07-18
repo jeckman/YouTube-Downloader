@@ -1,5 +1,8 @@
 <?PHP
-include_once('common.php');
+$container = include_once('common.php');
+
+$config = $container->get('config');
+$template = $container->get('template');
 
 if ( ! isset($_GET['videoid']) )
 {
@@ -10,7 +13,6 @@ if ( ! isset($_GET['videoid']) )
 }
 
 $my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($_GET['videoid']);
-
 
 if ( $my_id === null )
 {

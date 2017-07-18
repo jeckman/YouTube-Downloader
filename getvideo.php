@@ -6,7 +6,10 @@
 // Takes a VideoID and outputs a list of formats in which the video can be
 // downloaded
 
-include_once('common.php');
+$container = include_once('common.php');
+
+$config = $container->get('config');
+$template = $container->get('template');
 
 if( ! isset($_GET['videoid']) )
 {
