@@ -47,6 +47,8 @@ class StreamMap
 	 */
 	private function parseStreams(array $streams, VideoInfo $video_info)
 	{
+		$formats = [];
+
 		if (count($streams) === 1 and $streams[0] === '' )
 		{
 			return $formats;

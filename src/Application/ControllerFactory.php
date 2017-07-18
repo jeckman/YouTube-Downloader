@@ -10,7 +10,10 @@ use Exception;
 class ControllerFactory
 {
 	private $controller_map = [
+		'download' => '\\YoutubeDownloader\\Application\\DownloadController',
+		'image' => '\\YoutubeDownloader\\Application\\ImageController',
 		'index' => '\\YoutubeDownloader\\Application\\MainController',
+		'results' => '\\YoutubeDownloader\\Application\\ResultController',
 	];
 
 	/**

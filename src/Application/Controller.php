@@ -22,7 +22,7 @@ interface Controller
 	 * @param string $route
 	 * @param YoutubeDownloader\Application\App $app
 	 *
-	 * @return Controller
+	 * @return void
 	 */
 	public function execute();
 }
