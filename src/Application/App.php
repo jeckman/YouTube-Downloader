@@ -32,6 +32,16 @@ class App
 	}
 
 	/**
+	 * Returns the App version
+	 *
+	 * @return string
+	 */
+	public function getVersion()
+	{
+		return $this->version;
+	}
+
+	/**
 	 * Returns the Controller
 	 *
 	 * @return Controller

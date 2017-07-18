@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Application;
 
+use Exception;
+
 /**
  * The main app
  */
@@ -16,6 +18,8 @@ class ControllerFactory
 	 *
 	 * @param string $route
 	 * @param YoutubeDownloader\Application\App $app
+	 *
+	 * @throws Exception if a route was not found
 	 *
 	 * @return Controller
 	 */
