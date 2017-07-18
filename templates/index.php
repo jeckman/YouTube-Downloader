@@ -1,4 +1,4 @@
-<?php echo $this->include('header.php', ['title' => 'Youtube Downloader']); ?>
+<?php echo $this->inc('header.php', ['title' => 'Youtube Downloader']); ?>
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="YouTube Link or VideoID" autofocus/>
@@ -20,4 +20,4 @@ if ( $this->get('is_chrome') === true and $this->get('showBrowserExtensions') ==
 }
 ?>
 </form>
-<?php echo $this->include('footer.php'); ?>
+<?php echo $this->inc('footer.php'); ?>

@@ -90,9 +90,9 @@ class TemplateTest extends TestCase
 	}
 
 	/**
-	* @test include()
+	* @test inc()
 	*/
-	public function testInclude()
+	public function testInc()
 	{
 		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 		$engine->method('getTemplateDirectory')
@@ -102,7 +102,7 @@ class TemplateTest extends TestCase
 			->willReturn('<html><head><title>Hello world!</title></head>');
 
 		vfsStream::create([
-			'index.php' => '<?php echo $this->include(\'header.php\', $this->get(\'header_data\')); ?><body></body></html>',
+			'index.php' => '<?php echo $this->inc(\'header.php\', $this->get(\'header_data\')); ?><body></body></html>',
 			'header.php' => '<html><head><title><?php echo $this->get(\'title\'); ?></title></head>',
 		]);
 

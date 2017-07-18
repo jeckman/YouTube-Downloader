@@ -112,7 +112,7 @@ class Template
 	 * @param  array  $data
 	 * @return mixed
 	 */
-	public function include($name, array $data = [])
+	public function inc($name, array $data = [])
 	{
 		return $this->engine->render($name, $data);
 	}

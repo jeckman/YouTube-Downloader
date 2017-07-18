@@ -1,4 +1,4 @@
-<?php echo $this->include('header.php', ['title' => 'Youtube Downloader Results']); ?>
+<?php echo $this->inc('header.php', ['title' => 'Youtube Downloader Results']); ?>
 <div class="download">
 	<h1 class="download-heading">Youtube Downloader Results</h1>
 	<div id="info">
@@ -77,4 +77,4 @@ else
 <?php } ?>
 <?php } ?>
 </div>
-<?php echo $this->include('footer.php'); ?>
+<?php echo $this->inc('footer.php'); ?>
