@@ -19,7 +19,7 @@ class StreamMap
 		$streams = explode(',', $video_info->getStreamMapString());
 		$formats = explode(',', $video_info->getAdaptiveFormatsString());
 
-		return new self($streams, $formats, $video_info->getVideoId());
+		return new self($streams, $formats, $video_info);
 	}
 
 	private $streams = [];
@@ -33,12 +33,10 @@ class StreamMap
 	 * @param array $formats
 	 * @return self
 	 */
-	private function __construct(array $streams, array $formats, $video_id)
+	private function __construct(array $streams, array $formats, VideoInfo $video_info)
 	{
-		$playerID = '';
-		//$playerID = SignatureDecipher::downloadPlayerScript($video_id);
-		$this->streams = $this->parseStreams($streams, $playerID);
-		$this->formats = $this->parseStreams($formats, $playerID);
+		$this->streams = $this->parseStreams($streams, $video_info);
+		$this->formats = $this->parseStreams($formats, $video_info);
 	}
 
 	/**
@@ -47,11 +45,8 @@ class StreamMap
 	 * @param array $streams
 	 * @return array
 	 */
-	private function parseStreams(array $streams, $playerID)
+	private function parseStreams(array $streams, VideoInfo $video_info)
 	{
-		$formats = [];
-		$signature = '';
-
 		if (count($streams) === 1 and $streams[0] === '' )
 		{
 			return $formats;
@@ -60,32 +55,17 @@ class StreamMap
 		foreach ($streams as $format)
 		{
 			parse_str($format, $format_info);
-			parse_str(urldecode($format_info['url']), $url_info);
 
-			if (isset($format_info['bitrate']))
-			{
-				$quality = isset($format_info['quality_label']) ? $format_info['quality_label'] : round($format_info['bitrate']/1000).'k';
-			}
-			else
-			{
-				$quality =  isset($format_info['quality']) ? $format_info['quality'] : '';
-			}
-
-			//The video signature need to be deciphered
-			if(isset($format_info['s'])){
-				//$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $format_info['s']);
-			}
-
-			$type = explode(';', $format_info['type']);
+			$stream = Stream::createFromArray($video_info, $format_info);
 
 			$formats[] = [
-				'itag' => $format_info['itag'],
-				'quality' => $quality,
-				'type' => $type[0],
-				'url' => $format_info['url'].$signature,
-				'expires' => isset($url_info['expire']) ? date("G:i:s T", $url_info['expire']) : '',
-				'ipbits' => isset($url_info['ipbits']) ? $url_info['ipbits'] : '',
-				'ip' => isset($url_info['ip']) ? $url_info['ip'] : '',
+				'itag' => $stream->getItag(),
+				'quality' => $stream->getQuality(),
+				'type' => $stream->getType(),
+				'url' => $stream->getUrl(),
+				'expires' => $stream->getExpires(),
+				'ipbits' => $stream->getIpbits(),
+				'ip' => $stream->getIp(),
 			];
 		}
 
