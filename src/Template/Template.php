@@ -106,6 +106,18 @@ class Template
 	}
 
 	/**
+	 * include and parse another template file
+	 *
+	 * @param  string $name
+	 * @param  array  $data
+	 * @return mixed
+	 */
+	public function inc($name, array $data = [])
+	{
+		return $this->engine->render($name, $data);
+	}
+
+	/**
 	 * Check if the template exists.
 	 *
 	 * @return boolean

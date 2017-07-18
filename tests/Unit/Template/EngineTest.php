@@ -18,7 +18,10 @@ class EngineTest extends TestCase
 	 */
 	public function createFromDirectory()
 	{
-		$this->assertInstanceOf('YoutubeDownloader\Template\Engine', Engine::createFromDirectory(''));
+		$this->assertInstanceOf(
+			'\\YoutubeDownloader\\Template\\Engine',
+			Engine::createFromDirectory('')
+		);
 	}
 
 	/**
@@ -55,5 +58,22 @@ class EngineTest extends TestCase
 		vfsStream::create(['template.php' => '<html></html>']);
 
 		$this->assertSame('<html></html>', $engine->render('template.php'));
+	}
+
+	/**
+	* @test render()
+	*/
+	public function renderWithData()
+	{
+		$engine = Engine::createFromDirectory(vfsStream::url('templates'));
+
+		vfsStream::create([
+			'template.php' => '<html><?php echo $this->get(\'foo\'); ?></html>'
+		]);
+
+		$this->assertSame(
+			'<html>bar</html>',
+			$engine->render('template.php', ['foo' => 'bar'])
+		);
 	}
 }
