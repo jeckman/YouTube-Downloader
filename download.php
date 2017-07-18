@@ -1,5 +1,8 @@
 <?php
-include_once('common.php');
+$container = include_once('common.php');
+
+$config = $container->get('config');
+$template = $container->get('template');
 
 // Check download token
 if (empty($_GET['mime']) OR empty($_GET['token']))

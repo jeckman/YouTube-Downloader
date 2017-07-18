@@ -39,32 +39,45 @@ spl_autoload_register(function ($class)
 });
 
 /**
- * Closure to create a config class
+ * Closure to create a container class
  */
-$config = call_user_func_array(
+$container = call_user_func_array(
 	function($custom = 'custom')
 	{
+		// Create Container
+		$container = new \YoutubeDownloader\Container\SimpleContainer;
+
+		// Create Config
 		$ds = DIRECTORY_SEPARATOR;
 
 		$config_dir = realpath(__DIR__) . $ds . 'config' . $ds;
 
-		return \YoutubeDownloader\Config::createFromFiles(
+		$config = \YoutubeDownloader\Config::createFromFiles(
 			$config_dir . 'default.php',
 			$config_dir . $custom . '.php'
 		);
+
+		$container->set('config', $config);
+
+		// Create Template\Engine
+		$template = \YoutubeDownloader\Template\Engine::createFromDirectory(
+			__DIR__ . DIRECTORY_SEPARATOR . 'templates'
+		);
+
+		$container->set('template', $template);
+
+		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']
 );
 
 // Show all errors on debug
-if ( $config->get('debug') === true )
+if ( $container->get('config')->get('debug') === true )
 {
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 }
 
-$template = \YoutubeDownloader\Template\Engine::createFromDirectory(
-	__DIR__ . DIRECTORY_SEPARATOR . 'templates'
-);
+date_default_timezone_set($container->get('config')->get('default_timezone'));
 
-date_default_timezone_set($config->get('default_timezone'));
+return $container;
