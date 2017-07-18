@@ -1,13 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<title>Youtube Downloader</title>
-	<meta name="keywords"
-		  content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader"/>
-	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="css/custom.css" rel="stylesheet">
-</head>
-<body>
+<?php echo $this->include('header.php', ['title' => 'Youtube Downloader']); ?>
 	<form class="form-download" method="get" id="download" action="getvideo.php">
 		<h1 class="form-download-heading">Youtube Downloader</h1>
 		<input type="text" name="videoid" id="videoid" size="40" placeholder="YouTube Link or VideoID" autofocus/>
@@ -29,5 +20,4 @@ if ( $this->get('is_chrome') === true and $this->get('showBrowserExtensions') ==
 }
 ?>
 </form>
-</body>
-</html>
+<?php echo $this->include('footer.php'); ?>
