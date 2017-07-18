@@ -19,6 +19,7 @@ class DownloadController extends ControllerAbstract
 	{
 		$config = $this->get('config');
 		$template = $this->get('template');
+		$toolkit = $this->get('toolkit');
 
 		// Check download token
 		if (empty($_GET['mime']) OR empty($_GET['token']))
@@ -60,7 +61,7 @@ class DownloadController extends ControllerAbstract
 				if($config->get('MP3Enable'))
 				{
 					$mp3_info = array();
-					$mp3_info = \YoutubeDownloader\YoutubeDownloader::getDownloadMP3($url, $config);
+					$mp3_info = $toolkit->getDownloadMP3($url, $config);
 					if(isset($mp3_info['mp3']))
 					{
 						$url = $mp3_info['mp3'];
@@ -92,7 +93,7 @@ class DownloadController extends ControllerAbstract
 			}
 			else
 			{
-				$size = \YoutubeDownloader\YoutubeDownloader::get_size($url, $config);
+				$size = $toolkit->get_size($url, $config);
 			}
 
 			// Generate the server headers

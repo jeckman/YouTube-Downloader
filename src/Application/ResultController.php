@@ -19,6 +19,7 @@ class ResultController extends ControllerAbstract
 	{
 		$config = $this->get('config');
 		$template = $this->get('template');
+		$toolkit = $this->get('toolkit');
 
 		if( ! isset($_GET['videoid']) )
 		{
@@ -30,12 +31,12 @@ class ResultController extends ControllerAbstract
 
 		$my_id = $_GET['videoid'];
 
-		if( \YoutubeDownloader\YoutubeDownloader::isMobileUrl($my_id) )
+		if( $toolkit->isMobileUrl($my_id) )
 		{
-			$my_id = \YoutubeDownloader\YoutubeDownloader::treatMobileUrl($my_id);
+			$my_id = $toolkit->treatMobileUrl($my_id);
 		}
 
-		$my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($my_id);
+		$my_id = $toolkit->validateVideoId($my_id);
 
 		if ( $my_id === null )
 		{
@@ -60,7 +61,7 @@ class ResultController extends ControllerAbstract
 		// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
 		// thanks to amit kumar @ bloggertale.com for sharing the fix
 		$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = \YoutubeDownloader\YoutubeDownloader::curlGet($video_info_url, $config);
+		$video_info_string = $toolkit->curlGet($video_info_url, $config);
 
 		/* TODO: Check return from curl for status code */
 		$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
@@ -95,7 +96,7 @@ class ResultController extends ControllerAbstract
 			 *   							http://rg3.github.com/youtube-dl/
 			 */
 			$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
-			$redirect_url = \YoutubeDownloader\YoutubeDownloader::getDownloadUrlByFormats($stream_map->getStreams(), $_GET['format']);
+			$redirect_url = $toolkit->getDownloadUrlByFormats($stream_map->getStreams(), $_GET['format']);
 
 			if ( $redirect_url !== null )
 			{
@@ -169,7 +170,7 @@ class ResultController extends ControllerAbstract
 
 		$template_data['streams'] = [];
 		$template_data['formats'] = [];
-		$template_data['showBrowserExtensions'] = ( \YoutubeDownloader\YoutubeDownloader::is_chrome() and $config->get('showBrowserExtensions') == true );
+		$template_data['showBrowserExtensions'] = ( $toolkit->is_chrome() and $config->get('showBrowserExtensions') == true );
 
 		/* now that we have the array, print the options */
 		foreach ($avail_formats as $avail_format)
@@ -181,8 +182,8 @@ class ResultController extends ControllerAbstract
 
 			$proxylink = 'download.php?mime=' . $avail_format['type'] . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format['url']);
 
-			$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
-			$size = \YoutubeDownloader\YoutubeDownloader::formatBytes($size);
+			$size = $toolkit->get_size($avail_format['url'], $config);
+			$size = $toolkit->formatBytes($size);
 
 			$template_data['streams'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
@@ -204,8 +205,8 @@ class ResultController extends ControllerAbstract
 
 			$proxylink = 'download.php?mime=' . $avail_format['type'] . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format['url']);
 
-			$size = \YoutubeDownloader\YoutubeDownloader::get_size($avail_format['url'], $config);
-			$size = \YoutubeDownloader\YoutubeDownloader::formatBytes($size);
+			$size = $toolkit->get_size($avail_format['url'], $config);
+			$size = $toolkit->formatBytes($size);
 
 			$template_data['formats'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),

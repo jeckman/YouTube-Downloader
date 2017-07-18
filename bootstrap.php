@@ -71,6 +71,9 @@ $container = call_user_func_array(
 
 		$container->set('controller_factory', $factory);
 
+		// Create Toolkit
+		$container->set('toolkit', new \YoutubeDownloader\Toolkit);
+
 		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']

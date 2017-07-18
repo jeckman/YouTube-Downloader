@@ -19,6 +19,7 @@ class ImageController extends ControllerAbstract
 	{
 		$config = $this->get('config');
 		$template = $this->get('template');
+		$toolkit = $this->get('toolkit');
 
 		if ( ! isset($_GET['videoid']) )
 		{
@@ -28,7 +29,7 @@ class ImageController extends ControllerAbstract
 			exit;
 		}
 
-		$my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($_GET['videoid']);
+		$my_id = $toolkit->validateVideoId($_GET['videoid']);
 
 		if ( $my_id === null )
 		{
