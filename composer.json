@@ -12,10 +12,14 @@
             "homepage": "http://www.openparenthesis.org/"
         }
     ],
+    "config": {
+        "sort-packages": true
+    },
     "require": {
         "php": "^5.4 || ^7.0"
     },
     "require-dev": {
+        "mikey179/vfsStream": "^1.6",
         "phpunit/phpunit": "^4.8.35 || ^6.0"
     },
     "autoload": {

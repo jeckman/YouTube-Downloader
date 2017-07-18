@@ -3,7 +3,9 @@ include_once('common.php');
 
 if ( ! isset($_GET['videoid']) )
 {
-	echo '<p>No video id passed in</p>';
+	echo $template->render('error.php', [
+		'error_message' => 'No video id passed in',
+	]);
 	exit;
 }
 
@@ -12,7 +14,9 @@ $my_id = \YoutubeDownloader\YoutubeDownloader::validateVideoId($_GET['videoid'])
 
 if ( $my_id === null )
 {
-	echo '<p>Invalid video id passed in</p>';
+	echo $template->render('error.php', [
+		'error_message' => 'Invalid video id passed in',
+	]);
 	exit;
 }
 
