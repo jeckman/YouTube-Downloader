@@ -92,7 +92,7 @@ class TemplateTest extends TestCase
 	/**
 	* @test include()
 	*/
-	public function include()
+	public function testInclude()
 	{
 		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
 		$engine->method('getTemplateDirectory')
