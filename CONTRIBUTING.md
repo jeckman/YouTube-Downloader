@@ -79,7 +79,7 @@ Every server is different and every config change has effects on the behavior of
 
 Include details about your configuration and environment:
 
-* **Which version of YouTube-Downloader are you running?** You can get this information from from the file `src/Application/App.php` and search for `$version`.
+* **Which version of YouTube-Downloader are you running?** You can get this information from the footer in the web interface.
 * **What's the version of PHP you're using**?
 * **Have you modified the configuration** in `config/custom.php`? If so, provide the contents of this file, preferably in a [code block](https://help.github.com/articles/markdown-basics/#multiple-lines) or with a link to a [gist](https://gist.github.com/).
 
@@ -104,7 +104,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 * **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of YouTube-Downloader which the suggestion is related to. You can use [this tool](http://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 * **Explain why this enhancement would be useful** to most YouTube-Downloader users.
 * **List some other projects, libraries or applications where this enhancement exists.**
-* **Which version of YouTube-Downloader are you running?** You can get this information from from the file `src/Application/App.php` and search for `$version`.
+* **Which version of YouTube-Downloader are you running?** You can get this information from the footer in the web interface.
 * **What's the version of PHP you're using**?
 
 ### Your First Code Contribution

@@ -22,7 +22,7 @@ Please include the direct url to the YouTube video.
 
 ### Version
 
-Please include the version of YouTube-Downloader you are running. You can get this information from from the file `src/Application/App.php` and search for `$version`.
+Please include the version of YouTube-Downloader you are running. You can get this information from the footer in the web interface.
 
 ### Additional Information
 

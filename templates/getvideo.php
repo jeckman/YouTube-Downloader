@@ -1,7 +1,6 @@
 <?php echo $this->inc('header.php', ['title' => 'Youtube Downloader Results']); ?>
 <div class="download">
-	<h1 class="download-heading">Results</h1>
-	<h2 class="download-heading">Youtube Downloader <?php echo $this->get('app_version', ''); ?></h2>
+	<h1 class="download-heading">Youtube Downloader Results</h1>
 	<div id="info">
 <?php if ($this->get('show_thumbnail') === true) { ?>
 		<a href="<?php echo $this->get('thumbnail_anchor'); ?>" target="_blank"><img src="<?php echo $this->get('thumbnail_src'); ?>" border="0" hspace="2" vspace="2"></a>
@@ -77,5 +76,7 @@ else
 	<p><a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages."> Install Chrome Extension </a></p>
 <?php } ?>
 <?php } ?>
+<hr />
+<p class="muted"><a href="https://github.com/jeckman/YouTube-Downloader" target="_blank">Youtube Downloader <?php echo $this->get('app_version', ''); ?></a> is licensed under GPL 2.</p>
 </div>
 <?php echo $this->inc('footer.php'); ?>
