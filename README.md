@@ -20,6 +20,47 @@ See https://github.com/jeckman/YouTube-Downloader/issues/9
 - Have no external dependencies to other libraries in production.
 - Installation should be foolproof (unzip on server and go)
 
+## Requirements
+
+You must fit at least this requirements to use YouTube-Downloader:
+
+- Web server (Apache/Nginx/PHP built-in)
+- PHP >= 5.4
+
+## Installation
+
+There are multiple ways to set up YouTube-Downloader
+
+### ZIP Download
+
+- Download the code: https://github.com/jeckman/YouTube-Downloader/archive/master.zip
+- Unzip the code to your web server
+- Open the folder with your browser
+
+### Git
+
+- Clone the code on your server with `$ git clone https://github.com/jeckman/YouTube-Downloader.git`
+- Open the folder with your browser
+
+### Composer
+
+The library code can be used in other projects via [Composer](https://getcomposer.org).
+
+The code isn't available on packagist.org at the moment, so you must a the repository in your `composer.json`. Your `composer.json` should look like this
+
+```
+{
+	"require": {
+		"jeckman/YouTube-Downloader": "dev-master"
+	},
+	"repositories": [
+		{"type": "vcs", "url": "https://github.com/jeckman/YouTube-Downloader"}
+	]
+}
+```
+
+Now install the dependencies with `$ composer update`
+
 ## Usage
 
 You can manually visit a web form (the index.php file), enter a YouTube
@@ -42,6 +83,23 @@ You can also pass in a specific format number, if you know it.
 Note this approach, because it redirects you to the file itself, currently bypasses the
 proxy option, so if your browser/server setup requires the proxy to work these will fail.
 
-Enjoy!
+## Upgrading
 
-John
+### ZIP Download
+
+- Backup your config file from `config/custom.php`.
+- Delete all files in the project folder
+- Download the newest code: https://github.com/jeckman/YouTube-Downloader/archive/master.zip
+- Unzip the code to your project folder
+- Place your config file back to `config/custom.php`.
+
+### Git
+
+```
+$ git remote update
+$ git pull origin master
+```
+
+## Contributing
+
+You can help making this project better by reporting bugs or submitting pull requests. Please see our [contributing guideline](https://github.com/jeckman/YouTube-Downloader/blob/master/README.md) for more information.
