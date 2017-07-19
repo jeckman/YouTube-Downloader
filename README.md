@@ -33,7 +33,7 @@ There are multiple ways to set up YouTube-Downloader
 
 ### ZIP Download
 
-- Download the code: https://github.com/jeckman/YouTube-Downloader/archive/master.zip
+- Download the code for the newest release: https://github.com/jeckman/YouTube-Downloader/releases
 - Unzip the code to your web server
 - Open the folder with your browser
 
@@ -51,7 +51,7 @@ The code isn't available on packagist.org at the moment, so you must a the repos
 ```
 {
 	"require": {
-		"jeckman/YouTube-Downloader": "dev-master"
+		"jeckman/YouTube-Downloader": "^0.1"
 	},
 	"repositories": [
 		{"type": "vcs", "url": "https://github.com/jeckman/YouTube-Downloader"}
@@ -89,7 +89,7 @@ proxy option, so if your browser/server setup requires the proxy to work these w
 
 - Backup your config file from `config/custom.php`.
 - Delete all files in the project folder
-- Download the newest code: https://github.com/jeckman/YouTube-Downloader/archive/master.zip
+- Download the newest release from https://github.com/jeckman/YouTube-Downloader/releases
 - Unzip the code to your project folder
 - Place your config file back to `config/custom.php`.
 
@@ -102,4 +102,4 @@ $ git pull origin master
 
 ## Contributing
 
-You can help making this project better by reporting bugs or submitting pull requests. Please see our [contributing guideline](https://github.com/jeckman/YouTube-Downloader/blob/master/README.md) for more information.
+You can help making this project better by reporting bugs or submitting pull requests. Please see our [contributing guideline](https://github.com/jeckman/YouTube-Downloader/blob/master/CONTRIBUTING.md) for more information.
