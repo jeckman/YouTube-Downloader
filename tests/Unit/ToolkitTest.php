@@ -2,9 +2,9 @@
 
 namespace YoutubeDownloader\Tests\Unit;
 
-use YoutubeDownloader\YoutubeDownloader;
+use YoutubeDownloader\Toolkit;
 
-class YoutubeDownloaderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
+class ToolkitTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
 	 * @test validateVideoId()
@@ -12,7 +12,9 @@ class YoutubeDownloaderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function validateVideoId($str, $expected)
 	{
-		$this->assertSame($expected, YoutubeDownloader::validateVideoId($str));
+		$toolkit = new Toolkit;
+
+		$this->assertSame($expected, $toolkit->validateVideoId($str));
 	}
 
 	/**
@@ -46,7 +48,9 @@ class YoutubeDownloaderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function isMobileUrl($str, $expected)
 	{
-		$this->assertSame($expected, YoutubeDownloader::isMobileUrl($str));
+		$toolkit = new Toolkit;
+
+		$this->assertSame($expected, $toolkit->isMobileUrl($str));
 	}
 
 	/**

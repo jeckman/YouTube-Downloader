@@ -3,14 +3,16 @@
 namespace YoutubeDownloader;
 
 /**
- * YouTubeDownloader
+ * Toolkit
+ *
+ * This class contains all functionallities that must be refactored.
  */
-class YoutubeDownloader
+class Toolkit
 {
 	/**
 	 * @var string random IP
 	 */
-	private static $outgoing_ip;
+	private $outgoing_ip;
 
 	/**
 	 * Select random IP from config
@@ -21,21 +23,21 @@ class YoutubeDownloader
 	 * @param Config $config
 	 * @return string|null The IP or null
 	 */
-	public static function getRandomIp(Config $config)
+	public function getRandomIp(Config $config)
 	{
 		if ($config->get('multipleIPs') !== true)
 		{
 			return null;
 		}
 
-		if (static::$outgoing_ip === null)
+		if ($this->outgoing_ip === null)
 		{
 			// randomly select an ip from the $config->get('IPs') array
 			$ips = $config->get('IPs');
-			static::$outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
+			$this->outgoing_ip = $ips[mt_rand(0, count($ips) - 1)];
 		}
 
-		return static::$outgoing_ip;
+		return $this->outgoing_ip;
 	}
 
 
@@ -47,7 +49,7 @@ class YoutubeDownloader
 	 * @param string $video_id
 	 * @return string|null The validated video ID or null, if the video ID is invalid
 	 */
-	public static function validateVideoId($video_id)
+	public function validateVideoId($video_id)
 	{
 		if (strlen($video_id) <= 11)
 		{
@@ -71,7 +73,7 @@ class YoutubeDownloader
 	 * @param string $string
 	 * @return bool
 	 */
-	public static function isMobileUrl($string)
+	public function isMobileUrl($string)
 	{
 		if (strpos($string, "m."))
 		{
@@ -85,7 +87,7 @@ class YoutubeDownloader
 	 * @param string $string
 	 * @return string
 	 */
-	public static function treatMobileUrl($string)
+	public function treatMobileUrl($string)
 	{
 		return str_replace("m.", "www.");
 	}
@@ -95,7 +97,7 @@ class YoutubeDownloader
 	 * @param int $precision
 	 * @return string
 	 */
-	public static function formatBytes($bytes, $precision = 2)
+	public function formatBytes($bytes, $precision = 2)
 	{
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 		$bytes = max($bytes, 0);
@@ -109,7 +111,7 @@ class YoutubeDownloader
 	/**
 	 * @return bool
 	 */
-	public static function is_chrome()
+	public function is_chrome()
 	{
 		$agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -137,7 +139,7 @@ class YoutubeDownloader
 	 * @param Config $config
 	 * @return string
 	 */
-	public static function curlGet($url, Config $config)
+	public function curlGet($url, Config $config)
 	{
 
 		$ch = curl_init();
@@ -166,7 +168,7 @@ class YoutubeDownloader
 	 * @param Config $config
 	 * @return string
 	 */
-	public static function get_size($url, Config $config)
+	public function get_size($url, Config $config)
 	{
 		$my_ch = curl_init($url);
 
@@ -199,7 +201,7 @@ class YoutubeDownloader
 	 * @param string $format
 	 * @return bool
 	 */
-	public static function getDownloadUrlByFormats(array $avail_formats, $format)
+	public function getDownloadUrlByFormats(array $avail_formats, $format)
 	{
 		$target_formats = '';
 
@@ -261,7 +263,7 @@ class YoutubeDownloader
 		return $redirect_url;
 	}
 
-	public static function getDownloadMP3($video_id, Config $config)
+	public function getDownloadMP3($video_id, Config $config)
 	{
 		// generate new url, we can re-use previously generated link and pass it to "token" parameter but it too dangerous to use it with exec()
 		// TODO: Background conversion, Ajax and Caching
@@ -297,8 +299,10 @@ class YoutubeDownloader
 			}
 			else
 			{
-				return array("status" => "failed",
-					"message" => "Failed, adaptive audio format not available, try to set <strong>\$config->get('MP3ConvertVideo') = true;</strong>");
+				return array(
+					"status" => "failed",
+					"message" => "Failed, adaptive audio format not available, try to set <strong>\$config->get('MP3ConvertVideo') = true;</strong>"
+				);
 			}
 		}
 
@@ -323,17 +327,21 @@ class YoutubeDownloader
 			if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3dir/$mp3Name"))
 			{
 				// Convert media to .mp3 success
-				return array("status" => "success",
-								"message" => "Convert media to .mp3 success",
-								"mp3" => "$mp3dir/$mp3Name",
-								"debugMessage" => $output);
+				return array(
+					"status" => "success",
+					"message" => "Convert media to .mp3 success",
+					"mp3" => "$mp3dir/$mp3Name",
+					"debugMessage" => $output
+				);
 			}
 		}
 		else
 		{
-			return array("status" => "failed",
-							"message" => "Download media url from youtube failed.",
-							"debugMessage" => $output);
+			return array(
+				"status" => "failed",
+				"message" => "Download media url from youtube failed.",
+				"debugMessage" => $output
+			);
 		}
 	}
 }

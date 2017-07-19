@@ -66,6 +66,14 @@ $container = call_user_func_array(
 
 		$container->set('template', $template);
 
+		// Create Application\ControllerFactory
+		$factory = new \YoutubeDownloader\Application\ControllerFactory;
+
+		$container->set('controller_factory', $factory);
+
+		// Create Toolkit
+		$container->set('toolkit', new \YoutubeDownloader\Toolkit);
+
 		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']
@@ -80,4 +88,4 @@ if ( $container->get('config')->get('debug') === true )
 
 date_default_timezone_set($container->get('config')->get('default_timezone'));
 
-return $container;
+return new \YoutubeDownloader\Application\App($container);
