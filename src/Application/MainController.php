@@ -22,8 +22,8 @@ class MainController extends ControllerAbstract
 		$toolkit = $this->get('toolkit');
 
 		echo $template->render('index.php', [
-			'is_chrome' => $toolkit->is_chrome(),
-			'showBrowserExtensions' => $config->get('showBrowserExtensions'),
+			'app_version' => $this->getAppVersion(),
+			'showBrowserExtensions' => ($toolkit->is_chrome() and $config->get('showBrowserExtensions')),
 		]);
 	}
 }

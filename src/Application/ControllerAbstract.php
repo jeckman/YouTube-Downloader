@@ -32,4 +32,14 @@ abstract class ControllerAbstract implements Controller
 	{
 		return $this->app->getContainer()->get($id);
 	}
+
+	/**
+	 * Returns the app version
+	 *
+	 * @return string
+	 */
+	protected function getAppVersion()
+	{
+		return $this->app->getVersion();
+	}
 }

@@ -1,6 +1,7 @@
 <?php echo $this->inc('header.php', ['title' => 'Youtube Downloader Results']); ?>
 <div class="download">
-	<h1 class="download-heading">Youtube Downloader Results</h1>
+	<h1 class="download-heading">Results</h1>
+	<h2 class="download-heading">Youtube Downloader <?php echo $this->get('app_version', ''); ?></h2>
 	<div id="info">
 <?php if ($this->get('show_thumbnail') === true) { ?>
 		<a href="<?php echo $this->get('thumbnail_anchor'); ?>" target="_blank"><img src="<?php echo $this->get('thumbnail_src'); ?>" border="0" hspace="2" vspace="2"></a>

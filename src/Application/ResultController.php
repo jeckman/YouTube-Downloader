@@ -55,7 +55,9 @@ class ResultController extends ControllerAbstract
 			$my_type = 'redirect';
 		}
 
-		$template_data = [];
+		$template_data = [
+			'app_version' => $this->getAppVersion(),
+		];
 
 		/* First get the video info page for this video id */
 		// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
