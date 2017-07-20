@@ -23,10 +23,7 @@ class ResultController extends ControllerAbstract
 
 		if( ! isset($_GET['videoid']) )
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'No video id passed in',
-			]);
-			exit;
+			$this->responseWithErrorMessage('No video id passed in');
 		}
 
 		$my_id = $_GET['videoid'];
@@ -40,10 +37,7 @@ class ResultController extends ControllerAbstract
 
 		if ( $my_id === null )
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'Invalid url',
-			]);
-			exit;
+			$this->responseWithErrorMessage('Invalid url');
 		}
 
 		if (isset($_GET['type']))
@@ -70,18 +64,14 @@ class ResultController extends ControllerAbstract
 
 		if ($video_info->getStatus() == 'fail')
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'Error in video ID: ' . $video_info->getErrorReason(),
-			]);
+			$message = 'Error in video ID: ' . $video_info->getErrorReason();
 
 			if ($config->get('debug'))
 			{
-				echo '<pre>';
-				var_dump($video_info);
-				echo '</pre>';
+				$message .= '<pre>' . var_dump($video_info) . '</pre>';
 			}
 
-			exit;
+			$this->responseWithErrorMessage($message);
 		}
 
 		if ( $my_type !== 'Download' )
@@ -138,6 +128,13 @@ class ResultController extends ControllerAbstract
 
 		$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
 
+		if (count($stream_map->getStreams()) == 0)
+		{
+			$this->responseWithErrorMessage(
+				'No format stream map found - was the video id correct?'
+			);
+		}
+
 		if ($config->get('debug'))
 		{
 			$debug1 = '';
@@ -149,14 +146,6 @@ class ResultController extends ControllerAbstract
 
 			$template_data['show_debug1'] = true;
 			$template_data['debug1'] = var_export($stream_map, true);
-		}
-
-		if (count($stream_map->getStreams()) == 0)
-		{
-			echo $template->render('error.php', [
-				'error_message' => 'No format stream map found - was the video id correct?',
-			]);
-			exit;
 		}
 
 		/* create an array of available download formats */

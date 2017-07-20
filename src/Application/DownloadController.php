@@ -20,16 +20,12 @@ class DownloadController extends ControllerAbstract
 	public function execute()
 	{
 		$config = $this->get('config');
-		$template = $this->get('template');
 		$toolkit = $this->get('toolkit');
 
 		// Check download token
 		if (empty($_GET['mime']) OR empty($_GET['token']))
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'Invalid download token 8{',
-			]);
-			exit();
+			$this->responseWithErrorMessage('Invalid download token 8{');
 		}
 
 		// Set operation params
@@ -44,10 +40,9 @@ class DownloadController extends ControllerAbstract
 			// prevent unauthorized download
 			if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
 			{
-				echo $template->render('error.php', [
-					'error_message' => 'VideoLinkMode: proxy download not enabled',
-				]);
-				exit;
+				$this->responseWithErrorMessage(
+					'VideoLinkMode: proxy download not enabled'
+				);
 			}
 
 			if(
@@ -56,10 +51,7 @@ class DownloadController extends ControllerAbstract
 				and ! preg_match('@https://[^\.]+\.googlevideo.com/@', $url)
 			)
 			{
-				echo $template->render('error.php', [
-					'error_message' => 'unauthorized access (^_^)',
-				]);
-				exit;
+				$this->responseWithErrorMessage('unauthorized access (^_^)');
 			}
 
 			// check if request for mp3 download
@@ -67,10 +59,9 @@ class DownloadController extends ControllerAbstract
 			{
 				if( ! $config->get('MP3Enable') )
 				{
-					echo $template->render('error.php', [
-						'error_message' => 'Option for MP3 download is not enabled.',
-					]);
-					exit;
+					$this->responseWithErrorMessage(
+						'Option for MP3 download is not enabled.'
+					);
 				}
 
 				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
@@ -91,11 +82,7 @@ class DownloadController extends ControllerAbstract
 						$message .= " " . $e->getPrevious()->getMessage();
 					}
 
-
-					echo $template->render('error.php', [
-						'error_message' => $message,
-					]);
-					exit;
+					$this->responseWithErrorMessage($message);
 				}
 
 				$url = $mp3_info['mp3'];
@@ -129,9 +116,6 @@ class DownloadController extends ControllerAbstract
 		}
 
 		// Not found
-		echo $template->render('error.php', [
-			'error_message' => 'File not found 8{',
-		]);
-		exit;
+		$this->responseWithErrorMessage('File not found 8{');
 	}
 }

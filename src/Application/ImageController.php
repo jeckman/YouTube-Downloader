@@ -18,25 +18,18 @@ class ImageController extends ControllerAbstract
 	public function execute()
 	{
 		$config = $this->get('config');
-		$template = $this->get('template');
 		$toolkit = $this->get('toolkit');
 
 		if ( ! isset($_GET['videoid']) )
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'No video id passed in',
-			]);
-			exit;
+			$this->responseWithErrorMessage('No video id passed in');
 		}
 
 		$my_id = $toolkit->validateVideoId($_GET['videoid']);
 
 		if ( $my_id === null )
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'Invalid video id passed in',
-			]);
-			exit;
+			$this->responseWithErrorMessage('Invalid video id passed in');
 		}
 
 		$szName = 'default';
