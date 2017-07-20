@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Application;
 
+use Exception;
+
 /**
  * The download controller
  */
@@ -47,7 +49,12 @@ class DownloadController extends ControllerAbstract
 				]);
 				exit;
 			}
-			if($config->get('VideoLinkMode') !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
+
+			if(
+				$config->get('VideoLinkMode') !== "direct"
+				and ! isset($_GET['getmp3'])
+				and ! preg_match('@https://[^\.]+\.googlevideo.com/@', $url)
+			)
 			{
 				echo $template->render('error.php', [
 					'error_message' => 'unauthorized access (^_^)',
@@ -58,33 +65,40 @@ class DownloadController extends ControllerAbstract
 			// check if request for mp3 download
 			if(isset($_GET['getmp3']))
 			{
-				if($config->get('MP3Enable'))
-				{
-					$mp3_info = array();
-					$mp3_info = $toolkit->getDownloadMP3($url, $config);
-					if(isset($mp3_info['mp3']))
-					{
-						$url = $mp3_info['mp3'];
-					}
-					else
-					{
-						if($config->get('debug') && isset($mp3_info['debugMessage']))
-						{
-							var_dump($mp3_info['debugMessage']);
-						}
-						echo $template->render('error.php', [
-							'error_message' => $mp3_info['message'],
-						]);
-						exit;
-					}
-				}
-				else
+				if( ! $config->get('MP3Enable') )
 				{
 					echo $template->render('error.php', [
 						'error_message' => 'Option for MP3 download is not enabled.',
 					]);
 					exit;
 				}
+
+				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
+				$video_info_string = $toolkit->curlGet($video_info_url, $config);
+				$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
+				$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
+
+				try
+				{
+					$mp3_info = $toolkit->getDownloadMP3($stream_map, $config);
+				}
+				catch (Exception $e)
+				{
+					$message = $e->getMessage();
+
+					if($config->get('debug') && $e->getPrevious() !== null)
+					{
+						$message .= " " . $e->getPrevious()->getMessage();
+					}
+
+
+					echo $template->render('error.php', [
+						'error_message' => $message,
+					]);
+					exit;
+				}
+
+				$url = $mp3_info['mp3'];
 			}
 
 			if(isset($mp3_info['mp3']))
