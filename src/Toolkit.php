@@ -308,7 +308,7 @@ class Toolkit
 			}
 
 			// some video does not have adaptive or dash format, downloading video instead
-			$formats = $video_info->getAdaptiveFormats()();
+			$formats = $video_info->getAdaptiveFormats();
 
 			if (count($formats) === 0)
 			{
