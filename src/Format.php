@@ -40,7 +40,7 @@ class Format
 	private $raw_data = [];
 
 	/**
-	 * Creates a StreamMap from streams and formats arrays
+	 * Creates a Format from a format data array
 	 *
 	 * @param VideoInfo $video_info
 	 * @param array $data

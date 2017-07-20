@@ -208,7 +208,6 @@ class VideoInfo
 			];
 		}
 
-
 		foreach ($this->allowed_keys as $key)
 		{
 			if ( isset($video_info[$key]) )
@@ -232,22 +231,27 @@ class VideoInfo
 	/**
 	 * Parses an array of formats
 	 *
-	 * @param array $formats
+	 * @param array $format_array
 	 * @param array $config
 	 * @return array
 	 */
-	private function parseFormats(array $formats, array $config)
+	private function parseFormats(array $format_array, array $config)
 	{
 		$formats = [];
 
-		if (count($formats) === 1 and $formats[0] === '' )
+		if (count($format_array) === 1 and $format_array[0] === '' )
 		{
 			return $formats;
 		}
 
-		foreach ($formats as $format)
+		foreach ($format_array as $format)
 		{
 			parse_str($format, $format_info);
+
+			if ( count($format_info) <= 1 )
+			{
+				continue;
+			}
 
 			$formats[] = Format::createFromArray($this, $format_info, $config);
 		}
@@ -324,7 +328,7 @@ class VideoInfo
 	 */
 	public function getFormats()
 	{
-		return $this->formats;;
+		return $this->formats;
 	}
 
 	/**

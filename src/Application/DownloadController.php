@@ -66,12 +66,11 @@ class DownloadController extends ControllerAbstract
 
 				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
 				$video_info_string = $toolkit->curlGet($video_info_url, $config);
-				$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
-				$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
+				$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
 
 				try
 				{
-					$mp3_info = $toolkit->getDownloadMP3($stream_map, $config);
+					$mp3_info = $toolkit->getDownloadMP3($video_info, $config);
 				}
 				catch (Exception $e)
 				{

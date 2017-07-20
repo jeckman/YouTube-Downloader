@@ -12,7 +12,7 @@ class Config
 	 *
 	 * @param string $default full path to default config php file
 	 * @param string $custom full path to custom config php file
-	 * @return StreamMap
+	 * @return Config
 	 */
 	public static function createFromFiles($default, $custom = null)
 	{

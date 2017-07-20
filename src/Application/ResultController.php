@@ -60,7 +60,7 @@ class ResultController extends ControllerAbstract
 		$video_info_string = $toolkit->curlGet($video_info_url, $config);
 
 		/* TODO: Check return from curl for status code */
-		$video_info = \YoutubeDownloader\VideoInfo::createFromString($video_info_string);
+		$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
 
 		if ($video_info->getStatus() == 'fail')
 		{
@@ -87,8 +87,7 @@ class ResultController extends ControllerAbstract
 			 * Thanks to the python based youtube-dl for info on the formats
 			 *   							http://rg3.github.com/youtube-dl/
 			 */
-			$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
-			$redirect_url = $toolkit->getDownloadUrlByFormats($stream_map->getStreams(), $_GET['format']);
+			$redirect_url = $toolkit->getDownloadUrlByFormats($video_info->getFormats(), $_GET['format']);
 
 			if ( $redirect_url !== null )
 			{
@@ -120,15 +119,7 @@ class ResultController extends ControllerAbstract
 
 		$template_data['video_title'] = $video_info->getTitle();
 
-		if ( $video_info->getStreamMapString() === null )
-		{
-			$template_data['no_stream_map_found'] = true;
-			$template_data['no_stream_map_found_dump'] = var_export($video_info_string, true);
-		}
-
-		$stream_map = \YoutubeDownloader\StreamMap::createFromVideoInfo($video_info);
-
-		if (count($stream_map->getStreams()) == 0)
+		if (count($video_info->getFormats()) == 0)
 		{
 			$this->responseWithErrorMessage(
 				'No format stream map found - was the video id correct?'
@@ -141,22 +132,23 @@ class ResultController extends ControllerAbstract
 
 			if ($config->get('multipleIPs') === true)
 			{
-				$debug1 .= 'Outgoing IP: ' . print_r(\YoutubeDownloader\StreamMap::getRandomIp($config), true);
+				$debug1 .= 'Outgoing IP: ' . print_r($toolkit->getRandomIp($config), true);
 			}
 
 			$template_data['show_debug1'] = true;
-			$template_data['debug1'] = var_export($stream_map, true);
+			$template_data['debug1'] = @var_export($video_info, true);
 		}
 
 		/* create an array of available download formats */
-		$avail_formats = $stream_map->getStreams();
+		$avail_formats = $video_info->getFormats();
 
 		if ($config->get('debug'))
 		{
+			$first_format = $avail_formats[0];
 			$template_data['show_debug2'] = true;
-			$template_data['debug2_expires'] = $avail_formats[0]['expires'];
-			$template_data['debug2_ip'] = $avail_formats[0]['ip'];
-			$template_data['debug2_ipbits'] = $avail_formats[0]['ipbits'];
+			$template_data['debug2_expires'] = $first_format->getExpires();
+			$template_data['debug2_ip'] = $first_format->getIp();
+			$template_data['debug2_ipbits'] = $first_format->getIpbits();
 		}
 
 		$template_data['streams'] = [];
@@ -166,14 +158,14 @@ class ResultController extends ControllerAbstract
 		/* now that we have the array, print the options */
 		foreach ($avail_formats as $avail_format)
 		{
-			$directlink = $avail_format['url'];
-			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
+			$directlink = $avail_format->getUrl();
+			// $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
 			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
 			$directlink .= '&title=' . $cleanedtitle;
 
-			$proxylink = 'download.php?mime=' . $avail_format['type'] . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format['url']);
+			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
 
-			$size = $toolkit->get_size($avail_format['url'], $config);
+			$size = $toolkit->get_size($avail_format->getUrl(), $config);
 			$size = $toolkit->formatBytes($size);
 
 			$template_data['streams'][] = [
@@ -181,22 +173,22 @@ class ResultController extends ControllerAbstract
 				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
 				'direct_url'=> $directlink,
 				'proxy_url'=> $proxylink,
-				'type'=> $avail_format['type'],
-				'quality'=> $avail_format['quality'],
+				'type'=> $avail_format->getType(),
+				'quality'=> $avail_format->getQuality(),
 				'size'=> $size,
 			];
 		}
 
-		foreach ($stream_map->getFormats() as $avail_format)
+		foreach ($video_info->getAdaptiveFormats() as $avail_format)
 		{
-			$directlink = $avail_format['url'];
-			// $directlink = explode('.googlevideo.com/', $avail_format['url']);
+			$directlink = $avail_format->getUrl();
+			// $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
 			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
 			$directlink .= '&title=' . $cleanedtitle;
 
-			$proxylink = 'download.php?mime=' . $avail_format['type'] . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format['url']);
+			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
 
-			$size = $toolkit->get_size($avail_format['url'], $config);
+			$size = $toolkit->get_size($avail_format->getUrl(), $config);
 			$size = $toolkit->formatBytes($size);
 
 			$template_data['formats'][] = [
@@ -204,8 +196,8 @@ class ResultController extends ControllerAbstract
 				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
 				'direct_url'=> $directlink,
 				'proxy_url'=> $proxylink,
-				'type'=> $avail_format['type'],
-				'quality'=> $avail_format['quality'],
+				'type'=> $avail_format->getType(),
+				'quality'=> $avail_format->getQuality(),
 				'size'=> $size,
 			];
 		}

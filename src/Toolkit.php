@@ -199,9 +199,10 @@ class Toolkit
 	}
 
 	/**
+	 * Get the download url for a specific format
 	 * @param array $avail_formats
 	 * @param string $format
-	 * @return bool
+	 * @return string|null
 	 */
 	public function getDownloadUrlByFormats(array $avail_formats, $format)
 	{
@@ -241,9 +242,9 @@ class Toolkit
 		{
 			for ($j = 0; $j < count($avail_formats); $j++)
 			{
-				if ($target_formats[$i] == $avail_formats[$j]['itag'])
+				$format = $avail_formats[$j];
+				if ($target_formats[$i] == $format->getItag())
 				{
-					//echo '<p>Target format found, it is '. $avail_formats[$j]['itag'] .'</p>';
 					$best_format = $j;
 					break 2;
 				}
@@ -252,28 +253,30 @@ class Toolkit
 
 		$redirect_url = null;
 
-		if (
-			(isset($best_format)) &&
-			(isset($avail_formats[$best_format]['url'])) &&
-			(isset($avail_formats[$best_format]['type']))
-		)
+		if ( $best_format === '' )
 		{
-			$redirect_url = $avail_formats[$best_format]['url'] . '&title=' . $cleanedtitle;
-			$content_type = $avail_formats[$best_format]['type'];
+			return null;
+		}
+
+		$best_format = $avail_formats[$best_format];
+
+		if ( ! empty($best_format->getUrl()) )
+		{
+			$redirect_url = $best_format->getUrl() . '&title=' . $cleanedtitle;
 		}
 
 		return $redirect_url;
 	}
 
 	/**
-	 * @param StreamMap $stream_map
+	 * @param VideoInfo $video_info
 	 * @param Config $config
 	 *
 	 * @throws Exception
 	 *
 	 * @return bool
 	 */
-	public function getDownloadMP3(StreamMap $stream_map, Config $config)
+	public function getDownloadMP3(VideoInfo $video_info, Config $config)
 	{
 		// generate new url, we can re-use previously generated link and pass it
 		// to "token" parameter, but it is too dangerous to use it with exec()
@@ -283,7 +286,7 @@ class Toolkit
 		$media_url = "";
 		$media_type = "";
 
-		$formats = $stream_map->getFormats();
+		$formats = $video_info->getFormats();
 		// find audio with highest quality
 		foreach($formats as $format)
 		{
@@ -305,7 +308,7 @@ class Toolkit
 			}
 
 			// some video does not have adaptive or dash format, downloading video instead
-			$formats = $stream_map->getStreams();
+			$formats = $video_info->getAdaptiveFormats()();
 
 			if (count($formats) === 0)
 			{
@@ -324,12 +327,10 @@ class Toolkit
 
 		if(strpos(implode(" ", $output), "download completed") === false)
 		{
-			$e = new Exception($output[0]);
-
 			throw new Exception(
 				'Download media url from youtube failed.',
 				0,
-				$e
+				new Exception($output[0])
 			);
 		}
 
