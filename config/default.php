@@ -8,6 +8,16 @@
 
 return [
     /**
+     * Enable the YouTube signature decipher function
+     * WARNING: This downloads javascript code from a 3rd party server and interprets it!
+     * This MAY harm your server, if the 3rd party server delivers malicious code!
+     *
+     * false => decipher is disabled
+     * true => decipher is enabled
+     */
+    'enable_youtube_decipher_signature' => false,
+
+    /**
      * Thumbnail Image Configuration
      *
      * 0 => don't show thumbnail image

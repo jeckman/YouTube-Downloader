@@ -134,13 +134,43 @@ class VideoInfo
 	 * @param string $video_info
 	 * @return VideoInfo
 	 */
+	public static function createFromStringWithConfig($string, Config $config)
+	{
+		parse_str($string, $video_info);
+
+		return new self($video_info, $config);
+	}
+
+	/**
+	 * Creates a VideoInfo from string
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead
+	 *
+	 * @param string $video_info
+	 * @return VideoInfo
+	 */
 	public static function createFromString($string)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead', E_USER_DEPRECATED);
+
 		parse_str($string, $video_info);
 
 		return new self($video_info);
 	}
 
+	/**
+	 * @var Format[]
+	 */
+	private $formats = [];
+
+	/**
+	 * @var Format[]
+	 */
+	private $adaptive_formats = [];
+
+	/**
+	 * @var array
+	 */
 	private $data = [];
 
 	/**
@@ -160,10 +190,25 @@ class VideoInfo
 	 * Creates a VideoInfo from an array
 	 *
 	 * @param array $video_info
+	 * @param Config $config
 	 * @return self
 	 */
-	private function __construct(array $video_info)
+	private function __construct(array $video_info, Config $config = null)
 	{
+		// BC: Create config array
+		if ($config === null)
+		{
+			$config = [
+				'decipher_signature' => false,
+			];
+		}
+		else {
+			$config = [
+				'decipher_signature' => $config->get('enable_youtube_decipher_signature'),
+			];
+		}
+
+
 		foreach ($this->allowed_keys as $key)
 		{
 			if ( isset($video_info[$key]) )
@@ -175,6 +220,39 @@ class VideoInfo
 				$this->data[$key] = null;
 			}
 		}
+
+		// get the url_encoded_fmt_stream_map, and explode on comma
+		$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
+		$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
+
+		$this->formats = $this->parseFormats($formats, $config);
+		$this->adaptive_formats = $this->parseFormats($adaptive_formats, $config);
+	}
+
+	/**
+	 * Parses an array of formats
+	 *
+	 * @param array $formats
+	 * @param array $config
+	 * @return array
+	 */
+	private function parseFormats(array $formats, array $config)
+	{
+		$formats = [];
+
+		if (count($formats) === 1 and $formats[0] === '' )
+		{
+			return $formats;
+		}
+
+		foreach ($formats as $format)
+		{
+			parse_str($format, $format_info);
+
+			$formats[] = Format::createFromArray($this, $format_info, $config);
+		}
+
+		return $formats;
 	}
 
 	/**
@@ -240,22 +318,50 @@ class VideoInfo
 	}
 
 	/**
+	 * Get the Formats
+	 *
+	 * @return Format[] array with Format instances
+	 */
+	public function getFormats()
+	{
+		return $this->formats;;
+	}
+
+	/**
+	 * Get the adaptive Formats
+	 *
+	 * @return Format[] array with Format instances
+	 */
+	public function getAdaptiveFormats()
+	{
+		return $this->adaptive_formats;
+	}
+
+	/**
 	 * Get the url_encoded_fmt_stream_map
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead
 	 *
 	 * @return string
 	 */
 	public function getStreamMapString()
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead', E_USER_DEPRECATED);
+
 		return $this->data['url_encoded_fmt_stream_map'];
 	}
 
 	/**
 	 * Get the adaptive_fmts
 	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead
+	 *
 	 * @return string
 	 */
 	public function getAdaptiveFormatsString()
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead', E_USER_DEPRECATED);
+
 		return $this->data['adaptive_fmts'];
 	}
 }

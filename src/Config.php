@@ -32,6 +32,7 @@ class Config
 	private $data = [];
 
 	private $allowed_keys = [
+		'enable_youtube_decipher_signature',
 		'ThumbnailImageMode',
 		'VideoLinkMode',
 		'MP3Enable',
