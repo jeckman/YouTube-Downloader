@@ -260,9 +260,11 @@ class Toolkit
 
 		$best_format = $avail_formats[$best_format];
 
-		if ( ! empty($best_format->getUrl()) )
+		$redirect_url = $best_format->getUrl();
+
+		if ( ! empty($redirect_url) )
 		{
-			$redirect_url = $best_format->getUrl() . '&title=' . $cleanedtitle;
+			$redirect_url .= '&title=' . $cleanedtitle;
 		}
 
 		return $redirect_url;
