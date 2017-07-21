@@ -46,7 +46,7 @@ There are multiple ways to set up YouTube-Downloader
 
 The library code can be used in other projects via [Composer](https://getcomposer.org).
 
-The code isn't available on packagist.org at the moment, so you must a the repository in your `composer.json`. Your `composer.json` should look like this
+The code isn't available on packagist.org at the moment, so you must add the repository in your `composer.json`. Your `composer.json` should look like this
 
 ```
 {
