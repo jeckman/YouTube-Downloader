@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Application;
 
+use Exception;
+
 /**
  * The download controller
  */
@@ -18,16 +20,12 @@ class DownloadController extends ControllerAbstract
 	public function execute()
 	{
 		$config = $this->get('config');
-		$template = $this->get('template');
 		$toolkit = $this->get('toolkit');
 
 		// Check download token
 		if (empty($_GET['mime']) OR empty($_GET['token']))
 		{
-			echo $template->render('error.php', [
-				'error_message' => 'Invalid download token 8{',
-			]);
-			exit();
+			$this->responseWithErrorMessage('Invalid download token 8{');
 		}
 
 		// Set operation params
@@ -42,49 +40,51 @@ class DownloadController extends ControllerAbstract
 			// prevent unauthorized download
 			if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
 			{
-				echo $template->render('error.php', [
-					'error_message' => 'VideoLinkMode: proxy download not enabled',
-				]);
-				exit;
+				$this->responseWithErrorMessage(
+					'VideoLinkMode: proxy download not enabled'
+				);
 			}
-			if($config->get('VideoLinkMode') !== "direct" and !isset($_GET['getmp3']) and !preg_match('@https://[^\.]+\.googlevideo.com/@', $url))
+
+			if(
+				$config->get('VideoLinkMode') !== "direct"
+				and ! isset($_GET['getmp3'])
+				and ! preg_match('@https://[^\.]+\.googlevideo.com/@', $url)
+			)
 			{
-				echo $template->render('error.php', [
-					'error_message' => 'unauthorized access (^_^)',
-				]);
-				exit;
+				$this->responseWithErrorMessage('unauthorized access (^_^)');
 			}
 
 			// check if request for mp3 download
 			if(isset($_GET['getmp3']))
 			{
-				if($config->get('MP3Enable'))
+				if( ! $config->get('MP3Enable') )
 				{
-					$mp3_info = array();
-					$mp3_info = $toolkit->getDownloadMP3($url, $config);
-					if(isset($mp3_info['mp3']))
-					{
-						$url = $mp3_info['mp3'];
-					}
-					else
-					{
-						if($config->get('debug') && isset($mp3_info['debugMessage']))
-						{
-							var_dump($mp3_info['debugMessage']);
-						}
-						echo $template->render('error.php', [
-							'error_message' => $mp3_info['message'],
-						]);
-						exit;
-					}
+					$this->responseWithErrorMessage(
+						'Option for MP3 download is not enabled.'
+					);
 				}
-				else
+
+				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
+				$video_info_string = $toolkit->curlGet($video_info_url, $config);
+				$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
+
+				try
 				{
-					echo $template->render('error.php', [
-						'error_message' => 'Option for MP3 download is not enabled.',
-					]);
-					exit;
+					$mp3_info = $toolkit->getDownloadMP3($video_info, $config);
 				}
+				catch (Exception $e)
+				{
+					$message = $e->getMessage();
+
+					if($config->get('debug') && $e->getPrevious() !== null)
+					{
+						$message .= " " . $e->getPrevious()->getMessage();
+					}
+
+					$this->responseWithErrorMessage($message);
+				}
+
+				$url = $mp3_info['mp3'];
 			}
 
 			if(isset($mp3_info['mp3']))
@@ -115,9 +115,6 @@ class DownloadController extends ControllerAbstract
 		}
 
 		// Not found
-		echo $template->render('error.php', [
-			'error_message' => 'File not found 8{',
-		]);
-		exit;
+		$this->responseWithErrorMessage('File not found 8{');
 	}
 }

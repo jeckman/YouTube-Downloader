@@ -11,7 +11,23 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function createFromString()
 	{
-		$this->assertInstanceOf('YoutubeDownloader\VideoInfo', VideoInfo::createFromString(''));
+		$this->assertInstanceOf(
+			'\\YoutubeDownloader\\VideoInfo',
+			VideoInfo::createFromString('')
+		);
+	}
+
+	/**
+	 * @test createFromStringWithConfig()
+	 */
+	public function createFromStringWithConfig()
+	{
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$this->assertInstanceOf(
+			'\\YoutubeDownloader\\VideoInfo',
+			VideoInfo::createFromStringWithConfig('', $config)
+		);
 	}
 
 	/**
@@ -87,13 +103,33 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	}
 
 	/**
+	 * @test getFormats()
+	 */
+	public function getFormatsIsEmptyArray()
+	{
+		$video_info = VideoInfo::createFromString('url_encoded_fmt_stream_map=formats');
+
+		$this->assertSame([], $video_info->getFormats());
+	}
+
+	/**
+	 * @test getAdaptiveFormats()
+	 */
+	public function getAdaptiveFormatsIsEmptyArray()
+	{
+		$video_info = VideoInfo::createFromString('adaptive_fmts=adaptive_formats');
+
+		$this->assertSame([], $video_info->getAdaptiveFormats());
+	}
+
+	/**
 	 * @test getStreamMapString()
 	 */
 	public function getStreamMapString()
 	{
-		$video_info = VideoInfo::createFromString('url_encoded_fmt_stream_map=stream_map');
+		$video_info = VideoInfo::createFromString('url_encoded_fmt_stream_map=formats');
 
-		$this->assertSame('stream_map', $video_info->getStreamMapString());
+		$this->assertSame('formats', $video_info->getStreamMapString());
 	}
 
 	/**
@@ -101,8 +137,8 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getAdaptiveFormatsString()
 	{
-		$video_info = VideoInfo::createFromString('adaptive_fmts=formats');
+		$video_info = VideoInfo::createFromString('adaptive_fmts=adaptive_formats');
 
-		$this->assertSame('formats', $video_info->getAdaptiveFormatsString());
+		$this->assertSame('adaptive_formats', $video_info->getAdaptiveFormatsString());
 	}
 }

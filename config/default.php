@@ -8,6 +8,27 @@
 
 return [
     /**
+     * Debug mode
+     * WARNING: This outputs debug information while processing.
+     * This could leak sensitive server data to the browser.
+     * Enable only if needed.
+     *
+     * true   => debug mode on
+     * false  => debug mode off
+     */
+    'debug' => false,
+
+    /**
+     * Enable the YouTube signature decipher function
+     * WARNING: This downloads javascript code from a 3rd party server and interprets it!
+     * This MAY harm your server, if the 3rd party server delivers malicious code!
+     *
+     * false => decipher is disabled
+     * true => decipher is enabled
+     */
+    'enable_youtube_decipher_signature' => false,
+
+    /**
      * Thumbnail Image Configuration
      *
      * 0 => don't show thumbnail image
@@ -128,15 +149,9 @@ return [
     /**
      * Set your default timezone
      *
-     * use this link: http://php.net/manual/en/timezones.php
-     */
-    'default_timezone' => 'Asia/Tehran',
-
-    /**
-     * Debug mode
+     * e.g. Asia/Tehran or America/New_York
      *
-     * true   => debug mode on
-     * false  => debug mode off
+     * more examples: http://php.net/manual/en/timezones.php
      */
-    'debug' => false,
+    'default_timezone' => 'UTC',
 ];

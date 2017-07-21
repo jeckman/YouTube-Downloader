@@ -11,7 +11,7 @@ class Engine
 	 * Creates the engine with a template directory
 	 *
 	 * @param VideoInfo $video_info
-	 * @return StreamMap
+	 * @return Engine
 	 */
 	public static function createFromDirectory($directory)
 	{

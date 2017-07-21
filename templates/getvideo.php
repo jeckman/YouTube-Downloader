@@ -67,7 +67,7 @@ else
 	<p align="center">Convert and Download to .mp3</p>
 	<ul>
 		<li>
-			<strong><a href="<?php echo $format['mp3_download_url']; ?>" class="mime">audio/mp3</a> (quality: <?php echo $format['mp3_download_quality']; ?>)</strong>
+			<a href="<?php echo $this->get('mp3_download_url'); ?>" class="mime">audio/mp3</a> (quality: <?php echo $this->get('mp3_download_quality'); ?>)
 		</li>
 	</ul>
 <?php } ?>

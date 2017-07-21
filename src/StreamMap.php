@@ -2,8 +2,16 @@
 
 namespace YoutubeDownloader;
 
+@trigger_error(
+	'StreamMap is deprecated since version 0.2, to be removed in 0.3. Use '.
+	'VideoInfo::getFormats() and VideoInfo::getAdaptiveFormats() instead',
+	E_USER_DEPRECATED
+);
+
 /**
  * StreamMap
+ *
+ * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() and VideoInfo::getAdaptiveFormats() instead
  */
 class StreamMap
 {

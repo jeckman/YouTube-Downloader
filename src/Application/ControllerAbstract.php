@@ -42,4 +42,22 @@ abstract class ControllerAbstract implements Controller
 	{
 		return $this->app->getVersion();
 	}
+
+	/**
+	 * Echos an error and exit
+	 *
+	 * @param string $message
+	 * @return void
+	 */
+	protected function responseWithErrorMessage($message)
+	{
+		$template = $this->get('template');
+
+		echo $template->render('error.php', [
+			'app_version' => $this->getAppVersion(),
+			'error_message' => strval($message),
+		]);
+
+		exit;
+	}
 }
