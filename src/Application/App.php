@@ -12,7 +12,7 @@ class App
 	/**
 	 * @var string
 	 */
-	private $version = '0.2-dev';
+	private $version = '0.2';
 
 	/**
 	 * @var YoutubeDownloader\Container\Container
