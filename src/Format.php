@@ -105,7 +105,10 @@ class Format
 		{
 			// TODO: Remove signature decipher from Format
 			$playerID = SignatureDecipher::downloadPlayerScript($this->getVideoId());
-			if(strpos($this->raw_data['url'], 'ratebypass=')===false) $this->raw_data['url'] .= '&ratebypass=yes';
+			if(strpos($this->raw_data['url'], 'ratebypass=')===false)
+			{
+			    $this->raw_data['url'] .= '&ratebypass=yes';
+			}
 			$signature = '&signature='.SignatureDecipher::decipherSignature($playerID, $this->raw_data['s']);
 		}
 
