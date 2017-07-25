@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader;
 
+use YoutubeDownloader\Cache\Cache;
+
 /**
  * VideoInfo
  *
@@ -159,14 +161,24 @@ class VideoInfo
 	}
 
 	/**
-	 * @var Format[]
+	 * @var YoutubeDownloader\Cache\Cache
 	 */
-	private $formats = [];
+	private $cache;
+
+	/**
+	 * @var array
+	 */
+	private $config;
 
 	/**
 	 * @var Format[]
 	 */
-	private $adaptive_formats = [];
+	private $formats;
+
+	/**
+	 * @var Format[]
+	 */
+	private $adaptive_formats;
 
 	/**
 	 * @var array
@@ -208,6 +220,8 @@ class VideoInfo
 			];
 		}
 
+		$this->config = $config;
+
 		foreach ($this->allowed_keys as $key)
 		{
 			if ( isset($video_info[$key]) )
@@ -219,13 +233,6 @@ class VideoInfo
 				$this->data[$key] = null;
 			}
 		}
-
-		// get the url_encoded_fmt_stream_map, and explode on comma
-		$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-		$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-
-		$this->formats = $this->parseFormats($formats, $config);
-		$this->adaptive_formats = $this->parseFormats($adaptive_formats, $config);
 	}
 
 	/**
@@ -328,6 +335,13 @@ class VideoInfo
 	 */
 	public function getFormats()
 	{
+		if ( $this->formats === null )
+		{
+			// get the url_encoded_fmt_stream_map, and explode on comma
+			$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
+			$this->formats = $this->parseFormats($formats, $this->config);
+		}
+
 		return $this->formats;
 	}
 
@@ -338,7 +352,25 @@ class VideoInfo
 	 */
 	public function getAdaptiveFormats()
 	{
+		if ( $this->adaptive_formats === null )
+		{
+			// get the adaptive_fmts, and explode on comma
+			$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
+			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->config);
+		}
+
 		return $this->adaptive_formats;
+	}
+
+	/**
+	 * Set cache adapter
+	 *
+	 * @param YoutubeDownloader\Cache\Cache $cache
+	 * @return void
+	 */
+	public function setCache(Cache $cache)
+	{
+		$this->cache = $cache;
 	}
 
 	/**
@@ -350,6 +382,13 @@ class VideoInfo
 	 */
 	public function getFromCache($key, $default = null)
 	{
+		if ( $this->cache !== null )
+		{
+			return $this->cache->get($key, $default);
+		}
+
+		die('cache not set');
+
 		if ( file_exists('cache/videoinfo_' . $key) )
 		{
 			return file_get_contents('cache/videoinfo_' . $key);
@@ -368,6 +407,11 @@ class VideoInfo
 	 */
 	public function setToCache($key, $value, $ttl = null)
 	{
+		if ( $this->cache !== null )
+		{
+			return $this->cache->set($key, $value, $ttl);
+		}
+
 		return file_put_contents('cache/videoinfo_' . $key, $value);
 	}
 

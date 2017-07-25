@@ -117,7 +117,7 @@ class Format
 			{
 				$decipherScript = SignatureDecipher::downloadRawPlayerScript($playerURL);
 
-				$this->video_info->setToCache($cache_key, $decipherScript);
+				$this->video_info->setToCache($cache_key, $decipherScript, 3600*24);
 			}
 
 			$sig = SignatureDecipher::decipherSignatureWithRawPlayerScript(

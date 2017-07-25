@@ -61,6 +61,7 @@ class ResultController extends ControllerAbstract
 
 		/* TODO: Check return from curl for status code */
 		$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
+		$video_info->setCache($this->get('cache'));
 
 		if ($video_info->getStatus() == 'fail')
 		{

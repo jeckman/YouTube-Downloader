@@ -67,6 +67,7 @@ class DownloadController extends ControllerAbstract
 				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
 				$video_info_string = $toolkit->curlGet($video_info_url, $config);
 				$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
+				$video_info->setCache($this->get('cache'));
 
 				try
 				{
