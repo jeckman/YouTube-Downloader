@@ -125,9 +125,9 @@ class Format
 				$this->raw_data['s']
 			);
 
-			if(strpos($this->raw_data['url'], 'ratebypass=')===false)
+			if ( strpos($this->raw_data['url'], 'ratebypass=') === false )
 			{
-			    $this->raw_data['url'] .= '&ratebypass=yes';
+				$this->raw_data['url'] .= '&ratebypass=yes';
 			}
 
 			$signature = '&signature='.$sig;
