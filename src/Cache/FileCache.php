@@ -16,13 +16,14 @@ class FileCache implements Cache
 	 * Create the cache with a directory
 	 *
 	 * @param string $directory The cache root directory
+	 * @param array $config some configuration
 	 *
 	 * @param CacheException If $directory not exists
 	 * @param CacheException If $directory is not writable
 	 *
 	 * @return FileCache
 	 */
-	public static function createFromDirectory($directory)
+	public static function createFromDirectory($directory, array $config = [])
 	{
 		$directory = rtrim(strval($directory), '/\\');
 
@@ -54,7 +55,7 @@ class FileCache implements Cache
 			);
 		}
 
-		return new self($directory);
+		return new self($directory, $config);
 	}
 
 	/**
@@ -63,14 +64,27 @@ class FileCache implements Cache
 	private $root;
 
 	/**
+	 * @var array
+	 */
+	private $config = [
+		'writeFlags' => LOCK_EX,
+	];
+
+	/**
 	 * Fetches a value from the cache.
 	 *
 	 * @param string $directory The cache root directory
+	 * @param array $config some configuration
 	 *
 	 * @return void
 	 */
-	public function __construct($directory)
+	public function __construct($directory, array $config = [])
 	{
+		if ( array_key_exists('writeFlags', $config) )
+		{
+			$this->config['writeFlags'] = $config['writeFlags'];
+		}
+
 		$this->root = rtrim(strval($directory), '/\\');
 	}
 
@@ -87,7 +101,38 @@ class FileCache implements Cache
 	 */
 	public function get($key, $default = null)
 	{
-		throw new \Exception('Not implemented');
+		$this->validateKey($key);
+
+		$location = $this->root . \DIRECTORY_SEPARATOR . $key;
+
+		$data = false;
+
+		if ( file_exists($location) )
+		{
+			$data = file_get_contents($location);
+		}
+
+		if ( $data === false )
+		{
+			return $default;
+		}
+
+		$data = @unserialize($data);
+
+		if ( $data === false )
+		{
+			return $default;
+		}
+
+		$expirationTimestamp = $data[1] ?: null;
+
+		if ($expirationTimestamp !== null && time() > $expirationTimestamp)
+		{
+			// TODO: Cache is expired, delete key
+			return $default;
+		}
+
+		return $data[0];
 	}
 
 	/**
@@ -106,7 +151,40 @@ class FileCache implements Cache
 	 */
 	public function set($key, $value, $ttl = null)
 	{
-		throw new \Exception('Not implemented');
+		$this->validateKey($key);
+
+		if ($ttl instanceof DateTimeInterface)
+		{
+			$expirationTimestamp = $ttl->getTimestamp();
+		}
+		elseif (is_int($ttl))
+		{
+			$expirationTimestamp = time() + $ttl;
+		}
+		elseif (null === $ttl)
+		{
+			$expirationTimestamp = $ttl;
+		}
+		else
+		{
+			throw new InvalidArgumentException('$ttl must be of type null, integer or \DateTimeInterface.');
+		}
+
+		$data = serialize([
+			$value,
+			$expirationTimestamp,
+		]);
+
+		$location = $this->root . \DIRECTORY_SEPARATOR . $key;
+
+		$size = file_put_contents($location, $data, $this->config['writeFlags']);
+
+		if ( $size === false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -165,7 +243,7 @@ class FileCache implements Cache
 			);
 		}
 
-		if ( preg_match('~^[a-zA-Z0-9_-]*$~', $key) !== 0 )
+		if ( preg_match('~[^a-zA-Z0-9_\\-$]+~', $key) !== 0 )
 		{
 			throw new InvalidArgumentException(sprintf(
 				'Invalid key: "%s". The key contains one or more not allowed characters, allowed are only %s',

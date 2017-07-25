@@ -74,4 +74,109 @@ class FileCacheTest extends TestCase
 
 		FileCache::createFromDirectory($root->url());
 	}
+
+	/**
+	 * @test get()
+	 */
+	public function getReturnsValue()
+	{
+		$root = vfsStream::setup('cache', 0600);
+		vfsStream::newFile('key', 0600)
+			->withContent(serialize([
+				'foobar',
+				null,
+			]))
+			->at($root);
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->assertSame('foobar', $cache->get('key'));
+	}
+
+	/**
+	 * @test get()
+	 */
+	public function getNotExistingReturnsDefault()
+	{
+		$root = vfsStream::setup('cache', 0600);
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->assertSame('default', $cache->get('key', 'default'));
+	}
+
+	/**
+	 * @test get()
+	 */
+	public function getNotUnserializableReturnsDefault()
+	{
+		$root = vfsStream::setup('cache', 0600);
+		vfsStream::newFile('key', 0600)
+			->withContent('foobar')
+			->at($root);
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->assertSame('default', $cache->get('key', 'default'));
+	}
+
+	/**
+	 * @test get()
+	 */
+	public function getExpiredReturnsDefault()
+	{
+		$root = vfsStream::setup('cache', 0600);
+		vfsStream::newFile('key', 0600)
+		->withContent(serialize([
+				'foobar',
+				1,
+			]))
+			->at($root);
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->assertSame('default', $cache->get('key', 'default'));
+	}
+
+	/**
+	 * @test set()
+	 */
+	public function setReturnsTrue()
+	{
+		$root = vfsStream::setup('cache', 0600);
+
+		$cache = FileCache::createFromDirectory(
+			$root->url(),
+			['writeFlags' => 0]
+		);
+
+		$this->assertTrue($cache->set('key', 'foobar'));
+
+		$this->assertTrue($root->hasChild('key'));
+		$this->assertSame(
+			'a:2:{i:0;s:6:"foobar";i:1;N;}',
+			$root->getChild('key')->getContent()
+		);
+	}
+
+	/**
+	 * @test set()
+	 */
+	public function setWithTtlReturnsTrue()
+	{
+		$root = vfsStream::setup('cache', 0600);
+
+		$cache = FileCache::createFromDirectory(
+			$root->url(),
+			['writeFlags' => 0]
+		);
+
+		$this->assertTrue($cache->set('key', 'foobar', 3600));
+
+		$this->assertTrue($root->hasChild('key'));
+		$this->assertSame(
+			sprintf('a:2:{i:0;s:6:"foobar";i:1;i:%s;}', time()+3600),
+			$root->getChild('key')->getContent()
+		);
+	}
 }
