@@ -7,17 +7,6 @@ use YoutubeDownloader\VideoInfo;
 class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
 	/**
-	 * @test createFromString()
-	 */
-	public function createFromString()
-	{
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\VideoInfo',
-			VideoInfo::createFromString('')
-		);
-	}
-
-	/**
 	 * @test createFromStringWithConfig()
 	 */
 	public function createFromStringWithConfig()
@@ -35,7 +24,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getVideoId()
 	{
-		$video_info = VideoInfo::createFromString('video_id=123abc');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('video_id=123abc', $config);
 
 		$this->assertSame('123abc', $video_info->getVideoId());
 	}
@@ -45,7 +36,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getStatus()
 	{
-		$video_info = VideoInfo::createFromString('status=ok');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('status=ok', $config);
 
 		$this->assertSame('ok', $video_info->getStatus());
 	}
@@ -55,7 +48,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getErrorReason()
 	{
-		$video_info = VideoInfo::createFromString('reason=This video is unavailable.');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('reason=This video is unavailable.', $config);
 
 		$this->assertSame('This video is unavailable.', $video_info->getErrorReason());
 	}
@@ -65,7 +60,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getThumbnailUrl()
 	{
-		$video_info = VideoInfo::createFromString('thumbnail_url=http://example.com/image.jpg');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('thumbnail_url=http://example.com/image.jpg', $config);
 
 		$this->assertSame('http://example.com/image.jpg', $video_info->getThumbnailUrl());
 	}
@@ -75,7 +72,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getTitle()
 	{
-		$video_info = VideoInfo::createFromString('title=Foo bar');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('title=Foo bar', $config);
 
 		$this->assertSame('Foo bar', $video_info->getTitle());
 	}
@@ -86,7 +85,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getCleanedTitle($title, $expected)
 	{
-		$video_info = VideoInfo::createFromString('title=' . $title);
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('title=' . $title, $config);
 
 		$this->assertSame($expected, $video_info->getCleanedTitle());
 	}
@@ -107,7 +108,9 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getFormatsIsEmptyArray()
 	{
-		$video_info = VideoInfo::createFromString('url_encoded_fmt_stream_map=formats');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('url_encoded_fmt_stream_map=formats', $config);
 
 		$this->assertSame([], $video_info->getFormats());
 	}
@@ -117,28 +120,10 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function getAdaptiveFormatsIsEmptyArray()
 	{
-		$video_info = VideoInfo::createFromString('adaptive_fmts=adaptive_formats');
+		$config = $this->createMock('\\YoutubeDownloader\\Config');
+
+		$video_info = VideoInfo::createFromStringWithConfig('adaptive_fmts=adaptive_formats', $config);
 
 		$this->assertSame([], $video_info->getAdaptiveFormats());
-	}
-
-	/**
-	 * @test getStreamMapString()
-	 */
-	public function getStreamMapString()
-	{
-		$video_info = VideoInfo::createFromString('url_encoded_fmt_stream_map=formats');
-
-		$this->assertSame('formats', $video_info->getStreamMapString());
-	}
-
-	/**
-	 * @test getAdaptiveFormatsString()
-	 */
-	public function getAdaptiveFormatsString()
-	{
-		$video_info = VideoInfo::createFromString('adaptive_fmts=adaptive_formats');
-
-		$this->assertSame('adaptive_formats', $video_info->getAdaptiveFormatsString());
 	}
 }
