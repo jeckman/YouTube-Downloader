@@ -128,7 +128,8 @@ class FileCache implements Cache
 
 		if ($expirationTimestamp !== null && time() > $expirationTimestamp)
 		{
-			// TODO: Cache is expired, delete key
+			$this->delete($key);
+
 			return $default;
 		}
 
@@ -199,7 +200,11 @@ class FileCache implements Cache
 	 */
 	public function delete($key)
 	{
-		throw new \Exception('Not implemented');
+		$this->validateKey($key);
+
+		$location = $this->root . \DIRECTORY_SEPARATOR . $key;
+
+		return unlink($location);
 	}
 
 	/**

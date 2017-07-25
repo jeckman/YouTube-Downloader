@@ -127,7 +127,7 @@ class FileCacheTest extends TestCase
 	{
 		$root = vfsStream::setup('cache', 0600);
 		vfsStream::newFile('key', 0600)
-		->withContent(serialize([
+			->withContent(serialize([
 				'foobar',
 				1,
 			]))
@@ -136,6 +136,9 @@ class FileCacheTest extends TestCase
 		$cache = FileCache::createFromDirectory($root->url());
 
 		$this->assertSame('default', $cache->get('key', 'default'));
+
+		// The expired cache should be deleted
+		$this->assertFalse($root->hasChildren());
 	}
 
 	/**
@@ -178,5 +181,24 @@ class FileCacheTest extends TestCase
 			sprintf('a:2:{i:0;s:6:"foobar";i:1;i:%s;}', time()+3600),
 			$root->getChild('key')->getContent()
 		);
+	}
+
+	/**
+	 * @test delete()
+	 */
+	public function deleteReturnsTrue()
+	{
+		$root = vfsStream::setup('cache', 0600);
+		vfsStream::newFile('key', 0600)
+			->withContent(serialize([
+				'foobar',
+				null,
+			]))
+			->at($root);
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->assertTrue($cache->delete('key'));
+		$this->assertFalse($root->hasChildren());
 	}
 }
