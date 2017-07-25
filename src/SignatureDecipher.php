@@ -53,8 +53,18 @@ class SignatureDecipher
 		);
 	}
 
+	/**
+	 * download the raw player script with cache
+	 *
+	 * @deprecated since version 0.3, to be removed in 0.4. Use SignatureDecipher::downloadRawPlayerScript() instead
+	 *
+	 * @param string $videoID
+	 * @return string returns the playerID
+	 */
 	public static function downloadPlayerScript($videoID)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.3, to be removed in 0.4. Use SignatureDecipher::downloadRawPlayerScript() instead', E_USER_DEPRECATED);
+
 		$player_info = static::getPlayerInfoByVideoId($videoID);
 
 		$playerID = $player_info[0];
@@ -68,17 +78,22 @@ class SignatureDecipher
 		return $playerID;
 	}
 
-	public static function decipherSignature($playerID, $signature)
+	/**
+	 * decipher a signature with a raw player script
+	 *
+	 * @param string $decipherScript
+	 * @param string $signature
+	 * @return string returns the decipherd signature
+	 */
+	public static function decipherSignatureWithRawPlayerScript($decipherScript, $signature)
 	{
 		ob_start(); //For debugging
-		echo("==== Load player script and execute patterns ====\n\n");
-		echo("Loading player ID = $playerID\n");
+		echo("==== Load player script and execute patterns from player script ====\n\n");
 
-		if(!$playerID) return;
-
-		if(file_exists("cache/playerscript_$playerID")) {
-			$decipherScript = file_get_contents("cache/playerscript_$playerID");
-		} else die("\n==== Player script was not found for id: $playerID ====");
+		if ( ! $decipherScript )
+		{
+			return '';
+		}
 
 		// Some preparation
 		$signatureCall = explode('("signature",', $decipherScript);
@@ -142,6 +157,36 @@ class SignatureDecipher
 
 		//Return signature
 		return $decipheredSignature;
+	}
+
+	/**
+	 * decipher a signature
+	 *
+	 * @deprecated since version 0.3, to be removed in 0.4. Use SignatureDecipher::decipherSignatureWithRawPlayerScript() instead
+	 *
+	 * @param string $playerID
+	 * @param string $signature
+	 * @return string returns the decipherd signature
+	 */
+	public static function decipherSignature($playerID, $signature)
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.3, to be removed in 0.4. Use SignatureDecipher::decipherSignatureWithRawPlayerScript() instead', E_USER_DEPRECATED);
+
+		if(!$playerID) return;
+
+		if(file_exists("cache/playerscript_$playerID"))
+		{
+			$decipherScript = file_get_contents("cache/playerscript_$playerID");
+		}
+		else
+		{
+			die("\n==== Player script was not found for id: $playerID ====");
+		}
+
+		return static::decipherSignatureWithRawPlayerScript(
+			$decipherScript,
+			$signature
+		);
 	}
 
 	private static function executeSignaturePattern($patterns, $deciphers, $signature)
