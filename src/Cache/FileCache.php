@@ -7,7 +7,7 @@ use DateTimeInterface;
 /**
  * Describes the interface of a container that exposes methods to read its entries.
  *
- * This interface is compatible with PSR-16 Psr\SimpleCache\CacheInterface
+ * This interface must be compatible with PSR-16 Psr\SimpleCache\CacheInterface
  */
 
 class FileCache implements Cache
@@ -96,7 +96,7 @@ class FileCache implements Cache
 	 *
 	 * @return mixed The value of the item from the cache, or $default in case of cache miss.
 	 *
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 *   MUST be thrown if the $key string is not a legal value.
 	 */
 	public function get($key, $default = null)
@@ -147,7 +147,7 @@ class FileCache implements Cache
 	 *
 	 * @return bool True on success and false on failure.
 	 *
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 *   MUST be thrown if the $key string is not a legal value.
 	 */
 	public function set($key, $value, $ttl = null)
@@ -195,7 +195,7 @@ class FileCache implements Cache
 	 *
 	 * @return bool True if the item was successfully removed. False if there was an error.
 	 *
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 *   MUST be thrown if the $key string is not a legal value.
 	 */
 	public function delete($key)
