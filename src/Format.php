@@ -104,8 +104,28 @@ class Format
 		if ( isset($this->raw_data['s']) and $this->config['decipher_signature'] )
 		{
 			// TODO: Remove signature decipher from Format
-			$playerID = SignatureDecipher::downloadPlayerScript($this->getVideoId());
-			$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $this->raw_data['s']);
+			$player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
+
+			$playerID = $player_info[0];
+			$playerURL = $player_info[1];
+
+			$cache_key = 'playerscript_' . $playerID;
+
+			$decipherScript = $this->video_info->getFromCache($cache_key);
+
+			if ( $decipherScript === null )
+			{
+				$decipherScript = SignatureDecipher::downloadRawPlayerScript($playerURL);
+
+				$this->video_info->setToCache($cache_key, $decipherScript);
+			}
+
+			$sig = SignatureDecipher::decipherSignatureWithRawPlayerScript(
+				$decipherScript,
+				$this->raw_data['s']
+			);
+
+			$signature = '&ratebypass=yes&signature='.$sig;
 		}
 
 		$this->data['url'] = $this->raw_data['url'].$signature;

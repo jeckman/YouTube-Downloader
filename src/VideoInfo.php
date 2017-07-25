@@ -342,6 +342,36 @@ class VideoInfo
 	}
 
 	/**
+	 * Get from cache
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getFromCache($key, $default = null)
+	{
+		if ( file_exists('cache/videoinfo_' . $key) )
+		{
+			return file_get_contents('cache/videoinfo_' . $key);
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Set to cache
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @param null|int|DateTimeInterval $ttl
+	 * @return bool
+	 */
+	public function setToCache($key, $value, $ttl = null)
+	{
+		return file_put_contents('cache/videoinfo_' . $key, $value);
+	}
+
+	/**
 	 * Get the url_encoded_fmt_stream_map
 	 *
 	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead
