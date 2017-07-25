@@ -5,21 +5,64 @@ namespace YoutubeDownloader;
 
 class SignatureDecipher
 {
-	public static function downloadPlayerScript($videoID)
+	/**
+	 * returns the player id and url for a video id
+	 *
+	 * @param string $videoID
+	 *
+	 * @return array the player id and url
+	 *
+	 * @throws \Exception if the player id couldn't be get
+	 */
+	public static function getPlayerInfoByVideoId($videoID)
 	{
-		$playerID = self::loadURL("https://www.youtube.com/watch?v=$videoID");
+		$playerID = self::loadURL('https://www.youtube.com/watch?v=' . $videoID);
 		$playerID = explode("\/yts\/jsbin\/player-", $playerID);
-		if(count($playerID)<=1){
-			echo("Failed to retrieve player script for video id: $videoID");
-			return false;
+
+		if(count($playerID) === 0)
+		{
+			throw new \Exception(sprintf(
+				'Failed to retrieve player script for video id: %s',
+				$videoID
+			));
 		}
+
 		$playerID = $playerID[1];
 		$playerURL = str_replace('\/', '/', explode('"', $playerID)[0]);
 		$playerID = explode('/', $playerURL)[0];
 
-		if(!file_exists("playerscript/$playerID")) {
-			$decipherScript = self::loadURL("https://youtube.com/yts/jsbin/player-$playerURL");
-			file_put_contents("playerscript/$playerID", $decipherScript);
+		return [
+			$playerID,
+			$playerURL,
+		];
+	}
+
+	/**
+	 * download the raw player script
+	 *
+	 * @param string $videoURL
+	 *
+	 * @return string the raw player script
+	 *
+	 * @throws \Exception if the script couldn't be downloaded
+	 */
+	public static function downloadRawPlayerScript($playerURL)
+	{
+		return self::loadURL(
+			'https://youtube.com/yts/jsbin/player-' . $playerURL
+		);
+	}
+
+	public static function downloadPlayerScript($videoID)
+	{
+		$player_info = static::getPlayerInfoByVideoId($videoID);
+
+		$playerID = $player_info[0];
+		$playerURL = $player_info[1];
+
+		if(!file_exists('cache/playerscript_' . $playerID)) {
+			$decipherScript = self::downloadRawPlayerScript($playerURL);
+			file_put_contents('cache/playerscript_' . $playerID, $decipherScript);
 		}
 
 		return $playerID;
@@ -33,8 +76,8 @@ class SignatureDecipher
 
 		if(!$playerID) return;
 
-		if(file_exists("playerscript/$playerID")) {
-			$decipherScript = file_get_contents("playerscript/$playerID");
+		if(file_exists("cache/playerscript_$playerID")) {
+			$decipherScript = file_get_contents("cache/playerscript_$playerID");
 		} else die("\n==== Player script was not found for id: $playerID ====");
 
 		// Some preparation
