@@ -2,10 +2,18 @@
 
 namespace YoutubeDownloader;
 
+@trigger_error(
+	'`Stream` is deprecated since version 0.2, to be removed in 0.3. '.
+	'Use `Format` instead',
+	E_USER_DEPRECATED
+);
+
 /**
- * a video format
+ * Stream
+ *
+ * @deprecated since version 0.2, to be removed in 0.3. Use Format instead
  */
-class Format
+class Stream
 {
 	/**
 	 * Creates a Stream from array
@@ -19,40 +27,29 @@ class Format
 	 *
 	 * @param VideoInfo $video_info
 	 * @param array $stream_info
-	 * @param array $config
 	 * @return Stream
 	 */
-	public static function createFromArray(
-		VideoInfo $video_info,
-		array $stream_info,
-		array $config
-		)
+	public static function createFromArray(VideoInfo $video_info, array $stream_info)
 	{
-		return new self($video_info, $stream_info, $config);
+		return new self($video_info, $stream_info);
 	}
 
 	private $video_info;
-
-	private $config = [];
 
 	private $data = [];
 
 	private $raw_data = [];
 
 	/**
-	 * Creates a Format from a format data array
+	 * Creates a StreamMap from streams and formats arrays
 	 *
 	 * @param VideoInfo $video_info
 	 * @param array $data
 	 * @return self
 	 */
-	private function __construct(VideoInfo $video_info, array $data, array $config)
+	private function __construct(VideoInfo $video_info, array $data)
 	{
 		$this->video_info = $video_info;
-
-		$this->config = [
-			'decipher_signature' => (isset($config['decipher_signature'])) ? (bool) $config['decipher_signature'] : false,
-		];
 
 		$allowed_keys = [
 			'itag',
@@ -101,11 +98,11 @@ class Format
 		$signature = '';
 
 		// The video signature need to be deciphered
-		if ( isset($this->raw_data['s']) and $this->config['decipher_signature'] )
+		if (isset($this->raw_data['s']))
 		{
-			// TODO: Remove signature decipher from Format
-			$playerID = SignatureDecipher::downloadPlayerScript($this->getVideoId());
-			$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $this->raw_data['s']);
+			// Uncomment the following 2 lines to activate signature decipher
+			//$playerID = SignatureDecipher::downloadPlayerScript($this->getVideoId());
+			//$signature = '&ratebypass=yes&signature='.SignatureDecipher::decipherSignature($playerID, $this->raw_data['s']);
 		}
 
 		$this->data['url'] = $this->raw_data['url'].$signature;
