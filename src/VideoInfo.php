@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader;
 
+use YoutubeDownloader\Cache\Cache;
+
 /**
  * VideoInfo
  *
@@ -142,14 +144,41 @@ class VideoInfo
 	}
 
 	/**
-	 * @var Format[]
+	 * Creates a VideoInfo from string
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead
+	 *
+	 * @param string $video_info
+	 * @return VideoInfo
 	 */
-	private $formats = [];
+	public static function createFromString($string)
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead', E_USER_DEPRECATED);
+
+		parse_str($string, $video_info);
+
+		return new self($video_info);
+	}
+
+	/**
+	 * @var YoutubeDownloader\Cache\Cache
+	 */
+	private $cache;
+
+	/**
+	 * @var array
+	 */
+	private $config;
 
 	/**
 	 * @var Format[]
 	 */
-	private $adaptive_formats = [];
+	private $formats;
+
+	/**
+	 * @var Format[]
+	 */
+	private $adaptive_formats;
 
 	/**
 	 * @var array
@@ -191,6 +220,8 @@ class VideoInfo
 			];
 		}
 
+		$this->config = $config;
+
 		foreach ($this->allowed_keys as $key)
 		{
 			if ( isset($video_info[$key]) )
@@ -202,13 +233,6 @@ class VideoInfo
 				$this->data[$key] = null;
 			}
 		}
-
-		// get the url_encoded_fmt_stream_map, and explode on comma
-		$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-		$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-
-		$this->formats = $this->parseFormats($formats, $config);
-		$this->adaptive_formats = $this->parseFormats($adaptive_formats, $config);
 	}
 
 	/**
@@ -311,6 +335,13 @@ class VideoInfo
 	 */
 	public function getFormats()
 	{
+		if ( $this->formats === null )
+		{
+			// get the url_encoded_fmt_stream_map, and explode on comma
+			$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
+			$this->formats = $this->parseFormats($formats, $this->config);
+		}
+
 		return $this->formats;
 	}
 
@@ -321,6 +352,94 @@ class VideoInfo
 	 */
 	public function getAdaptiveFormats()
 	{
+		if ( $this->adaptive_formats === null )
+		{
+			// get the adaptive_fmts, and explode on comma
+			$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
+			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->config);
+		}
+
 		return $this->adaptive_formats;
+	}
+
+	/**
+	 * Set cache adapter
+	 *
+	 * @param YoutubeDownloader\Cache\Cache $cache
+	 * @return void
+	 */
+	public function setCache(Cache $cache)
+	{
+		$this->cache = $cache;
+	}
+
+	/**
+	 * Get from cache
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getFromCache($key, $default = null)
+	{
+		if ( $this->cache !== null )
+		{
+			return $this->cache->get($key, $default);
+		}
+
+		die('cache not set');
+
+		if ( file_exists('cache/videoinfo_' . $key) )
+		{
+			return file_get_contents('cache/videoinfo_' . $key);
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Set to cache
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @param null|int|DateTimeInterval $ttl
+	 * @return bool
+	 */
+	public function setToCache($key, $value, $ttl = null)
+	{
+		if ( $this->cache !== null )
+		{
+			return $this->cache->set($key, $value, $ttl);
+		}
+
+		return file_put_contents('cache/videoinfo_' . $key, $value);
+	}
+
+	/**
+	 * Get the url_encoded_fmt_stream_map
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead
+	 *
+	 * @return string
+	 */
+	public function getStreamMapString()
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead', E_USER_DEPRECATED);
+
+		return $this->data['url_encoded_fmt_stream_map'];
+	}
+
+	/**
+	 * Get the adaptive_fmts
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead
+	 *
+	 * @return string
+	 */
+	public function getAdaptiveFormatsString()
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead', E_USER_DEPRECATED);
+
+		return $this->data['adaptive_fmts'];
 	}
 }
