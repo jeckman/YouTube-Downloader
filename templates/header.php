@@ -2,62 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo $this->get('title', 'Youtube Downloader'); ?></title>
-	<meta name="keywords"
-		  content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader"/>
+	<meta name="keywords" content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader"/>
+	<meta name="description" content="Video downloader, download youtube, video download, youtube video, youtube downloader, download youtube FLV, download youtube MP4, download youtube 3GP, php video downloader"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 	<link href="css/custom.css" rel="stylesheet">
 	<style type="text/css">
-		body {
-			padding-top: 40px;
-			padding-bottom: 40px;
-			background-color: #f5f5f5;
-		}
-
-		.download {
-			max-width: 400px;
-			padding: 19px 29px 29px;
-			margin: 0 auto 20px;
-			background-color: #fff;
-			border: 1px solid #e5e5e5;
-			-webkit-border-radius: 5px;
-			-moz-border-radius: 5px;
-			border-radius: 5px;
-			-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-			-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-			box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
-		}
-
-		.download .download-heading {
-			text-align: center;
-			margin-bottom: 10px;
-		}
-
-		.mime, .itag {
-			width: 75px;
-			display: inline-block;
-		}
-
-		.itag {
-			width: 15px;
-		}
-
-		.size {
-			width: 20px;
-		}
-
-		.userscript {
-			float: right;
-			margin-top: 5px
-		}
-
 		#info {
 			padding: 0 0 0 130px;
 			position: relative;
 			height: 100px;
 		}
-
 		#info img {
 			left: 0;
 			position: absolute;
@@ -68,3 +24,22 @@
 	</style>
 </head>
 <body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="index.php">Youtube Downloader</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="index.php">Home</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<div class="container">
