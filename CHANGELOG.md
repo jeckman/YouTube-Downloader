@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
+- the web UI now uses Bootstrap 3.3.7 and has been improved
 - all cache files are now saved in folder `cache`, the `playerscript` folder can be removed
 
 ### Fixed
