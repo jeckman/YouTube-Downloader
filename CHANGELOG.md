@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Removed
+
+- **Breaking** method `SignatureDecipher::downloadPlayerScript()` was removed, use `SignatureDecipher::downloadRawPlayerScript()` instead
+- **Breaking** method `SignatureDecipher::decipherSignature()` was removed, use `SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
+
 ## [0.3] - 2017-07-28
 
 ### Added
