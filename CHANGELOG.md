@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new PSR-16 compatible cache implemantation `Cache\FileCache` to store data in the filesystem
+- `SignatureDecipher::getPlayerInfoByVideoId()` to get the player ID and player url of a cipher video
+- `SignatureDecipher::downloadRawPlayerScript()` to download the raw player script of a cipher video
+- `SignatureDecipher::decipherSignatureWithRawPlayerScript()` to decipher a signature with a raw dicipher script
+- `VideoInfo::setCache()` to set a Cache implemantation
+- `VideoInfo::getFromCache()` to get a value from the Cache implemantation
+- `VideoInfo::setToCache()` to set a value to the Cache implemantation
+
+### Changed
+
+- all cache files are now saved in folder `cache`, the `playerscript` folder can be removed
+
+### Fixed
+
+- An issue in Format.php was fixed, that led to wrong download sizes for some formats
+
+### Deprecated
+
+- method `SignatureDecipher::downloadPlayerScript()` will be removed in release 0.4, use `SignatureDecipher::downloadRawPlayerScript()` instead
+- method `SignatureDecipher::decipherSignature()` will be removed in release 0.4, use `SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
+
+### Removed
+
+- **Breaking** class `Stream` was removed, use `Format` instead
+- **Breaking** class `StreamMap` was removed, use `VideoInfo::getFormats()` and `VideoInfo::getAdaptiveFormats()` instead
+- **Breaking** method `VideoInfo::createFromString()` was removed, use `VideoInfo::createFromStringWithConfig()` instead
+- **Breaking** method `VideoInfo::getStreamMapString()` was removed, use `VideoInfo::getFormats()` instead
+- **Breaking** method `VideoInfo::getAdaptiveFormatsString()` was removed, use `VideoInfo::getAdaptiveFormats()` instead
+
 ## [0.2] - 2017-07-21
 
 ### Added
@@ -19,8 +50,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Deprecated
 
-- class `StreamMap` will be removed in release 0.3, use `VideoInfo::getFormats()` and `VideoInfo::getAdaptiveFormats()` instead
 - class `Stream` will be removed in release 0.3, use `Format` instead
+- class `StreamMap` will be removed in release 0.3, use `VideoInfo::getFormats()` and `VideoInfo::getAdaptiveFormats()` instead
 - method `VideoInfo::createFromString()` will be removed in release 0.3, use `VideoInfo::createFromStringWithConfig()` instead
 - method `VideoInfo::getStreamMapString()` will be removed in release 0.3, use `VideoInfo::getFormats()` instead
 - method `VideoInfo::getAdaptiveFormatsString()` will be removed in release 0.3, use `VideoInfo::getAdaptiveFormats()` instead
