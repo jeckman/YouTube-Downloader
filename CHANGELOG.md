@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- An issue in Format.php was fixed, that led to wrong download sizes for some formats
+- an issue in `Format` was fixed, that led to wrong download sizes for some formats
+- an issue in `ToolKit` was fixed, that led to an error with str_replace()
 
 ### Deprecated
 
