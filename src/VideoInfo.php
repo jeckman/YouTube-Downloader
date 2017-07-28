@@ -144,6 +144,23 @@ class VideoInfo
 	}
 
 	/**
+	 * Creates a VideoInfo from string
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead
+	 *
+	 * @param string $video_info
+	 * @return VideoInfo
+	 */
+	public static function createFromString($string)
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::createFromStringWithConfig() instead', E_USER_DEPRECATED);
+
+		parse_str($string, $video_info);
+
+		return new self($video_info);
+	}
+
+	/**
 	 * @var YoutubeDownloader\Cache\Cache
 	 */
 	private $cache;
@@ -396,5 +413,33 @@ class VideoInfo
 		}
 
 		return file_put_contents('cache/videoinfo_' . $key, $value);
+	}
+
+	/**
+	 * Get the url_encoded_fmt_stream_map
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead
+	 *
+	 * @return string
+	 */
+	public function getStreamMapString()
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getFormats() instead', E_USER_DEPRECATED);
+
+		return $this->data['url_encoded_fmt_stream_map'];
+	}
+
+	/**
+	 * Get the adaptive_fmts
+	 *
+	 * @deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead
+	 *
+	 * @return string
+	 */
+	public function getAdaptiveFormatsString()
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.2, to be removed in 0.3. Use VideoInfo::getAdaptiveFormats() instead', E_USER_DEPRECATED);
+
+		return $this->data['adaptive_fmts'];
 	}
 }
