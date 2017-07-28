@@ -74,6 +74,13 @@ $container = call_user_func_array(
 		// Create Toolkit
 		$container->set('toolkit', new \YoutubeDownloader\Toolkit);
 
+		// Create Cache
+		$cache = \YoutubeDownloader\Cache\FileCache::createFromDirectory(
+			__DIR__ . DIRECTORY_SEPARATOR . 'cache'
+		);
+
+		$container->set('cache', $cache);
+
 		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']

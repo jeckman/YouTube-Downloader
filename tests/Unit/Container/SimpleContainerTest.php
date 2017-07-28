@@ -19,7 +19,7 @@ class SimpleContainerTest extends TestCase
 	}
 
 	/**
-	 * @test SimpleContainer is campatible with Psr\Container\ContainerInterface
+	 * @test SimpleContainer is compatible with Psr\Container\ContainerInterface
 	 */
 	public function isPsr11Compatible()
 	{

@@ -1,6 +1,6 @@
-/Deciphers.log
-/playerscript/*
-/config/custom.php
-/vendor
+cache/*
 composer.phar
 composer.lock
+config/custom.php
+Deciphers.log
+vendor
