@@ -37,7 +37,7 @@ else
 { ?>
 			<span class="mime"><?php echo $format['type']; ?></span>
 <?php } ?>
-			
+
 <?php if ($format['show_proxy_url'] === true) { ?>
 			<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Download - <?php echo $format['size']; ?></a>
 <?php } ?>
@@ -57,7 +57,7 @@ else
 { ?>
 			<span class="mime"><?php echo $format['type']; ?></span>
 <?php } ?>
-			
+
 <?php if ($format['show_proxy_url'] === true) { ?>
 			 <a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Download - <?php echo $format['size']; ?></a>
 <?php } ?>
@@ -66,10 +66,12 @@ else
 <?php } ?>
 	</ul>
 <?php if ($this->get('showMP3Download', false) === true) { ?>
-	<p align="center">Convert and Download to .mp3</p>
-	<ul>
+	<h2>Convert and Download to .mp3</h2>
+	<ul class="dl-list">
 		<li>
-			<a href="<?php echo $this->get('mp3_download_url'); ?>" class="mime">audio/mp3</a> (quality: <?php echo $this->get('mp3_download_quality'); ?>)
+			<a class="btn btn-default btn-type disabled" href="#" class="mime">audio/mp3</a>
+			<a class="btn btn-primary btn-download" href="<?php echo $this->get('mp3_download_url'); ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Convert and Download</a>
+			<div class="label label-warning">quality: <?php echo $this->get('mp3_download_quality'); ?></div>
 		</li>
 	</ul>
 <?php } ?>
