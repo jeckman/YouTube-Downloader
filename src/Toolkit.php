@@ -91,7 +91,7 @@ class Toolkit
 	 */
 	public function treatMobileUrl($string)
 	{
-		return str_replace("m.", "www.");
+		return str_replace("m.", "www.", $string);
 	}
 
 	/**

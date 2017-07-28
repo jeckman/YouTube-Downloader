@@ -84,4 +84,52 @@ class ToolkitTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 			['https://m.youtube-nocookie.com/embed/dQw4w9WgXcQ', true],
 		];
 	}
+
+	/**
+	 * @test treatMobileUrl()
+	 * @dataProvider TreatMobileUrlProvider
+	 */
+	public function treatMobileUrl($str, $expected)
+	{
+		$toolkit = new Toolkit;
+
+		if ( $expected === true )
+		{
+			$expected = $str;
+		}
+
+		$this->assertSame($expected, $toolkit->treatMobileUrl($str));
+	}
+
+	/**
+	 * dataprovider for treatMobileUrl()
+	 */
+	public function TreatMobileUrlProvider()
+	{
+		return [
+			['http://youtu.be/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/embed/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/watch?v=dQw4w9WgXcQ', true],
+			['http://www.youtube.com/?v=dQw4w9WgXcQ', true],
+			['http://www.youtube.com/v/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/e/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/user/username#p/u/11/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/sandalsResorts#p/c/54B8C800269D7C1B/0/dQw4w9WgXcQ', true],
+			['http://www.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ', true],
+			['http://www.youtube.com/?feature=player_embedded&v=dQw4w9WgXcQ', true],
+			['http://www.youtube.com/v/dQw4w9WgXcQ?fs=1&hl=en_US', true],
+			['https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', true],
+			['http://m.youtube.com/embed/dQw4w9WgXcQ', 'http://www.youtube.com/embed/dQw4w9WgXcQ'],
+			['http://m.youtube.com/watch?v=dQw4w9WgXcQ', 'http://www.youtube.com/watch?v=dQw4w9WgXcQ'],
+			['http://m.youtube.com/?v=dQw4w9WgXcQ', 'http://www.youtube.com/?v=dQw4w9WgXcQ'],
+			['http://m.youtube.com/v/dQw4w9WgXcQ', 'http://www.youtube.com/v/dQw4w9WgXcQ'],
+			['http://m.youtube.com/e/dQw4w9WgXcQ', 'http://www.youtube.com/e/dQw4w9WgXcQ'],
+			['http://m.youtube.com/user/username#p/u/11/dQw4w9WgXcQ', 'http://www.youtube.com/user/username#p/u/11/dQw4w9WgXcQ'],
+			['http://m.youtube.com/sandalsResorts#p/c/54B8C800269D7C1B/0/dQw4w9WgXcQ', 'http://www.youtube.com/sandalsResorts#p/c/54B8C800269D7C1B/0/dQw4w9WgXcQ'],
+			['http://m.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ', 'http://www.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ'],
+			['http://m.youtube.com/?feature=player_embedded&v=dQw4w9WgXcQ', 'http://www.youtube.com/?feature=player_embedded&v=dQw4w9WgXcQ'],
+			['http://m.youtube.com/v/dQw4w9WgXcQ?fs=1&hl=en_US', 'http://www.youtube.com/v/dQw4w9WgXcQ?fs=1&hl=en_US'],
+			['https://m.youtube-nocookie.com/embed/dQw4w9WgXcQ', 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'],
+		];
+	}
 }
