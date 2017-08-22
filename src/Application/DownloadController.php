@@ -69,6 +69,11 @@ class DownloadController extends ControllerAbstract
 				$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
 				$video_info->setCache($this->get('cache'));
 
+				if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )
+				{
+					$video_info->setLogger($this->get('logger'));
+				}
+
 				try
 				{
 					$mp3_info = $toolkit->getDownloadMP3($video_info, $config);

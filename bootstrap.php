@@ -82,36 +82,47 @@ $container = call_user_func_array(
 		$container->set('cache', $cache);
 
 		// Create Logger
-		$now = new \DateTime('now', new \DateTimeZone($config->get('default_timezone')));
-
-		$filepath = sprintf(
-			'%s' . \DIRECTORY_SEPARATOR . '%s',
-			__DIR__ . \DIRECTORY_SEPARATOR . 'logs',
-			$now->format('Y')
+		$logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
+			new \YoutubeDownloader\Logger\Handler\NullHandler()
 		);
 
-		if ( ! file_exists($filepath) )
+		if ( $config->get('debug') === true )
 		{
-			mkdir($filepath);
+			# code...
+			$now = new \DateTime('now', new \DateTimeZone($config->get('default_timezone')));
+
+			$filepath = sprintf(
+				'%s' . \DIRECTORY_SEPARATOR . '%s',
+				__DIR__ . \DIRECTORY_SEPARATOR . 'logs',
+				$now->format('Y')
+			);
+
+			if ( ! file_exists($filepath) )
+			{
+				mkdir($filepath);
+			}
+
+			$stream = fopen(
+				$filepath . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
+				'a+'
+			);
+
+			if ( is_resource($stream) )
+			{
+				$handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
+					\YoutubeDownloader\Logger\LogLevel::EMERGENCY,
+					\YoutubeDownloader\Logger\LogLevel::ALERT,
+					\YoutubeDownloader\Logger\LogLevel::CRITICAL,
+					\YoutubeDownloader\Logger\LogLevel::ERROR,
+					\YoutubeDownloader\Logger\LogLevel::WARNING,
+					\YoutubeDownloader\Logger\LogLevel::NOTICE,
+					\YoutubeDownloader\Logger\LogLevel::INFO,
+					\YoutubeDownloader\Logger\LogLevel::DEBUG,
+				]);
+
+				$logger->addHandler($handler);
+			}
 		}
-
-		$stream = fopen(
-			$filepath . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
-			'a+'
-		);
-
-		$handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
-			\YoutubeDownloader\Logger\LogLevel::EMERGENCY,
-			\YoutubeDownloader\Logger\LogLevel::ALERT,
-			\YoutubeDownloader\Logger\LogLevel::CRITICAL,
-			\YoutubeDownloader\Logger\LogLevel::ERROR,
-			\YoutubeDownloader\Logger\LogLevel::WARNING,
-			\YoutubeDownloader\Logger\LogLevel::NOTICE,
-			\YoutubeDownloader\Logger\LogLevel::INFO,
-			\YoutubeDownloader\Logger\LogLevel::DEBUG,
-		]);
-
-		$logger = new \YoutubeDownloader\Logger\HandlerAwareLogger($handler);
 
 		$container->set('logger', $logger);
 

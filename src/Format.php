@@ -2,11 +2,16 @@
 
 namespace YoutubeDownloader;
 
+use YoutubeDownloader\Logger\LoggerAware;
+use YoutubeDownloader\Logger\LoggerAwareTrait;
+
 /**
  * a video format
  */
-class Format
+class Format implements LoggerAware
 {
+	use LoggerAwareTrait;
+
 	/**
 	 * Creates a Stream from array
 	 *
@@ -36,6 +41,8 @@ class Format
 	private $config = [];
 
 	private $data = [];
+
+	private $data_parsed = false;
 
 	private $raw_data = [];
 
@@ -74,8 +81,6 @@ class Format
 		}
 
 		$this->raw_data = $data;
-
-		$this->parseUrl();
 	}
 
 	/**
@@ -85,6 +90,11 @@ class Format
 	 */
 	private function parseUrl()
 	{
+		if ( $this->data_parsed === true )
+		{
+			return;
+		}
+
 		parse_str(urldecode($this->data['url']), $url_info);
 
 		if (isset($this->raw_data['bitrate']))
@@ -122,7 +132,8 @@ class Format
 
 			$sig = SignatureDecipher::decipherSignatureWithRawPlayerScript(
 				$decipherScript,
-				$this->raw_data['s']
+				$this->raw_data['s'],
+				$this->getLogger()
 			);
 
 			if ( strpos($this->raw_data['url'], 'ratebypass=') === false )
@@ -141,6 +152,8 @@ class Format
 		$this->data['expires'] = isset($url_info['expire']) ? date("G:i:s T", $url_info['expire']) : '';
 		$this->data['ipbits'] = isset($url_info['ipbits']) ? $url_info['ipbits'] : '';
 		$this->data['ip'] = isset($url_info['ip']) ? $url_info['ip'] : '';
+
+		$this->data_parsed = true;
 	}
 
 	/**
@@ -160,6 +173,8 @@ class Format
 	 */
 	public function getUrl()
 	{
+		$this->parseUrl();
+
 		return $this->data['url'];
 	}
 
@@ -170,6 +185,8 @@ class Format
 	 */
 	public function getItag()
 	{
+		$this->parseUrl();
+
 		return $this->data['itag'];
 	}
 
@@ -180,6 +197,8 @@ class Format
 	 */
 	public function getQuality()
 	{
+		$this->parseUrl();
+
 		return $this->data['quality'];
 	}
 
@@ -190,6 +209,8 @@ class Format
 	 */
 	public function getType()
 	{
+		$this->parseUrl();
+
 		return $this->data['type'];
 	}
 
@@ -200,6 +221,8 @@ class Format
 	 */
 	public function getExpires()
 	{
+		$this->parseUrl();
+
 		return $this->data['expires'];
 	}
 
@@ -210,6 +233,8 @@ class Format
 	 */
 	public function getIpbits()
 	{
+		$this->parseUrl();
+
 		return $this->data['ipbits'];
 	}
 
@@ -220,6 +245,8 @@ class Format
 	 */
 	public function getIp()
 	{
+		$this->parseUrl();
+
 		return $this->data['ip'];
 	}
 }

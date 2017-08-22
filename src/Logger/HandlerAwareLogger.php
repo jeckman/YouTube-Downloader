@@ -161,7 +161,7 @@ class HandlerAwareLogger implements Logger
 	 * @param YoutubeDownloader\Logger\Handler\Handler $handler
 	 * @return void
 	 */
-	private function addHandler(Handler $handler)
+	public function addHandler(Handler $handler)
 	{
 		$this->handlers[] = $handler;
 	}

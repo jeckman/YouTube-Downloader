@@ -63,6 +63,11 @@ class ResultController extends ControllerAbstract
 		$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
 		$video_info->setCache($this->get('cache'));
 
+		if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )
+		{
+			$video_info->setLogger($this->get('logger'));
+		}
+
 		if ($video_info->getStatus() == 'fail')
 		{
 			$message = 'Error in video ID: ' . $video_info->getErrorReason();
