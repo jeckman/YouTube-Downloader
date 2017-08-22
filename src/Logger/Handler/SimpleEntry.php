@@ -2,7 +2,7 @@
 
 namespace YoutubeDownloader\Logger\Handler;
 
-use DateTimeImmutable;
+use DateTime;
 
 /**
  * An simple entry instance
@@ -17,13 +17,13 @@ class SimpleEntry implements Entry
 	/**
 	 * Create an entry
 	 *
-	 * @param DateTimeImmutable $created_at
+	 * @param DateTime $created_at
 	 * @param mixed $level
 	 * @param string $message
 	 * @param array $context
 	 * @return self
 	 */
-	public function __construct(DateTimeImmutable $created_at, $level, $message, array $context = array())
+	public function __construct(DateTime $created_at, $level, $message, array $context = array())
 	{
 		$this->created_at = $created_at;
 		$this->level = $level;
@@ -64,7 +64,7 @@ class SimpleEntry implements Entry
 	/**
 	 * Returns the created DateTime
 	 *
-	 * @return DateTimeImmutable
+	 * @return DateTime
 	 */
 	public function getCreatedAt()
 	{

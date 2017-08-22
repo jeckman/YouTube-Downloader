@@ -31,7 +31,7 @@ interface Entry
 	/**
 	 * Returns the created DateTime
 	 *
-	 * @return DateTimeImmutable
+	 * @return DateTime
 	 */
 	public function getCreatedAt();
 }

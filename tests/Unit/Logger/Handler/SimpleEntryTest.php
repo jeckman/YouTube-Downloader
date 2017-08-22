@@ -15,7 +15,7 @@ class SimpleEntryTest extends TestCase
 	public function setUp()
 	{
 		$this->entry = new SimpleEntry(
-			new \DateTimeImmutable('now'),
+			new \DateTime('now'),
 			'debug',
 			'Log of {description}',
 			['description' => 'a debug message']
@@ -72,7 +72,7 @@ class SimpleEntryTest extends TestCase
 	public function getCreatedAt()
 	{
 		$this->assertInstanceOf(
-			'DateTimeImmutable',
+			'DateTime',
 			$this->entry->getCreatedAt()
 		);
 	}

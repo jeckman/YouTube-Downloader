@@ -73,7 +73,7 @@ class StreamHandlerTest extends TestCase
 		$entry->method('getContext')->willReturn(['message' => 'a debug message']);
 		$entry->method('getLevel')->willReturn('debug');
 		$entry->method('getCreatedAt')->willReturn(
-			new \DateTimeImmutable('2017-08-22 16:20:40', new \DateTimeZone('UTC'))
+			new \DateTime('2017-08-22 16:20:40', new \DateTimeZone('UTC'))
 		);
 
 		$this->assertTrue($handler->handles('debug'));

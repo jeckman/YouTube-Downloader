@@ -2,7 +2,7 @@
 
 namespace YoutubeDownloader\Logger;
 
-use DateTimeImmutable;
+use DateTime;
 use YoutubeDownloader\Logger\Handler\Entry;
 use YoutubeDownloader\Logger\Handler\Handler;
 use YoutubeDownloader\Logger\Handler\SimpleEntry;
@@ -146,7 +146,7 @@ class HandlerAwareLogger implements Logger
 	public function log($level, $message, array $context = array())
 	{
 		$entry = $this->createEntry(
-			new DateTimeImmutable('now'),
+			new DateTime('now'),
 			$level,
 			$message,
 			$context
@@ -169,13 +169,13 @@ class HandlerAwareLogger implements Logger
 	/**
 	 * Factory for a new entry
 	 *
-	 * @param DateTimeImmutable $created_at
+	 * @param DateTime $created_at
 	 * @param mixed $level
 	 * @param string $message
 	 * @param array $context
 	 * @return YoutubeDownloader\Logger\Handler\Entry
 	 */
-	private function createEntry(DateTimeImmutable $created_at, $level, $message, array $context = array())
+	private function createEntry(DateTime $created_at, $level, $message, array $context = array())
 	{
 		return new SimpleEntry($created_at, $level, $message, $context);
 	}
