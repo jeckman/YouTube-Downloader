@@ -19,6 +19,11 @@ abstract class ControllerAbstract implements Controller
 	public function __construct(App $app)
 	{
 		$this->app = $app;
+
+		$this->get('logger')->debug(
+			'{controller_name} created',
+			['controller_name' => get_class($this)]
+		);
 	}
 
 	/**

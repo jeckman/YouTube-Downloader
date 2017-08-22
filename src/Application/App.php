@@ -29,6 +29,8 @@ class App
 	public function __construct(Container $container)
 	{
 		$this->container = $container;
+
+		$this->getContainer()->get('logger')->debug('App started');
 	}
 
 	/**
