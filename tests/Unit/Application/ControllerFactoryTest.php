@@ -12,7 +12,13 @@ class ControllerFactoryTest extends TestCase
 	 */
 	public function make()
 	{
+		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+
+		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container->method('get')->with('logger')->willReturn($logger);
+
 		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
+		$app->method('getContainer')->willReturn($container);
 
 		$factory = new ControllerFactory;
 
