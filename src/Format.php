@@ -4,11 +4,12 @@ namespace YoutubeDownloader;
 
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
+use YoutubeDownloader\VideoInfo\Format as FormatInterface;
 
 /**
  * a video format
  */
-class Format implements LoggerAware
+class Format implements FormatInterface, LoggerAware
 {
 	use LoggerAwareTrait;
 

@@ -5,6 +5,7 @@ namespace YoutubeDownloader;
 use YoutubeDownloader\Cache\Cache;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
+use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
 
 /**
  * VideoInfo
@@ -130,7 +131,7 @@ use YoutubeDownloader\Logger\LoggerAwareTrait;
  * - 'reason',
  * - 'errordetail',
  */
-class VideoInfo implements LoggerAware
+class VideoInfo implements VideoInfoInterface, LoggerAware
 {
 	use LoggerAwareTrait;
 
