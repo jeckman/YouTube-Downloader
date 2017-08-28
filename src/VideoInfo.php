@@ -3,6 +3,8 @@
 namespace YoutubeDownloader;
 
 use YoutubeDownloader\Cache\Cache;
+use YoutubeDownloader\Logger\LoggerAware;
+use YoutubeDownloader\Logger\LoggerAwareTrait;
 
 /**
  * VideoInfo
@@ -128,8 +130,10 @@ use YoutubeDownloader\Cache\Cache;
  * - 'reason',
  * - 'errordetail',
  */
-class VideoInfo
+class VideoInfo implements LoggerAware
 {
+	use LoggerAwareTrait;
+
 	/**
 	 * Creates a VideoInfo from string
 	 *
@@ -243,7 +247,14 @@ class VideoInfo
 				continue;
 			}
 
-			$formats[] = Format::createFromArray($this, $format_info, $config);
+			$format = Format::createFromArray($this, $format_info, $config);
+
+			if ( $format instanceOf LoggerAware )
+			{
+				$format->setLogger($this->getLogger());
+			}
+
+			$formats[] = $format;
 		}
 
 		return $formats;

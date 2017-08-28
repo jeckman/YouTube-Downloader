@@ -3,6 +3,9 @@
 
 namespace YoutubeDownloader;
 
+use YoutubeDownloader\Logger\Logger;
+use YoutubeDownloader\Logger\NullLogger;
+
 class SignatureDecipher
 {
 	/**
@@ -58,15 +61,28 @@ class SignatureDecipher
 	 *
 	 * @param string $decipherScript
 	 * @param string $signature
+	 * @param Logger $logger
 	 * @return string returns the decipherd signature
 	 */
-	public static function decipherSignatureWithRawPlayerScript($decipherScript, $signature)
+	public static function decipherSignatureWithRawPlayerScript($decipherScript, $signature, Logger $logger = null)
 	{
-		ob_start(); //For debugging
-		echo("==== Load player script and execute patterns from player script ====\n\n");
+		// BC: Use NullLogger if no Logger was set
+		if ( $logger === null )
+		{
+			$logger = new NullLogger;
+		}
+
+		$logger->debug(
+			'{method}: Load player script and execute patterns from player script',
+			['method' => __METHOD__]
+		);
 
 		if ( ! $decipherScript )
 		{
+			$logger->debug(
+				'{method}: No decipher script was provided. Abort.',
+				['method' => __METHOD__]
+			);
 			return '';
 		}
 
@@ -79,27 +95,46 @@ class SignatureDecipher
 		$signatureFunction = "";
 		for ($i=$callCount-1; $i > 0; $i--){
 			$signatureCall[$i] = explode(');', $signatureCall[$i])[0];
-			if(strpos($signatureCall[$i], '(')){
+
+			if(strpos($signatureCall[$i], '('))
+			{
 				$signatureFunction = explode('(', $signatureCall[$i])[0];
 				break;
 			}
-			else if($i==0) die("\n==== Failed to get signature function ====");
+			elseif($i==0)
+			{
+				die("\n==== Failed to get signature function ====");
+			}
 		}
-		echo('signatureFunction = '.$signatureFunction."\n");
+
+		$logger->debug(
+			'{method}: signatureFunction = {signatureFunction}',
+			['method' => __METHOD__, 'signatureFunction' => $signatureFunction]
+		);
 
 		$decipherPatterns = explode($signatureFunction."=function(", $decipherScript)[1];
 		$decipherPatterns = explode('};', $decipherPatterns)[0];
-		echo('decipherPatterns = '.$decipherPatterns."\n");
+
+		$logger->debug(
+			'{method}: decipherPatterns = {decipherPatterns}',
+			['method' => __METHOD__, 'decipherPatterns' => $decipherPatterns]
+		);
 
 		$deciphers = explode("(a", $decipherPatterns);
-		for ($i=0; $i < count($deciphers); $i++) {
+		for ($i=0; $i < count($deciphers); $i++)
+		{
 			$deciphers[$i] = explode('.', explode(';', $deciphers[$i])[1])[0];
-			if(count(explode($deciphers[$i], $decipherPatterns))>=2){
+
+			if(count(explode($deciphers[$i], $decipherPatterns))>=2)
+			{
 				// This object was most called, that's mean this is the deciphers
 				$deciphers = $deciphers[$i];
 				break;
 			}
-			else if($i==count($deciphers)-1) die("\n==== Failed to get deciphers function ====");
+			else if($i==count($deciphers)-1)
+			{
+				die("\n==== Failed to get deciphers function ====");
+			}
 		}
 
 		$deciphersObjectVar = $deciphers;
@@ -107,11 +142,17 @@ class SignatureDecipher
 		$decipher = str_replace(["\n", "\r"], "", $decipher);
 		$decipher = explode('}};', $decipher)[0];
 		$decipher = explode("},", $decipher);
-		print_r($decipher);
+
+		$logger->debug(
+			'{method}: decipher = {decipher}',
+			['method' => __METHOD__, 'decipher' => print_r($decipher, true)]
+		);
 
 		// Convert deciphers to object
 		$deciphers = [];
-		foreach ($decipher as &$function) {
+
+		foreach ($decipher as &$function)
+		{
 			$deciphers[explode(':function', $function)[0]] = explode('){', $function)[1];
 		}
 
@@ -120,27 +161,49 @@ class SignatureDecipher
 		$decipherPatterns = str_replace('(a,', '->(', $decipherPatterns);
 		$decipherPatterns = explode(';', explode('){', $decipherPatterns)[1]);
 
-		$decipheredSignature = self::executeSignaturePattern($decipherPatterns, $deciphers, $signature);
+		$decipheredSignature = self::executeSignaturePattern(
+			$decipherPatterns,
+			$deciphers,
+			$signature,
+			$logger
+		);
 
 		// For debugging
-		echo("\n\n\n==== Result ====\n");
-		echo("Signature  : ".$signature."\n");
-		echo("Deciphered : ".$decipheredSignature);
+		$logger->debug(
+			'{method}: Results:',
+			['method' => __METHOD__]
+		);
+
+		$logger->debug(
+			'{method}: Signature = {signature}',
+			['method' => __METHOD__, 'signature' => $signature]
+		);
+
+		$logger->debug(
+			'{method}: Deciphered = {decipheredSignature}',
+			['method' => __METHOD__, 'decipheredSignature' => $decipheredSignature]
+		);
+
 		//file_put_contents("Deciphers".rand(1, 100000).".log", ob_get_contents()); // If you need to debug all video
-		file_put_contents("Deciphers.log", ob_get_contents());
-		ob_end_clean();
 
 		//Return signature
 		return $decipheredSignature;
 	}
 
-	private static function executeSignaturePattern($patterns, $deciphers, $signature)
+	private static function executeSignaturePattern($patterns, $deciphers, $signature, Logger $logger)
 	{
-		echo("\n\n\n==== Retrieved deciphers ====\n\n");
-		print_r($patterns);
-		print_r($deciphers);
-
-		echo("\n\n\n==== Processing ====\n\n");
+		$logger->debug(
+			'{method}: Patterns = {patterns}',
+			['method' => __METHOD__, 'patterns' => print_r($patterns, true)]
+		);
+		$logger->debug(
+			'{method}: Deciphers = {deciphers}',
+			['method' => __METHOD__, 'deciphers' => print_r($deciphers, true)]
+		);
+		$logger->debug(
+			'{method}: ==== Processing ====',
+			['method' => __METHOD__]
+		);
 
 		// Execute every $patterns with $deciphers dictionary
 		$processSignature = $signature;
@@ -153,14 +216,23 @@ class SignatureDecipher
 				if(strpos($patterns[$i], '.split("")')!==false)
 				{
 					$processSignature = str_split($processSignature);
-					echo("String splitted\n");
+					$logger->debug(
+						'{method}: String splitted',
+						['method' => __METHOD__]
+					);
 				}
 				else if(strpos($patterns[$i], '.join("")')!==false)
 				{
 					$processSignature = implode('', $processSignature);
-					echo("String combined\n");
+					$logger->debug(
+						'{method}: String combined',
+						['method' => __METHOD__]
+					);
 				}
-				else die("\n==== Decipher dictionary was not found ====");
+				else
+				{
+					die("\n==== Decipher dictionary was not found ====");
+				}
 			}
 			else
 			{
@@ -174,21 +246,33 @@ class SignatureDecipher
 				$execute = $deciphers[$executes[0]];
 
 				//Find matched command dictionary
-				echo("Executing $executes[0] -> $number");
+				$logger->debug(
+					"{method}: Executing $executes[0] -> $number",
+					['method' => __METHOD__]
+				);
 				switch($execute){
 					case "a.reverse()":
 						$processSignature = array_reverse($processSignature);
-						echo(" (Reversing array)\n");
+						$logger->debug(
+							'{method}: (Reversing array)',
+							['method' => __METHOD__]
+						);
 					break;
 					case "var c=a[0];a[0]=a[b%a.length];a[b]=c":
 						$c = $processSignature[0];
 						$processSignature[0] = $processSignature[$number%count($processSignature)];
 						$processSignature[$number] = $c;
-						echo(" (Swapping array)\n");
+						$logger->debug(
+							'{method}: (Swapping array)',
+							['method' => __METHOD__]
+						);
 					break;
 					case "a.splice(0,b)":
 						$processSignature = array_slice($processSignature, $number);
-						echo(" (Removing array)\n");
+						$logger->debug(
+							'{method}: Removing array',
+							['method' => __METHOD__]
+						);
 					break;
 					default:
 						die("\n==== Decipher dictionary was not found ====");

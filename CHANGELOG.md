@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new PSR-3 compatible logger implementation `Logger\Logger` to log all kind of events
+- `SimpleContainer` has a new `logger` service with a `Logger\Logger` instance 
+- new folder `/logs` for log files
+- `Format` implements `Logger\LoggerAware` interface
+- `VideoInfo` implements `Logger\LoggerAware` interface
+- `SignatureDecipher::decipherSignatureWithRawPlayerScript()` expects an optional logger as 3rd parameter
+
+### Changed
+
+- Logs are now stored in `/logs`, the file `Deciphers.log` can be deleted
+
 ### Removed
 
 - **Breaking** method `SignatureDecipher::downloadPlayerScript()` was removed, use `SignatureDecipher::downloadRawPlayerScript()` instead
@@ -16,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- new PSR-16 compatible cache implemantation `Cache\FileCache` to store data in the filesystem
+- new PSR-16 compatible cache implementation `Cache\FileCache` to store data in the filesystem
 - `SignatureDecipher::getPlayerInfoByVideoId()` to get the player ID and player url of a cipher video
 - `SignatureDecipher::downloadRawPlayerScript()` to download the raw player script of a cipher video
 - `SignatureDecipher::decipherSignatureWithRawPlayerScript()` to decipher a signature with a raw dicipher script

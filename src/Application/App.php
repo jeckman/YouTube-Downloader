@@ -29,6 +29,8 @@ class App
 	public function __construct(Container $container)
 	{
 		$this->container = $container;
+
+		$this->getContainer()->get('logger')->debug('App started');
 	}
 
 	/**
@@ -65,5 +67,7 @@ class App
 		$controller = $controller_factory->make($route, $this);
 
 		$controller->execute();
+
+		$this->getContainer()->get('logger')->debug('Controller executed. App closed.');
 	}
 }

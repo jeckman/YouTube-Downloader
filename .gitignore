@@ -2,5 +2,5 @@ cache/*
 composer.phar
 composer.lock
 config/custom.php
-Deciphers.log
+logs/*
 vendor

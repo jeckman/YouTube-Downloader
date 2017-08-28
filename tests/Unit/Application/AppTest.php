@@ -13,7 +13,10 @@ class AppTest extends TestCase
 	 */
 	public function getContainer()
 	{
+		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+
 		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container->method('get')->with('logger')->willReturn($logger);
 
 		$app = new App($container);
 
@@ -25,7 +28,10 @@ class AppTest extends TestCase
 	 */
 	public function getVersion()
 	{
+		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+
 		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container->method('get')->with('logger')->willReturn($logger);
 
 		$app = new App($container);
 
@@ -49,11 +55,13 @@ class AppTest extends TestCase
 			->method('make')
 			->willReturn($controller);
 
+		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+
 		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
-		$container->expects($this->once())
-			->method('get')
-			->with('controller_factory')
-			->willReturn($factory);
+		$container->method('get')->will($this->returnValueMap([
+			['controller_factory', $factory],
+			['logger', $logger],
+		]));
 
 		$app = new App($container);
 
