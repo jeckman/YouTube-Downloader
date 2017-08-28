@@ -6,11 +6,21 @@
 [![Build Status](https://img.shields.io/travis/jeckman/YouTube-Downloader/master.svg)](https://travis-ci.org/jeckman/YouTube-Downloader)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jeckman-YouTube-Downloader/Lobby)
 
-PHP Scripts to download videos from YouTube.  
+PHP Library with Web UI to download videos from YouTube.
 
-NOTE: YouTube Downloader does not work with videos using a cipher signature.
+## Support for sipher signature
 
-See https://github.com/jeckman/YouTube-Downloader/issues/9
+YouTube Downloader finally supports YouTube videos with a cipher signature too. :tada: Please note that this functionallity is hidden behind a config flag because it downloads javascript code from a 3rd party (YouTube) server and interprets it. This MAY harm your server, if the 3rd party server delivers malicious code.
+
+You can activate this by the the `enable_youtube_decipher_signature` to `true` in `/config/custom.php`. If the file don't exists you can simple create it or copy from `/config/default.php`.
+
+```php
+<?php
+// in config/custom.php
+return [
+    'enable_youtube_decipher_signature' => true,
+];
+```
 
 ## Goals
 
@@ -24,8 +34,8 @@ See https://github.com/jeckman/YouTube-Downloader/issues/9
 
 You must fit at least this requirements to use YouTube-Downloader:
 
-- Web server (Apache/Nginx/PHP built-in)
 - PHP >= 5.4
+- Web server (Apache/Nginx/PHP built-in)
 
 ## Installation
 
@@ -98,6 +108,11 @@ proxy option, so if your browser/server setup requires the proxy to work these w
 ```
 $ git remote update
 $ git pull origin master
+```
+### Composer
+
+```
+$ composer update
 ```
 
 ## Contributing
