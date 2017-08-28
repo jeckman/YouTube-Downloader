@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - new PSR-3 compatible logger implementation `YoutubeDownloader\Logger\Logger` to log all kind of events
+- new `YoutubeDownloader\VideoInfo\Provider` interface for describing an implementation how to get a `VideoInfo` for an input like a youtube url
+- (a not so) new provider for downloading videos from Youtube
 - `YoutubeDownloader\Container\SimpleContainer` has a new `logger` service with a `YoutubeDownloader\Logger\Logger` instance
 - new folder `/logs` for log files
 - `YoutubeDownloader\Format` implements `Logger\LoggerAware` interface
