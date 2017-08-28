@@ -9,21 +9,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- new PSR-3 compatible logger implementation `Logger\Logger` to log all kind of events
-- `SimpleContainer` has a new `logger` service with a `Logger\Logger` instance 
+- new PSR-3 compatible logger implementation `YoutubeDownloader\Logger\Logger` to log all kind of events
+- `YoutubeDownloader\Container\SimpleContainer` has a new `logger` service with a `YoutubeDownloader\Logger\Logger` instance
 - new folder `/logs` for log files
-- `Format` implements `Logger\LoggerAware` interface
-- `VideoInfo` implements `Logger\LoggerAware` interface
-- `SignatureDecipher::decipherSignatureWithRawPlayerScript()` expects an optional logger as 3rd parameter
+- `YoutubeDownloader\Format` implements `Logger\LoggerAware` interface
+- `YoutubeDownloader\VideoInfo` implements `Logger\LoggerAware` interface
+- `YoutubeDownloader\SignatureDecipher::decipherSignatureWithRawPlayerScript()` expects an optional logger as 3rd parameter
 
 ### Changed
 
 - Logs are now stored in `/logs`, the file `Deciphers.log` can be deleted
 
+### Deprecated
+
+- The `YoutubeDownloader\Format` class will be removed in 0.5, use the `YoutubeDownloader\Provider\Youtube\Format` class instead
+- The `YoutubeDownloader\SignatureDecipher` class will be removed in 0.5, use the `YoutubeDownloader\Provider\Youtube\SignatureDecipher` class instead
+- The `YoutubeDownloader\VideoInfo` class will be removed in 0.5, use the `YoutubeDownloader\Provider\Youtube\VideoInfo` class instead
+
 ### Removed
 
-- **Breaking** method `SignatureDecipher::downloadPlayerScript()` was removed, use `SignatureDecipher::downloadRawPlayerScript()` instead
-- **Breaking** method `SignatureDecipher::decipherSignature()` was removed, use `SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
+- **Breaking** method `YoutubeDownloader\SignatureDecipher::downloadPlayerScript()` was removed, use `YoutubeDownloader\SignatureDecipher::downloadRawPlayerScript()` instead
+- **Breaking** method `YoutubeDownloader\SignatureDecipher::decipherSignature()` was removed, use `YoutubeDownloader\SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
 
 ## [0.3] - 2017-07-28
 
