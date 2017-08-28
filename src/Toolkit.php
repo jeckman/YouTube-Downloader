@@ -42,7 +42,6 @@ class Toolkit
 		return $this->outgoing_ip;
 	}
 
-
 	/**
 	 * Validates a video ID
 	 *
@@ -70,7 +69,9 @@ class Toolkit
 	}
 
 	/**
-	 * Check if a string is from mobile ulr
+	 * Check if a string is from mobile url
+	 *
+	 * @deprecated since version 0.4, to be removed in 0.5.
 	 *
 	 * @param string $string
 	 * @return bool
@@ -86,6 +87,8 @@ class Toolkit
 	}
 
 	/**
+	 * @deprecated since version 0.4, to be removed in 0.5.
+	 *
 	 * @param string $string
 	 * @return string
 	 */
@@ -143,7 +146,6 @@ class Toolkit
 	 */
 	public function curlGet($url, Config $config)
 	{
-
 		$ch = curl_init();
 		$timeout = 3;
 

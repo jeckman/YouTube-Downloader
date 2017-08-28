@@ -8,8 +8,6 @@ use YoutubeDownloader\Logger\NullLogger;
 
 /**
  * a youtube signatur decipher
- *
- * @deprecated since version 0.4, to be removed in 0.5. Use `YoutubeDownloader\Provider\Youtube\SignatureDecipher` instead
  */
 class SignatureDecipher
 {
