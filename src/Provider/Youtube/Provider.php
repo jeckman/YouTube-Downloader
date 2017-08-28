@@ -104,7 +104,7 @@ final class Provider implements ProviderInterface
 		$video_info_string = $this->toolkit->curlGet($video_info_url, $this->config);
 
 		/* TODO: Check return from curl for status code */
-		$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig(
+		$video_info = VideoInfo::createFromStringWithConfig(
 			$video_info_string,
 			$this->config
 		);
