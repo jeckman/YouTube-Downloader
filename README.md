@@ -61,7 +61,7 @@ The code isn't available on packagist.org at the moment, so you must add the rep
 ```
 {
 	"require": {
-		"jeckman/YouTube-Downloader": "^0.1"
+		"jeckman/YouTube-Downloader": "dev-master"
 	},
 	"repositories": [
 		{"type": "vcs", "url": "https://github.com/jeckman/YouTube-Downloader"}

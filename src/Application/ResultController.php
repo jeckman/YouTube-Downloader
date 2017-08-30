@@ -28,14 +28,12 @@ class ResultController extends ControllerAbstract
 
 		$my_id = $_GET['videoid'];
 
-		if( $toolkit->isMobileUrl($my_id) )
-		{
-			$my_id = $toolkit->treatMobileUrl($my_id);
-		}
+		$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit(
+			$config,
+			$toolkit
+		);
 
-		$my_id = $toolkit->validateVideoId($my_id);
-
-		if ( $my_id === null )
+		if ( $youtube_provider->provides($my_id) === false )
 		{
 			$this->responseWithErrorMessage('Invalid url');
 		}
@@ -53,14 +51,8 @@ class ResultController extends ControllerAbstract
 			'app_version' => $this->getAppVersion(),
 		];
 
-		/* First get the video info page for this video id */
-		// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $my_id;
-		// thanks to amit kumar @ bloggertale.com for sharing the fix
-		$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $my_id . '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = $toolkit->curlGet($video_info_url, $config);
+		$video_info = $youtube_provider->provide($my_id);
 
-		/* TODO: Check return from curl for status code */
-		$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
 		$video_info->setCache($this->get('cache'));
 
 		if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )

@@ -64,9 +64,12 @@ class DownloadController extends ControllerAbstract
 					);
 				}
 
-				$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $url. '&asv=3&el=detailpage&hl=en_US';
-				$video_info_string = $toolkit->curlGet($video_info_url, $config);
-				$video_info = \YoutubeDownloader\VideoInfo::createFromStringWithConfig($video_info_string, $config);
+				$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit(
+					$config,
+					$toolkit
+				);
+
+				$video_info = $youtube_provider->provide($url);
 				$video_info->setCache($this->get('cache'));
 
 				if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )
