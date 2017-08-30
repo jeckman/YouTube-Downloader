@@ -3,6 +3,7 @@
 namespace YoutubeDownloader;
 
 use Exception;
+use YoutubeDownloader\VideoInfo\VideoInfo;
 
 /**
  * Toolkit
