@@ -2,7 +2,11 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
+use YoutubeDownloader\Cache\CacheAware;
+use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
+use YoutubeDownloader\Logger\LoggerAware;
+use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\Toolkit;
 use YoutubeDownloader\VideoInfo\Provider as ProviderInterface;
 use YoutubeDownloader\VideoInfo\InvalidInputException;
@@ -10,8 +14,11 @@ use YoutubeDownloader\VideoInfo\InvalidInputException;
 /**
  * Provider instance for Youtube
  */
-final class Provider implements ProviderInterface
+final class Provider implements ProviderInterface, CacheAware, LoggerAware
 {
+	use CacheAwareTrait;
+	use LoggerAwareTrait;
+
 	/**
 	 * Create this Provider from Config and Toolkit
 	 *
@@ -108,6 +115,16 @@ final class Provider implements ProviderInterface
 			$video_info_string,
 			$this->config
 		);
+
+		if ( $video_info instanceOf CacheAware )
+		{
+			$video_info->setCache($this->getCache());
+		}
+
+		if ( $video_info instanceOf LoggerAware )
+		{
+			$video_info->setLogger($this->getLogger());
+		}
 
 		return $video_info;
 	}

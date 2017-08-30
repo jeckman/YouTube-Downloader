@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
+use YoutubeDownloader\Cache\CacheAware;
+use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\VideoInfo\Format as FormatInterface;
@@ -9,8 +11,9 @@ use YoutubeDownloader\VideoInfo\Format as FormatInterface;
 /**
  * a video format
  */
-class Format implements FormatInterface, LoggerAware
+class Format implements FormatInterface, CacheAware, LoggerAware
 {
+	use CacheAwareTrait;
 	use LoggerAwareTrait;
 
 	/**
@@ -122,13 +125,13 @@ class Format implements FormatInterface, LoggerAware
 
 			$cache_key = 'playerscript_' . $playerID;
 
-			$decipherScript = $this->video_info->getFromCache($cache_key);
+			$decipherScript = $this->getCache()->get($cache_key, null);
 
 			if ( $decipherScript === null )
 			{
 				$decipherScript = SignatureDecipher::downloadRawPlayerScript($playerURL);
 
-				$this->video_info->setToCache($cache_key, $decipherScript, 3600*24);
+				$this->getCache()->set($cache_key, $decipherScript, 3600*24);
 			}
 
 			$sig = SignatureDecipher::decipherSignatureWithRawPlayerScript(

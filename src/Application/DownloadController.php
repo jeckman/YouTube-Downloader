@@ -69,13 +69,17 @@ class DownloadController extends ControllerAbstract
 					$toolkit
 				);
 
-				$video_info = $youtube_provider->provide($url);
-				$video_info->setCache($this->get('cache'));
-
-				if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )
+				if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
 				{
-					$video_info->setLogger($this->get('logger'));
+					$youtube_provider->setCache($this->get('cache'));
 				}
+
+				if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
+				{
+					$youtube_provider->setLogger($this->get('logger'));
+				}
+
+				$video_info = $youtube_provider->provide($url);
 
 				try
 				{
