@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Removed
+
+- The `YoutubeDownloader\Format` class was removed, use the `YoutubeDownloader\Provider\Youtube\Format` class instead
+- The `YoutubeDownloader\SignatureDecipher` class was removed, use the `YoutubeDownloader\Provider\Youtube\SignatureDecipher` class instead
+- The `YoutubeDownloader\VideoInfo` class was removed, use the `YoutubeDownloader\Provider\Youtube\VideoInfo` class instead
+- `YoutubeDownloader\Toolkit::isMobileUrl()` isn't used anymore and was removed
+- `YoutubeDownloader\Toolkit::treatMobileUrl()` isn't used anymore and was removed
+
 ## [0.4] - 2017-08-30
 
 ### Added

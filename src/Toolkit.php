@@ -69,35 +69,6 @@ class Toolkit
 	}
 
 	/**
-	 * Check if a string is from mobile url
-	 *
-	 * @deprecated since version 0.4, to be removed in 0.5.
-	 *
-	 * @param string $string
-	 * @return bool
-	 */
-	public function isMobileUrl($string)
-	{
-		if (strpos($string, "m."))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @deprecated since version 0.4, to be removed in 0.5.
-	 *
-	 * @param string $string
-	 * @return string
-	 */
-	public function treatMobileUrl($string)
-	{
-		return str_replace("m.", "www.", $string);
-	}
-
-	/**
 	 * @param int $bytes
 	 * @param int $precision
 	 * @return string
