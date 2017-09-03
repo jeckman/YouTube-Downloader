@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new `YoutubeDownloader\Cache\CacheAware` interface
+- `YoutubeDownloader\Provider\Youtube\Format` implements `YoutubeDownloader\Cache\CacheAware` interface
+- `YoutubeDownloader\Provider\Youtube\Provider` implements `YoutubeDownloader\Cache\CacheAware` interface
+- `YoutubeDownloader\Provider\Youtube\VideoInfo` implements `YoutubeDownloader\Cache\CacheAware` interface
+
+### Deprecated
+
+- `YoutubeDownloader\Provider\Youtube\VideoInfo::setToCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->set()` instead
+- `YoutubeDownloader\Provider\Youtube\VideoInfo::getFromCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->get()` instead
+
 ### Removed
 
 - The `YoutubeDownloader\Format` class was removed, use the `YoutubeDownloader\Provider\Youtube\Format` class instead

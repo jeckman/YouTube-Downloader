@@ -33,6 +33,16 @@ class ResultController extends ControllerAbstract
 			$toolkit
 		);
 
+		if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
+		{
+			$youtube_provider->setCache($this->get('cache'));
+		}
+
+		if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
+		{
+			$youtube_provider->setLogger($this->get('logger'));
+		}
+
 		if ( $youtube_provider->provides($my_id) === false )
 		{
 			$this->responseWithErrorMessage('Invalid url');
@@ -52,13 +62,6 @@ class ResultController extends ControllerAbstract
 		];
 
 		$video_info = $youtube_provider->provide($my_id);
-
-		$video_info->setCache($this->get('cache'));
-
-		if ( $video_info instanceOf \YoutubeDownloader\Logger\LoggerAware )
-		{
-			$video_info->setLogger($this->get('logger'));
-		}
 
 		if ($video_info->getStatus() == 'fail')
 		{

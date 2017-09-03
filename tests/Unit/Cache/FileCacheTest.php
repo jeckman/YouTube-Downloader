@@ -5,11 +5,14 @@ namespace YoutubeDownloader\Tests\Unit\Cache;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use YoutubeDownloader\Cache\FileCache;
+use YoutubeDownloader\Tests\Fixture\Cache\DataProviderTrait;
 use YoutubeDownloader\Tests\Fixture\Cache\Psr16CacheAdapter;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class FileCacheTest extends TestCase
 {
+	use DataProviderTrait;
+
 	/**
 	 * @test createFromDirectory()
 	 */
@@ -111,6 +114,23 @@ class FileCacheTest extends TestCase
 
 	/**
 	 * @test get()
+	 *
+	 * @dataProvider InvalidKeyProvider
+	 */
+	public function getWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+	{
+		$root = vfsStream::setup('cache');
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->expectException($exception_name);
+		$this->expectExceptionMessage($message);
+
+		$cache->get($invalid_key);
+	}
+
+	/**
+	 * @test get()
 	 */
 	public function getNotExistingReturnsDefault()
 	{
@@ -200,6 +220,23 @@ class FileCacheTest extends TestCase
 	}
 
 	/**
+	 * @test set()
+	 *
+	 * @dataProvider InvalidKeyProvider
+	 */
+	public function setWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+	{
+		$root = vfsStream::setup('cache');
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->expectException($exception_name);
+		$this->expectExceptionMessage($message);
+
+		$cache->set($invalid_key, 'value');
+	}
+
+	/**
 	 * @test delete()
 	 */
 	public function deleteReturnsTrue()
@@ -216,5 +253,22 @@ class FileCacheTest extends TestCase
 
 		$this->assertTrue($cache->delete('key'));
 		$this->assertFalse($root->hasChildren());
+	}
+
+	/**
+	 * @test delete()
+	 *
+	 * @dataProvider InvalidKeyProvider
+	 */
+	public function deleteWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+	{
+		$root = vfsStream::setup('cache');
+
+		$cache = FileCache::createFromDirectory($root->url());
+
+		$this->expectException($exception_name);
+		$this->expectExceptionMessage($message);
+
+		$cache->delete($invalid_key);
 	}
 }

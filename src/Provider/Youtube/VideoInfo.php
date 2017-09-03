@@ -3,6 +3,8 @@
 namespace YoutubeDownloader\Provider\Youtube;
 
 use YoutubeDownloader\Cache\Cache;
+use YoutubeDownloader\Cache\CacheAware;
+use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
@@ -132,8 +134,9 @@ use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
  * - 'reason',
  * - 'errordetail',
  */
-class VideoInfo implements VideoInfoInterface, LoggerAware
+class VideoInfo implements VideoInfoInterface, CacheAware, LoggerAware
 {
+	use CacheAwareTrait;
 	use LoggerAwareTrait;
 
 	/**
@@ -148,11 +151,6 @@ class VideoInfo implements VideoInfoInterface, LoggerAware
 
 		return new self($video_info, $config);
 	}
-
-	/**
-	 * @var YoutubeDownloader\Cache\Cache
-	 */
-	private $cache;
 
 	/**
 	 * @var array
@@ -250,6 +248,11 @@ class VideoInfo implements VideoInfoInterface, LoggerAware
 			}
 
 			$format = Format::createFromArray($this, $format_info, $config);
+
+			if ( $format instanceOf CacheAware )
+			{
+				$format->setCache($this->getCache());
+			}
 
 			if ( $format instanceOf LoggerAware )
 			{
@@ -359,18 +362,9 @@ class VideoInfo implements VideoInfoInterface, LoggerAware
 	}
 
 	/**
-	 * Set cache adapter
-	 *
-	 * @param YoutubeDownloader\Cache\Cache $cache
-	 * @return void
-	 */
-	public function setCache(Cache $cache)
-	{
-		$this->cache = $cache;
-	}
-
-	/**
 	 * Get from cache
+	 *
+	 * @deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->get() instead
 	 *
 	 * @param string $key
 	 * @param mixed $default
@@ -378,23 +372,15 @@ class VideoInfo implements VideoInfoInterface, LoggerAware
 	 */
 	public function getFromCache($key, $default = null)
 	{
-		if ( $this->cache !== null )
-		{
-			return $this->cache->get($key, $default);
-		}
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->get() instead', E_USER_DEPRECATED);
 
-		die('cache not set');
-
-		if ( file_exists('cache/videoinfo_' . $key) )
-		{
-			return file_get_contents('cache/videoinfo_' . $key);
-		}
-
-		return $default;
+		return $this->getCache()->get($key, $default);
 	}
 
 	/**
 	 * Set to cache
+	 *
+	 * @deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->set() instead
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -403,11 +389,8 @@ class VideoInfo implements VideoInfoInterface, LoggerAware
 	 */
 	public function setToCache($key, $value, $ttl = null)
 	{
-		if ( $this->cache !== null )
-		{
-			return $this->cache->set($key, $value, $ttl);
-		}
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->set() instead', E_USER_DEPRECATED);
 
-		return file_put_contents('cache/videoinfo_' . $key, $value);
+		return $this->getCache()->set($key, $value, $ttl);
 	}
 }
