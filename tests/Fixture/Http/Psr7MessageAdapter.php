@@ -1,23 +1,24 @@
 <?php
 
-namespace YoutubeDownloader\Http\Message;
+namespace YoutubeDownloader\Tests\Fixture\Http;
+
+use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Psr7;
+use YoutubeDownloader\Http\Message\Message;
 
 /**
- * This interface must be compatible with PSR-7 Psr\Http\Message\MessageInterface
- *
- * HTTP messages consist of requests from a client to a server and responses
- * from a server to a client. This interface defines the methods common to
- * each.
- *
- * Messages are considered immutable; all methods that might change state MUST
- * be implemented such that they retain the internal state of the current
- * message and return an instance that contains the changed state.
- *
- * @see http://www.ietf.org/rfc/rfc7230.txt
- * @see http://www.ietf.org/rfc/rfc7231.txt
+ * A simple PSR-7 message adapter as a compatibility proof for the message interface
  */
-interface Message
+class Psr7MessageAdapter implements Message, MessageInterface
 {
+	private $message;
+
+	public function __construct(Message $message)
+	{
+		$this->message = $message;
+	}
+
 	/**
 	 * Retrieves the HTTP protocol version as a string.
 	 *
@@ -25,7 +26,10 @@ interface Message
 	 *
 	 * @return string HTTP protocol version.
 	 */
-	public function getProtocolVersion();
+	public function getProtocolVersion()
+	{
+		return $this->message->getProtocolVersion();
+	}
 
 	/**
 	 * Return an instance with the specified HTTP protocol version.
@@ -40,7 +44,10 @@ interface Message
 	 * @param string $version HTTP protocol version
 	 * @return static
 	 */
-	public function withProtocolVersion($version);
+	public function withProtocolVersion($version)
+	{
+		return $this->message->withProtocolVersion($version);
+	}
 
 	/**
 	 * Retrieves all message header values.
@@ -67,7 +74,10 @@ interface Message
 	 *     Each key MUST be a header name, and each value MUST be an array of
 	 *     strings for that header.
 	 */
-	public function getHeaders();
+	public function getHeaders()
+	{
+		return $this->message->getHeaders();
+	}
 
 	/**
 	 * Checks if a header exists by the given case-insensitive name.
@@ -77,7 +87,10 @@ interface Message
 	 *     name using a case-insensitive string comparison. Returns false if
 	 *     no matching header name is found in the message.
 	 */
-	public function hasHeader($name);
+	public function hasHeader($name)
+	{
+		return $this->message->hasHeader();
+	}
 
 	/**
 	 * Retrieves a message header value by the given case-insensitive name.
@@ -93,7 +106,10 @@ interface Message
 	 *    header. If the header does not appear in the message, this method MUST
 	 *    return an empty array.
 	 */
-	public function getHeader($name);
+	public function getHeader($name)
+	{
+		return $this->message->getHeader($name);
+	}
 
 	/**
 	 * Retrieves a comma-separated string of the values for a single header.
@@ -114,7 +130,10 @@ interface Message
 	 *    concatenated together using a comma. If the header does not appear in
 	 *    the message, this method MUST return an empty string.
 	 */
-	public function getHeaderLine($name);
+	public function getHeaderLine($name)
+	{
+		return $this->message->getHeaderLine($name);
+	}
 
 	/**
 	 * Return an instance with the provided value replacing the specified header.
@@ -131,7 +150,10 @@ interface Message
 	 * @return static
 	 * @throws \InvalidArgumentException for invalid header names or values.
 	 */
-	public function withHeader($name, $value);
+	public function withHeader($name, $value)
+	{
+		return $this->message->withHeader($name, $value);
+	}
 
 	/**
 	 * Return an instance with the specified header appended with the given value.
@@ -150,7 +172,10 @@ interface Message
 	 * @throws \InvalidArgumentException for invalid header names.
 	 * @throws \InvalidArgumentException for invalid header values.
 	 */
-	public function withAddedHeader($name, $value);
+	public function withAddedHeader($name, $value)
+	{
+		return $this->message->withAddedHeader($name, $value);
+	}
 
 	/**
 	 * Return an instance without the specified header.
@@ -164,14 +189,20 @@ interface Message
 	 * @param string $name Case-insensitive header field name to remove.
 	 * @return static
 	 */
-	public function withoutHeader($name);
+	public function withoutHeader($name)
+	{
+		return $this->message->withoutHeader($name);
+	}
 
 	/**
 	 * Gets the raw body of the message.
 	 *
 	 * @return string Returns the body as a string.
 	 */
-	public function getBodyAsString();
+	public function getBodyAsString()
+	{
+		return $this->message->getBodyAsString();
+	}
 
 	/**
 	 * Return an instance with the specified message body.
@@ -186,5 +217,36 @@ interface Message
 	 * @return static
 	 * @throws \InvalidArgumentException When the body is not valid.
 	 */
-	public function withStringAsBody($body);
+	public function withStringAsBody($body)
+	{
+		return $this->message->withStringAsBody($body);
+	}
+
+	/**
+	 * Gets the body of the message.
+	 *
+	 * @return StreamInterface Returns the body as a stream.
+	 */
+	public function getBody()
+	{
+		return new Psr7\stream_for($this->getBodyAsString());
+	}
+
+	/**
+	 * Return an instance with the specified message body.
+	 *
+	 * The body MUST be a StreamInterface object.
+	 *
+	 * This method MUST be implemented in such a way as to retain the
+	 * immutability of the message, and MUST return a new instance that has the
+	 * new body stream.
+	 *
+	 * @param StreamInterface $body Body.
+	 * @return static
+	 * @throws \InvalidArgumentException When the body is not valid.
+	 */
+	public function withBody(StreamInterface $body)
+	{
+		return $this->withStringAsBody($body->__toString());
+	}
 }

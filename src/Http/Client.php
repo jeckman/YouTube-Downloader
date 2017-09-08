@@ -15,7 +15,7 @@ interface Client
 	 *
 	 * @return Request
 	 */
-	public function buildRequest();
+	public function createRequest();
 
 	/**
 	 * Sends a Request and returns a Response

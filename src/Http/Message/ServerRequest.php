@@ -125,33 +125,6 @@ interface ServerRequest extends Request
 	public function withQueryParams(array $query);
 
 	/**
-	 * Retrieve normalized file upload data.
-	 *
-	 * This method returns upload metadata in a normalized tree, with each leaf
-	 * an instance of Psr\Http\Message\UploadedFileInterface.
-	 *
-	 * These values MAY be prepared from $_FILES or the message body during
-	 * instantiation, or MAY be injected via withUploadedFiles().
-	 *
-	 * @return array An array tree of UploadedFileInterface instances; an empty
-	 *     array MUST be returned if no data is present.
-	 */
-	public function getUploadedFiles();
-
-	/**
-	 * Create a new instance with the specified uploaded files.
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that has the
-	 * updated body parameters.
-	 *
-	 * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
-	 * @return static
-	 * @throws \InvalidArgumentException if an invalid structure is provided.
-	 */
-	public function withUploadedFiles(array $uploadedFiles);
-
-	/**
 	 * Retrieve any parameters provided in the request body.
 	 *
 	 * If the request Content-Type is either application/x-www-form-urlencoded
@@ -197,67 +170,4 @@ interface ServerRequest extends Request
 	 *     provided.
 	 */
 	public function withParsedBody($data);
-
-	/**
-	 * Retrieve attributes derived from the request.
-	 *
-	 * The request "attributes" may be used to allow injection of any
-	 * parameters derived from the request: e.g., the results of path
-	 * match operations; the results of decrypting cookies; the results of
-	 * deserializing non-form-encoded message bodies; etc. Attributes
-	 * will be application and request specific, and CAN be mutable.
-	 *
-	 * @return mixed[] Attributes derived from the request.
-	 */
-	public function getAttributes();
-
-	/**
-	 * Retrieve a single derived request attribute.
-	 *
-	 * Retrieves a single derived request attribute as described in
-	 * getAttributes(). If the attribute has not been previously set, returns
-	 * the default value as provided.
-	 *
-	 * This method obviates the need for a hasAttribute() method, as it allows
-	 * specifying a default value to return if the attribute is not found.
-	 *
-	 * @see getAttributes()
-	 * @param string $name The attribute name.
-	 * @param mixed $default Default value to return if the attribute does not exist.
-	 * @return mixed
-	 */
-	public function getAttribute($name, $default = null);
-
-	/**
-	 * Return an instance with the specified derived request attribute.
-	 *
-	 * This method allows setting a single derived request attribute as
-	 * described in getAttributes().
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that has the
-	 * updated attribute.
-	 *
-	 * @see getAttributes()
-	 * @param string $name The attribute name.
-	 * @param mixed $value The value of the attribute.
-	 * @return static
-	 */
-	public function withAttribute($name, $value);
-
-	/**
-	 * Return an instance that removes the specified derived request attribute.
-	 *
-	 * This method allows removing a single derived request attribute as
-	 * described in getAttributes().
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that removes
-	 * the attribute.
-	 *
-	 * @see getAttributes()
-	 * @param string $name The attribute name.
-	 * @return static
-	 */
-	public function withoutAttribute($name);
 }
