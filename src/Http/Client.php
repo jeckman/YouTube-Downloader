@@ -13,18 +13,23 @@ interface Client
 	/**
 	 * Factory for a new Request
 	 *
+	 * @param string $method HTTP method
+	 * @param string $target The target url for this request
+	 * @param array $headers Request headers
+	 * @param string|null $body Request body
+	 * @param string $version Protocol version
 	 * @return Request
 	 */
-	public function createRequest();
+	public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
 
 	/**
 	 * Sends a Request and returns a Response
 	 *
-	 * $params can be used to set client specific data per request, like curl options
+	 * $options can be used to set client specific data per request, like curl options
 	 *
 	 * @param Request $request,
-	 * @param array $params client specific params for a client instance
+	 * @param array $options client specific options for a client instance
 	 * @return Response
 	 */
-	public function send(Request $request, array $params = []);
+	public function send(Request $request, array $options = []);
 }

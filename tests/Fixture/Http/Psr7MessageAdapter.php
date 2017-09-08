@@ -12,7 +12,7 @@ use YoutubeDownloader\Http\Message\Message;
  */
 class Psr7MessageAdapter implements Message, MessageInterface
 {
-	private $message;
+	protected $message;
 
 	public function __construct(Message $message)
 	{
@@ -46,7 +46,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withProtocolVersion($version)
 	{
-		return $this->message->withProtocolVersion($version);
+		return new self($this->message->withProtocolVersion($version));
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function hasHeader($name)
 	{
-		return $this->message->hasHeader();
+		return new self($this->message->hasHeader());
 	}
 
 	/**
@@ -152,7 +152,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withHeader($name, $value)
 	{
-		return $this->message->withHeader($name, $value);
+		return new self($this->message->withHeader($name, $value));
 	}
 
 	/**
@@ -174,7 +174,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withAddedHeader($name, $value)
 	{
-		return $this->message->withAddedHeader($name, $value);
+		return new self($this->message->withAddedHeader($name, $value));
 	}
 
 	/**
@@ -191,7 +191,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withoutHeader($name)
 	{
-		return $this->message->withoutHeader($name);
+		return new self($this->message->withoutHeader($name));
 	}
 
 	/**
@@ -219,7 +219,7 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withStringAsBody($body)
 	{
-		return $this->message->withStringAsBody($body);
+		return new self($this->message->withStringAsBody($body));
 	}
 
 	/**
@@ -247,6 +247,6 @@ class Psr7MessageAdapter implements Message, MessageInterface
 	 */
 	public function withBody(StreamInterface $body)
 	{
-		return $this->withStringAsBody($body->__toString());
+		return new self($this->withStringAsBody($body->__toString()));
 	}
 }
