@@ -5,16 +5,16 @@ namespace YoutubeDownloader\Tests\Fixture\Http;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Psr7;
-use YoutubeDownloader\Http\Message\Message;
+use YoutubeDownloader\Http\Message\Message as YDMessage;
 
 /**
  * A simple PSR-7 message adapter as a compatibility proof for the message interface
  */
-class Psr7MessageAdapter implements Message, MessageInterface
+class Psr7MessageAdapter implements YDMessage, MessageInterface
 {
 	protected $message;
 
-	public function __construct(Message $message)
+	public function __construct(YDMessage $message)
 	{
 		$this->message = $message;
 	}
