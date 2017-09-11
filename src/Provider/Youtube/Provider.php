@@ -108,11 +108,25 @@ final class Provider implements ProviderInterface, CacheAware, LoggerAware
 		// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $input;
 		// thanks to amit kumar @ bloggertale.com for sharing the fix
 		$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = $this->toolkit->curlGet($video_info_url, $this->config);
 
-		/* TODO: Check return from curl for status code */
+		$httpclient = new \YoutubeDownloader\Http\CurlClient;
+		$request = $httpclient->createRequest(
+			'GET',
+			$video_info_url
+		);
+
+		$options = ['curl' => []];
+
+		if ( $this->config->get('multipleIPs') === true)
+		{
+			$options['curl'][CURLOPT_INTERFACE] = $this->toolkit->getRandomIp($this->config);
+		}
+
+		$response = $httpclient->send($request, $options);
+
+		/* TODO: Check response for status code and Content-Type */
 		$video_info = VideoInfo::createFromStringWithConfig(
-			$video_info_string,
+			$response->getBodyAsString(),
 			$this->config
 		);
 

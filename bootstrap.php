@@ -126,6 +126,9 @@ $container = call_user_func_array(
 
 		$container->set('logger', $logger);
 
+		// Create HttpClient
+		$container->set('httpclient', new \YoutubeDownloader\Http\CurlClient);
+
 		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']
