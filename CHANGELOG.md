@@ -21,11 +21,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- The `YoutubeDownloader\Format` class was removed, use the `YoutubeDownloader\Provider\Youtube\Format` class instead
-- The `YoutubeDownloader\SignatureDecipher` class was removed, use the `YoutubeDownloader\Provider\Youtube\SignatureDecipher` class instead
-- The `YoutubeDownloader\VideoInfo` class was removed, use the `YoutubeDownloader\Provider\Youtube\VideoInfo` class instead
-- `YoutubeDownloader\Toolkit::isMobileUrl()` isn't used anymore and was removed
-- `YoutubeDownloader\Toolkit::treatMobileUrl()` isn't used anymore and was removed
+- **Breaking:** The `YoutubeDownloader\Format` class was removed, use the `YoutubeDownloader\Provider\Youtube\Format` class instead
+- **Breaking:** The `YoutubeDownloader\SignatureDecipher` class was removed, use the `YoutubeDownloader\Provider\Youtube\SignatureDecipher` class instead
+- **Breaking:** The `YoutubeDownloader\VideoInfo` class was removed, use the `YoutubeDownloader\Provider\Youtube\VideoInfo` class instead
+- **Breaking:** `YoutubeDownloader\Toolkit::isMobileUrl()` isn't used anymore and was removed
+- **Breaking:** `YoutubeDownloader\Toolkit::treatMobileUrl()` isn't used anymore and was removed
 
 ## [0.4] - 2017-08-30
 
@@ -54,8 +54,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- **Breaking** method `YoutubeDownloader\SignatureDecipher::downloadPlayerScript()` was removed, use `YoutubeDownloader\SignatureDecipher::downloadRawPlayerScript()` instead
-- **Breaking** method `YoutubeDownloader\SignatureDecipher::decipherSignature()` was removed, use `YoutubeDownloader\SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
+- **Breaking:** method `YoutubeDownloader\SignatureDecipher::downloadPlayerScript()` was removed, use `YoutubeDownloader\SignatureDecipher::downloadRawPlayerScript()` instead
+- **Breaking:** method `YoutubeDownloader\SignatureDecipher::decipherSignature()` was removed, use `YoutubeDownloader\SignatureDecipher::decipherSignatureWithRawPlayerScript()` instead
 
 ## [0.3] - 2017-07-28
 
@@ -86,11 +86,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- **Breaking** class `Stream` was removed, use `Format` instead
-- **Breaking** class `StreamMap` was removed, use `VideoInfo::getFormats()` and `VideoInfo::getAdaptiveFormats()` instead
-- **Breaking** method `VideoInfo::createFromString()` was removed, use `VideoInfo::createFromStringWithConfig()` instead
-- **Breaking** method `VideoInfo::getStreamMapString()` was removed, use `VideoInfo::getFormats()` instead
-- **Breaking** method `VideoInfo::getAdaptiveFormatsString()` was removed, use `VideoInfo::getAdaptiveFormats()` instead
+- **Breaking:** class `Stream` was removed, use `Format` instead
+- **Breaking:** class `StreamMap` was removed, use `VideoInfo::getFormats()` and `VideoInfo::getAdaptiveFormats()` instead
+- **Breaking:** method `VideoInfo::createFromString()` was removed, use `VideoInfo::createFromStringWithConfig()` instead
+- **Breaking:** method `VideoInfo::getStreamMapString()` was removed, use `VideoInfo::getFormats()` instead
+- **Breaking:** method `VideoInfo::getAdaptiveFormatsString()` was removed, use `VideoInfo::getAdaptiveFormats()` instead
 
 ## [0.2] - 2017-07-21
 
