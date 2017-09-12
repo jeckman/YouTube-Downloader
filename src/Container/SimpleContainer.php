@@ -103,7 +103,7 @@ class SimpleContainer implements Container
 		// BC: Create Closure if not provided
 		if ( ! $value instanceOf Closure )
 		{
-			trigger_error(__METHOD__ . ' needs an optional Closure as argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead', E_USER_DEPRECATED);
+			@trigger_error(__METHOD__ . ' needs an optional Closure as argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead', E_USER_DEPRECATED);
 
 			$val = function(Container $c) use ($value) {
 				return $value;
