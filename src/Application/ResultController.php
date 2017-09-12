@@ -38,6 +38,11 @@ class ResultController extends ControllerAbstract
 			$youtube_provider->setCache($this->get('cache'));
 		}
 
+		if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\HttpClientAware )
+		{
+			$youtube_provider->setHttpClient($this->get('httpclient'));
+		}
+
 		if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
 		{
 			$youtube_provider->setLogger($this->get('logger'));
@@ -166,17 +171,16 @@ class ResultController extends ControllerAbstract
 
 			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
 
-			$size = $toolkit->get_size($avail_format->getUrl(), $config);
-			$size = $toolkit->formatBytes($size);
+			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
 			$template_data['streams'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
 				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
-				'direct_url'=> $directlink,
-				'proxy_url'=> $proxylink,
-				'type'=> $avail_format->getType(),
-				'quality'=> $avail_format->getQuality(),
-				'size'=> $size,
+				'direct_url' => $directlink,
+				'proxy_url' => $proxylink,
+				'type' => $avail_format->getType(),
+				'quality' => $avail_format->getQuality(),
+				'size' => $toolkit->formatBytes($size),
 			];
 		}
 
@@ -189,17 +193,16 @@ class ResultController extends ControllerAbstract
 
 			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
 
-			$size = $toolkit->get_size($avail_format->getUrl(), $config);
-			$size = $toolkit->formatBytes($size);
+			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
 			$template_data['formats'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
 				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
-				'direct_url'=> $directlink,
-				'proxy_url'=> $proxylink,
-				'type'=> $avail_format->getType(),
-				'quality'=> $avail_format->getQuality(),
-				'size'=> $size,
+				'direct_url' => $directlink,
+				'proxy_url' => $proxylink,
+				'type' => $avail_format->getType(),
+				'quality' => $avail_format->getQuality(),
+				'size' => $toolkit->formatBytes($size),
 			];
 		}
 
