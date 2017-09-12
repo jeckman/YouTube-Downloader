@@ -10,6 +10,11 @@ class SimpleContainer implements Container
 	/**
 	 * @var array
 	 */
+	private $aliases = [];
+
+	/**
+	 * @var array
+	 */
 	private $data = [];
 
 	/**
@@ -24,14 +29,19 @@ class SimpleContainer implements Container
 	 */
 	public function get($id)
 	{
-		if ($this->has($id))
+		if ( ! $this->has($id) )
 		{
-			return $this->data[$id];
+			throw new NotFoundException(
+				sprintf('Entry "%s" don\'t exists in the container', $id)
+			);
 		}
 
-		throw new NotFoundException(
-			sprintf('Entry "%s" don\'t exists in the container', $id)
-		);
+		if ( ! array_key_exists($id, $this->data) )
+		{
+			$id = $this->aliases[$id];
+		}
+
+		return $this->data[$id];
 	}
 
 	/**
@@ -47,11 +57,21 @@ class SimpleContainer implements Container
 	 */
 	public function has($id)
 	{
-		return array_key_exists($id, $this->data);
+		if ( array_key_exists($id, $this->data) )
+		{
+			return true;
+		}
+
+		if ( array_key_exists($id, $this->aliases) )
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Set a entry with an identifier
+	 * Set an entry with an identifier
 	 *
 	 * @param string $id Identifier of the entry to look for.
 	 * @param mixed $value the entry
@@ -63,5 +83,30 @@ class SimpleContainer implements Container
 		$id = strval($id);
 
 		$this->data[$id] = $value;
+	}
+
+	/**
+	 * Set an alias to an existing entry
+	 *
+	 * @param string $alias The alias
+	 * @param string $id the existing entry
+	 *
+	 * @return void
+	 */
+	public function setAlias($alias, $id)
+	{
+		$id = strval($id);
+		$alias = strval($alias);
+
+		if ( ! $this->has($id) )
+		{
+			throw new ContainerException(sprintf(
+				'The alias "%s" must point to an existing entry, id "%s" was given.',
+				$alias,
+				$id
+			));
+		}
+
+		$this->aliases[$alias] = $id;
 	}
 }

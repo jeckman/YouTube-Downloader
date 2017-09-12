@@ -30,29 +30,29 @@ class ServiceProvider
 	{
 		$ds = \DIRECTORY_SEPARATOR;
 
-		$container->set('config', $this->config);
+		$container->set('YoutubeDownloader\Config', $this->config);
 
 		// Create Template\Engine
 		$template = \YoutubeDownloader\Template\Engine::createFromDirectory(
 			__DIR__ . $ds . '..' . $ds . 'templates'
 		);
 
-		$container->set('template', $template);
+		$container->set('YoutubeDownloader\Template\Engine', $template);
 
 		// Create Application\ControllerFactory
 		$factory = new \YoutubeDownloader\Application\ControllerFactory;
 
-		$container->set('controller_factory', $factory);
+		$container->set('YoutubeDownloader\Application\ControllerFactory', $factory);
 
 		// Create Toolkit
-		$container->set('toolkit', new \YoutubeDownloader\Toolkit);
+		$container->set('YoutubeDownloader\Toolkit', new \YoutubeDownloader\Toolkit);
 
 		// Create Cache
 		$cache = \YoutubeDownloader\Cache\FileCache::createFromDirectory(
 			__DIR__ . $ds . '..' . $ds . 'cache'
 		);
 
-		$container->set('cache', $cache);
+		$container->set('YoutubeDownloader\Cache\Cache', $cache);
 
 		// Create Logger
 		$logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
@@ -97,6 +97,14 @@ class ServiceProvider
 			}
 		}
 
-		$container->set('logger', $logger);
+		$container->set('YoutubeDownloader\Logger\Logger', $logger);
+
+		// Set aliases for BC
+		$container->setAlias('config', 'YoutubeDownloader\Config');
+		$container->setAlias('template', 'YoutubeDownloader\Template\Engine');
+		$container->setAlias('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
+		$container->setAlias('toolkit', 'YoutubeDownloader\Toolkit');
+		$container->setAlias('cache', 'YoutubeDownloader\Cache\Cache');
+		$container->setAlias('logger', 'YoutubeDownloader\Logger\Logger');
 	}
 }
