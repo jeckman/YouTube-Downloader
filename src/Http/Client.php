@@ -2,8 +2,8 @@
 
 namespace YoutubeDownloader\Http;
 
-use YoutubeDownloader\Http\Message\Request;
-use YoutubeDownloader\Http\Message\Response;
+use YoutubeDownloader\Http\Message\Request as RequestInterface;
+use YoutubeDownloader\Http\Message\Response as ResponseInterface;
 
 /**
  * Describes a http client instance
@@ -18,7 +18,7 @@ interface Client
 	 * @param array $headers Request headers
 	 * @param string|null $body Request body
 	 * @param string $version Protocol version
-	 * @return Request
+	 * @return RequestInterface
 	 */
 	public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
 
@@ -27,9 +27,9 @@ interface Client
 	 *
 	 * $options can be used to set client specific data per request, like curl options
 	 *
-	 * @param Request $request,
+	 * @param RequestInterface $request,
 	 * @param array $options client specific options for a client instance
-	 * @return Response
+	 * @return ResponseInterface
 	 */
-	public function send(Request $request, array $options = []);
+	public function send(RequestInterface $request, array $options = []);
 }
