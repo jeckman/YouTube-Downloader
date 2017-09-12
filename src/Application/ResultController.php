@@ -38,7 +38,7 @@ class ResultController extends ControllerAbstract
 			$youtube_provider->setCache($this->get('cache'));
 		}
 
-		if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\HttpClientAware )
+		if ( $youtube_provider instanceOf \YoutubeDownloader\Http\HttpClientAware )
 		{
 			$youtube_provider->setHttpClient($this->get('httpclient'));
 		}
