@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Container;
 
+use Closure;
+
 /**
  * A simple container implementation with a setter
  */
@@ -41,7 +43,9 @@ class SimpleContainer implements Container
 			$id = $this->aliases[$id];
 		}
 
-		return $this->data[$id];
+		$closure = $this->data[$id];
+
+		return $closure->__invoke($this);
 	}
 
 	/**
@@ -73,8 +77,22 @@ class SimpleContainer implements Container
 	/**
 	 * Set an entry with an identifier
 	 *
+	 * @deprecated SimpleContainer::set() needs an optional Closure as argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead
+	 *
+	 * The second argument for $value must be a Closure that expects the
+	 * Container as first argument. That allows to get entries from the Container
+	 * inside the Closure to build complex dependencies.
+	 *
+	 * Example:
+	 * $value = function(Container $c) {
+	 *   return new LoggerCacheBrige(
+	 *     $c->get('logger'),
+	 *     $c->get('cache')
+	 *   );
+	 * };
+	 *
 	 * @param string $id Identifier of the entry to look for.
-	 * @param mixed $value the entry
+	 * @param Closure $value A closure that returns the entry on invoke
 	 *
 	 * @return void
 	 */
@@ -82,7 +100,21 @@ class SimpleContainer implements Container
 	{
 		$id = strval($id);
 
-		$this->data[$id] = $value;
+		// BC: Create Closure if not provided
+		if ( ! $value instanceOf Closure )
+		{
+			trigger_error(__METHOD__ . ' needs an optional Closure as argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead', E_USER_DEPRECATED);
+
+			$val = function(Container $c) use ($value) {
+				return $value;
+			};
+		}
+		else
+		{
+			$val = $value;
+		}
+
+		$this->data[$id] = $val;
 	}
 
 	/**
