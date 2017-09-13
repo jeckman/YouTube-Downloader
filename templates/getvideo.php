@@ -30,18 +30,14 @@ else
 	<ul class="dl-list">
 <?php foreach($this->get('streams', []) as $format) { ?>
 		<li>
+			<a class="btn btn-default btn-type disabled" href="#"><?php echo $format['type']; ?> - <?php echo $format['quality']; ?></a>
 <?php if ($format['show_direct_url'] === true) { ?>
-			<a class="btn btn-default btn-type" href="<?php echo $format['direct_url']; ?>" class="mime"><?php echo $format['type']; ?></a>
-<?php }
-else
-{ ?>
-			<span class="mime"><?php echo $format['type']; ?></span>
+			<a class="btn btn-default btn-download" href="<?php echo $format['direct_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Direct</a>
 <?php } ?>
-
 <?php if ($format['show_proxy_url'] === true) { ?>
-			<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Download - <?php echo $format['size']; ?></a>
+			<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Proxy</a>
 <?php } ?>
-			<div class="label label-warning">quality: <?php echo $format['quality']; ?></div>
+			<div class="label label-warning"><?php echo $format['size']; ?></div>
 		</li>
 <?php } ?>
 	</ul>
@@ -49,34 +45,29 @@ else
 	<h2>Separated video and audio format</h2>
 	<ul class="dl-list">
 <?php foreach($this->get('formats', []) as $format) { ?>
-		<li>
+	<li>
+		<a class="btn btn-default btn-type disabled" href="#"><?php echo $format['type']; ?> - <?php echo $format['quality']; ?></a>
 <?php if ($format['show_direct_url'] === true) { ?>
-			<a class="btn btn-default btn-type" href="<?php echo $format['direct_url']; ?>" class="mime"><?php echo $format['type']; ?></a>
-<?php }
-else
-{ ?>
-			<span class="mime"><?php echo $format['type']; ?></span>
+		<a class="btn btn-default btn-download" href="<?php echo $format['direct_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Direct</a>
 <?php } ?>
-
 <?php if ($format['show_proxy_url'] === true) { ?>
-			 <a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Download - <?php echo $format['size']; ?></a>
+		<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Proxy</a>
 <?php } ?>
-			<div class="label label-warning">quality: <?php echo $format['quality']; ?></div>
-		</li>
+		<div class="label label-warning"><?php echo $format['size']; ?></div>
+	</li>
 <?php } ?>
 	</ul>
 <?php if ($this->get('showMP3Download', false) === true) { ?>
 	<h2>Convert and Download to .mp3</h2>
 	<ul class="dl-list">
 		<li>
-			<a class="btn btn-default btn-type disabled" href="#" class="mime">audio/mp3</a>
+			<a class="btn btn-default btn-type disabled" href="#" class="mime">audio/mp3 - <?php echo $this->get('mp3_download_quality'); ?></a>
 			<a class="btn btn-primary btn-download" href="<?php echo $this->get('mp3_download_url'); ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Convert and Download</a>
-			<div class="label label-warning">quality: <?php echo $this->get('mp3_download_quality'); ?></div>
 		</li>
 	</ul>
 <?php } ?>
 	<hr />
-	<p><small>Note that you initiate download either by clicking video format link or click "download" to use this server as proxy.</small></p>
+	<p><small>Note that you initiate download either by clicking "Direct" to download from the origin server or by clicking "Proxy" to use this server as proxy.</small></p>
 <?php if ($this->get('showBrowserExtensions', false) === true) { ?>
 	<p><a href="ytdl.user.js" class="userscript btn btn-mini" title="Install chrome extension to view a 'Download' link to this application on Youtube video pages."> Install Chrome Extension </a></p>
 <?php } ?>
