@@ -106,11 +106,11 @@ class ServiceProvider
 		});
 
 		// Set aliases for BC
-		$container->setAlias('config', 'YoutubeDownloader\Config');
-		$container->setAlias('template', 'YoutubeDownloader\Template\Engine');
-		$container->setAlias('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
-		$container->setAlias('toolkit', 'YoutubeDownloader\Toolkit');
-		$container->setAlias('cache', 'YoutubeDownloader\Cache\Cache');
-		$container->setAlias('logger', 'YoutubeDownloader\Logger\Logger');
+		$container->set('config', 'YoutubeDownloader\Config');
+		$container->set('template', 'YoutubeDownloader\Template\Engine');
+		$container->set('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
+		$container->set('toolkit', 'YoutubeDownloader\Toolkit');
+		$container->set('cache', 'YoutubeDownloader\Cache\Cache');
+		$container->set('logger', 'YoutubeDownloader\Logger\Logger');
 	}
 }
