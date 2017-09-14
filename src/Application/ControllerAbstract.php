@@ -72,7 +72,7 @@ abstract class ControllerAbstract implements Controller
 
 		$options = ['curl' => []];
 		$options['curl'][CURLOPT_NOBODY] = true;
-		$options['curl'][CURLOPT_TIMEOUT] = 1;
+		$options['curl'][CURLOPT_TIMEOUT] = 3;
 		$options['curl'][CURLOPT_SSL_VERIFYPEER] = false;
 
 		if ( $config->get('multipleIPs') === true)

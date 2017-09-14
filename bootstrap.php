@@ -38,6 +38,9 @@ spl_autoload_register(function ($class)
 	}
 });
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 /**
  * Closure to create a container class
  */
@@ -59,9 +62,6 @@ $container = call_user_func_array(
 
 		$service_provider = new \YoutubeDownloader\ServiceProvider($config);
 		$service_provider->register($container);
-
-		// Create HttpClient
-		$container->set('httpclient', new \YoutubeDownloader\Http\CurlClient);
 
 		return $container;
 	},

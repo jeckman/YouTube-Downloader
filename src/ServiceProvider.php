@@ -105,6 +105,11 @@ class ServiceProvider
 			return $logger;
 		});
 
+		// Create HttpClient
+		$container->set('YoutubeDownloader\Http\Client', function($c) {
+			return new \YoutubeDownloader\Http\CurlClient;
+		});
+
 		// Set aliases for BC
 		$container->set('config', 'YoutubeDownloader\Config');
 		$container->set('template', 'YoutubeDownloader\Template\Engine');
@@ -112,5 +117,6 @@ class ServiceProvider
 		$container->set('toolkit', 'YoutubeDownloader\Toolkit');
 		$container->set('cache', 'YoutubeDownloader\Cache\Cache');
 		$container->set('logger', 'YoutubeDownloader\Logger\Logger');
+		$container->set('httpclient', 'YoutubeDownloader\Http\Client');
 	}
 }
