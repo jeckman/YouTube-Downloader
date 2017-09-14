@@ -2,11 +2,18 @@
 
 namespace YoutubeDownloader\Container;
 
+use Closure;
+
 /**
  * A simple container implementation with a setter
  */
 class SimpleContainer implements Container
 {
+	/**
+	 * @var array
+	 */
+	private $aliases = [];
+
 	/**
 	 * @var array
 	 */
@@ -24,14 +31,21 @@ class SimpleContainer implements Container
 	 */
 	public function get($id)
 	{
-		if ($this->has($id))
+		if ( ! $this->has($id) )
 		{
-			return $this->data[$id];
+			throw new NotFoundException(
+				sprintf('Entry "%s" don\'t exists in the container', $id)
+			);
 		}
 
-		throw new NotFoundException(
-			sprintf('Entry "%s" don\'t exists in the container', $id)
-		);
+		if ( ! array_key_exists($id, $this->data) )
+		{
+			$id = $this->aliases[$id];
+		}
+
+		$closure = $this->data[$id];
+
+		return $closure->__invoke($this);
 	}
 
 	/**
@@ -47,14 +61,38 @@ class SimpleContainer implements Container
 	 */
 	public function has($id)
 	{
-		return array_key_exists($id, $this->data);
+		if ( array_key_exists($id, $this->data) )
+		{
+			return true;
+		}
+
+		if ( array_key_exists($id, $this->aliases) )
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * Set a entry with an identifier
+	 * Set an entry with an identifier
+	 *
+	 * @deprecated SimpleContainer::set() needs an optional Closure or a string as alias in argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead
+	 *
+	 * The second argument for $value must be a Closure that expects the
+	 * Container as first argument. That allows to get entries from the Container
+	 * inside the Closure to build complex dependencies.
+	 *
+	 * Example:
+	 * $value = function(Container $c) {
+	 *   return new LoggerCacheBrige(
+	 *     $c->get('logger'),
+	 *     $c->get('cache')
+	 *   );
+	 * };
 	 *
 	 * @param string $id Identifier of the entry to look for.
-	 * @param mixed $value the entry
+	 * @param Closure|string $value A closure that returns the entry on invoke or an identifier that a reference to an existing entry
 	 *
 	 * @return void
 	 */
@@ -62,6 +100,51 @@ class SimpleContainer implements Container
 	{
 		$id = strval($id);
 
-		$this->data[$id] = $value;
+		// BC: String can be an alias for an entry
+		if ( is_string($value) and array_key_exists($value, $this->data) )
+		{
+			return $this->setAlias($id, $value);
+		}
+
+		// BC: Create Closure if not provided
+		if ( ! $value instanceOf Closure )
+		{
+			@trigger_error(__METHOD__ . ' needs an optional Closure or a string as alias in argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure or a string as alias in argument #2 ($value) instead', E_USER_DEPRECATED);
+
+			$val = function(Container $c) use ($value) {
+				return $value;
+			};
+		}
+		else
+		{
+			$val = $value;
+		}
+
+		$this->data[$id] = $val;
+	}
+
+	/**
+	 * Set an alias to an existing entry
+	 *
+	 * @param string $alias The alias
+	 * @param string $id the existing entry
+	 *
+	 * @return void
+	 */
+	private function setAlias($alias, $id)
+	{
+		$id = strval($id);
+		$alias = strval($alias);
+
+		if ( ! $this->has($id) )
+		{
+			throw new ContainerException(sprintf(
+				'The alias "%s" must point to an existing entry, id "%s" was given.',
+				$alias,
+				$id
+			));
+		}
+
+		$this->aliases[$alias] = $id;
 	}
 }

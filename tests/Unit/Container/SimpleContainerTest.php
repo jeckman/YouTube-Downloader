@@ -35,7 +35,7 @@ class SimpleContainerTest extends TestCase
 	 * @test set(), has() and get()
 	 * @dataProvider GetterSetterProvider
 	 */
-	public function testSetterAndGetter($id, $value)
+	public function testSetterAndGetterForBC($id, $value)
 	{
 		$container = new SimpleContainer();
 
@@ -43,6 +43,43 @@ class SimpleContainerTest extends TestCase
 
 		$this->assertTrue($container->has($id));
 		$this->assertSame($value, $container->get($id));
+	}
+
+	/**
+	 * @test set(), has() and get()
+	 * @dataProvider GetterSetterProvider
+	 */
+	public function testSetterAndGetter($id, $value)
+	{
+		$container = new SimpleContainer();
+
+		$closure = function($c) use ($value) {
+			return $value;
+		};
+
+		$container->set($id, $closure);
+
+		$this->assertTrue($container->has($id));
+		$this->assertSame($value, $container->get($id));
+	}
+
+	/**
+	 * @test set(), has() and get()
+	 * @dataProvider GetterSetterProvider
+	 */
+	public function testSetterAndGetterAlias($id, $value)
+	{
+		$container = new SimpleContainer();
+
+		$closure = function($c) use ($value) {
+			return $value;
+		};
+
+		$container->set($id, $closure);
+		$container->set($id . '-alias', $id);
+
+		$this->assertTrue($container->has($id.'-alias'));
+		$this->assertSame($value, $container->get($id.'-alias'));
 	}
 
 	/**

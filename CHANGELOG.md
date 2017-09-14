@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::setToCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->set()` instead
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::getFromCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->get()` instead
+- `YoutubeDownloader\Container\SimpleContainer::set()` needs an optional Closure or a string as alias in second argument ($value) since version 0.5, to be required in 0.6, provide a Closure or a string as alias in second argument ($value) instead
 - `YoutubeDownloader\Toolkit::curlGet()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Http\CurlClient` instead
 - `YoutubeDownloader\Toolkit::get_size()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Http\CurlClient` instead
 

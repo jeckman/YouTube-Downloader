@@ -38,6 +38,9 @@ spl_autoload_register(function ($class)
 	}
 });
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 /**
  * Closure to create a container class
  */
@@ -57,77 +60,8 @@ $container = call_user_func_array(
 			$config_dir . $custom . '.php'
 		);
 
-		$container->set('config', $config);
-
-		// Create Template\Engine
-		$template = \YoutubeDownloader\Template\Engine::createFromDirectory(
-			__DIR__ . DIRECTORY_SEPARATOR . 'templates'
-		);
-
-		$container->set('template', $template);
-
-		// Create Application\ControllerFactory
-		$factory = new \YoutubeDownloader\Application\ControllerFactory;
-
-		$container->set('controller_factory', $factory);
-
-		// Create Toolkit
-		$container->set('toolkit', new \YoutubeDownloader\Toolkit);
-
-		// Create Cache
-		$cache = \YoutubeDownloader\Cache\FileCache::createFromDirectory(
-			__DIR__ . DIRECTORY_SEPARATOR . 'cache'
-		);
-
-		$container->set('cache', $cache);
-
-		// Create Logger
-		$logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
-			new \YoutubeDownloader\Logger\Handler\NullHandler()
-		);
-
-		if ( $config->get('debug') === true )
-		{
-			# code...
-			$now = new \DateTime('now', new \DateTimeZone($config->get('default_timezone')));
-
-			$filepath = sprintf(
-				'%s' . \DIRECTORY_SEPARATOR . '%s',
-				__DIR__ . \DIRECTORY_SEPARATOR . 'logs',
-				$now->format('Y')
-			);
-
-			if ( ! file_exists($filepath) )
-			{
-				mkdir($filepath);
-			}
-
-			$stream = fopen(
-				$filepath . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
-				'a+'
-			);
-
-			if ( is_resource($stream) )
-			{
-				$handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
-					\YoutubeDownloader\Logger\LogLevel::EMERGENCY,
-					\YoutubeDownloader\Logger\LogLevel::ALERT,
-					\YoutubeDownloader\Logger\LogLevel::CRITICAL,
-					\YoutubeDownloader\Logger\LogLevel::ERROR,
-					\YoutubeDownloader\Logger\LogLevel::WARNING,
-					\YoutubeDownloader\Logger\LogLevel::NOTICE,
-					\YoutubeDownloader\Logger\LogLevel::INFO,
-					\YoutubeDownloader\Logger\LogLevel::DEBUG,
-				]);
-
-				$logger->addHandler($handler);
-			}
-		}
-
-		$container->set('logger', $logger);
-
-		// Create HttpClient
-		$container->set('httpclient', new \YoutubeDownloader\Http\CurlClient);
+		$service_provider = new \YoutubeDownloader\ServiceProvider($config);
+		$service_provider->register($container);
 
 		return $container;
 	},
