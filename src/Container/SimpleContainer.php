@@ -77,15 +77,13 @@ class SimpleContainer implements Container
 	/**
 	 * Set an entry with an identifier
 	 *
-	 * @deprecated SimpleContainer::set() needs an optional Closure or a string as alias in argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure as argument #2 ($value) instead
-	 *
 	 * The second argument for $value must be a Closure that expects the
 	 * Container as first argument. That allows to get entries from the Container
 	 * inside the Closure to build complex dependencies.
 	 *
 	 * Example:
 	 * $value = function(Container $c) {
-	 *   return new LoggerCacheBrige(
+	 *   return new LoggerCacheBridge(
 	 *     $c->get('logger'),
 	 *     $c->get('cache')
 	 *   );
@@ -100,27 +98,23 @@ class SimpleContainer implements Container
 	{
 		$id = strval($id);
 
-		// BC: String can be an alias for an entry
+		if ( $value instanceOf Closure )
+		{
+			$this->data[$id] = $value;
+
+			return;
+		}
+
+		// a string can be an alias for an entry
 		if ( is_string($value) and array_key_exists($value, $this->data) )
 		{
 			return $this->setAlias($id, $value);
 		}
 
-		// BC: Create Closure if not provided
-		if ( ! $value instanceOf Closure )
-		{
-			@trigger_error(__METHOD__ . ' needs an optional Closure or a string as alias in argument #2 ($value) since version 0.5, to be required in 0.6. Provide a Closure or a string as alias in argument #2 ($value) instead', E_USER_DEPRECATED);
-
-			$val = function(Container $c) use ($value) {
-				return $value;
-			};
-		}
-		else
-		{
-			$val = $value;
-		}
-
-		$this->data[$id] = $val;
+		throw new ContainerException(
+			'Second argument ($value) must be a Closure or a string as alias '.
+			'to an existing entry.'
+		);
 	}
 
 	/**

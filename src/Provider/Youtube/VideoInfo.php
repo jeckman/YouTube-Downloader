@@ -368,37 +368,4 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 
 		return $this->adaptive_formats;
 	}
-
-	/**
-	 * Get from cache
-	 *
-	 * @deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->get() instead
-	 *
-	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function getFromCache($key, $default = null)
-	{
-		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->get() instead', E_USER_DEPRECATED);
-
-		return $this->getCache()->get($key, $default);
-	}
-
-	/**
-	 * Set to cache
-	 *
-	 * @deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->set() instead
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @param null|int|DateTimeInterval $ttl
-	 * @return bool
-	 */
-	public function setToCache($key, $value, $ttl = null)
-	{
-		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use VideoInfo::getCache()->set() instead', E_USER_DEPRECATED);
-
-		return $this->getCache()->set($key, $value, $ttl);
-	}
 }

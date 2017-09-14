@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Removed
+
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo::setToCache()` was removed, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->set()` instead
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo::getFromCache()` was removed, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->get()` instead
+- **Breaking:** `YoutubeDownloader\Container\SimpleContainer::set()` requires an optional Closure or a string as alias in second argument ($value)
+- **Breaking:** `YoutubeDownloader\Toolkit::curlGet()` was removed, use `YoutubeDownloader\Http\CurlClient` instead
+- **Breaking:** `YoutubeDownloader\Toolkit::get_size()` was removed, use `YoutubeDownloader\Http\CurlClient` instead
+- **Breaking:** `YoutubeDownloader\Toolkit::getDownloadUrlByFormats()` was removed
+
 ## [0.5] - 2017-09-15
 
 ### Added

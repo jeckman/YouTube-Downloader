@@ -35,14 +35,14 @@ class SimpleContainerTest extends TestCase
 	 * @test set(), has() and get()
 	 * @dataProvider GetterSetterProvider
 	 */
-	public function testSetterAndGetterForBC($id, $value)
+	public function testSetterAndGetterThrowsExceptionWithoutClosure($id, $value)
 	{
 		$container = new SimpleContainer();
 
-		$container->set($id, $value);
+		$this->expectException('\\YoutubeDownloader\\Container\\ContainerException');
+		$this->expectExceptionMessage('Second argument ($value) must be a Closure or a string as alias to an existing entry.');
 
-		$this->assertTrue($container->has($id));
-		$this->assertSame($value, $container->get($id));
+		$container->set($id, $value);
 	}
 
 	/**
