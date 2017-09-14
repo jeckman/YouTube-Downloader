@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- new `YoutubeDownloader\Http\CurlClient` as an implementation of the new `YoutubeDownloader\Http\Client` interface
+- new `YoutubeDownloader\Http\HttpClientAware` interface
+- `YoutubeDownloader\Provider\Youtube\Format` implements `YoutubeDownloader\Http\HttpClientAware` interface
+- `YoutubeDownloader\Provider\Youtube\Provider` implements `YoutubeDownloader\Http\HttpClientAware` interface
+- `YoutubeDownloader\Provider\Youtube\VideoInfo` implements `YoutubeDownloader\Http\HttpClientAware` interface
 - new `YoutubeDownloader\Cache\CacheAware` interface
 - `YoutubeDownloader\Provider\Youtube\Format` implements `YoutubeDownloader\Cache\CacheAware` interface
 - `YoutubeDownloader\Provider\Youtube\Provider` implements `YoutubeDownloader\Cache\CacheAware` interface
@@ -18,6 +23,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::setToCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->set()` instead
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::getFromCache()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->get()` instead
+- `YoutubeDownloader\Toolkit::curlGet()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Http\CurlClient` instead
+- `YoutubeDownloader\Toolkit::get_size()` is deprecated since version 0.5, to be removed in 0.6, use `YoutubeDownloader\Http\CurlClient` instead
 
 ### Removed
 

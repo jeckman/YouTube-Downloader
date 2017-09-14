@@ -4,6 +4,8 @@ namespace YoutubeDownloader\Provider\Youtube;
 
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
+use YoutubeDownloader\Http\HttpClientAware;
+use YoutubeDownloader\Http\HttpClientAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\VideoInfo\Format as FormatInterface;
@@ -11,9 +13,10 @@ use YoutubeDownloader\VideoInfo\Format as FormatInterface;
 /**
  * a video format
  */
-class Format implements FormatInterface, CacheAware, LoggerAware
+class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAware
 {
 	use CacheAwareTrait;
+	use HttpClientAwareTrait;
 	use LoggerAwareTrait;
 
 	/**
