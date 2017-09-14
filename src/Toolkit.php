@@ -109,6 +109,8 @@ class Toolkit
 	/**
 	 * function to get via cUrl
 	 *
+	 * @deprecated since version 0.5, to be removed in 0.6. Use YoutubeDownloader\Http\CurlClient instead
+	 *
 	 * From lastRSS 0.9.1 by Vojtech Semecky, webmaster @ webdot . cz
 	 * See http://lastrss.webdot.cz/
 	 *
@@ -118,6 +120,8 @@ class Toolkit
 	 */
 	public function curlGet($url, Config $config)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use YoutubeDownloader\Http\CurlClient instead', E_USER_DEPRECATED);
+
 		$ch = curl_init();
 		$timeout = 3;
 
@@ -140,12 +144,16 @@ class Toolkit
 	}
 
 	/**
+	 * @deprecated since version 0.5, to be removed in 0.6. Use YoutubeDownloader\Http\CurlClient instead
+	 *
 	 * @param string $url
 	 * @param Config $config
 	 * @return string
 	 */
 	public function get_size($url, Config $config)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Use YoutubeDownloader\Http\CurlClient instead', E_USER_DEPRECATED);
+
 		$my_ch = curl_init($url);
 
 		if ($config->get('multipleIPs') === true)

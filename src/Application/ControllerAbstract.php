@@ -65,4 +65,29 @@ abstract class ControllerAbstract implements Controller
 
 		exit;
 	}
+
+	protected function getSize($url, $config, $toolkit)
+	{
+		$request = $this->get('httpclient')->createRequest('HEAD', $url);
+
+		$options = ['curl' => []];
+		$options['curl'][CURLOPT_NOBODY] = true;
+		$options['curl'][CURLOPT_TIMEOUT] = 1;
+		$options['curl'][CURLOPT_SSL_VERIFYPEER] = false;
+
+		if ( $config->get('multipleIPs') === true)
+		{
+			$options['curl'][CURLOPT_INTERFACE] = $toolkit->getRandomIp($config);
+		}
+
+		$this->get('logger')->debug(sprintf(
+			'Run HTTP request for "%s %s"',
+			$request->getMethod(),
+			$request->getRequestTarget()
+		));
+
+		$response = $this->get('httpclient')->send($request, $options);
+
+		return intval($response->getHeaderLine('Content-Length'));
+	}
 }

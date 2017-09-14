@@ -106,7 +106,7 @@ class DownloadController extends ControllerAbstract
 			}
 			else
 			{
-				$size = $toolkit->get_size($url, $config);
+				$size = $this->getSize($url, $config, $toolkit);
 			}
 
 			// Generate the server headers

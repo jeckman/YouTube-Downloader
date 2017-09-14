@@ -60,6 +60,9 @@ $container = call_user_func_array(
 		$service_provider = new \YoutubeDownloader\ServiceProvider($config);
 		$service_provider->register($container);
 
+		// Create HttpClient
+		$container->set('httpclient', new \YoutubeDownloader\Http\CurlClient);
+
 		return $container;
 	},
 	[getenv('CONFIG_ENV') ?: 'custom']

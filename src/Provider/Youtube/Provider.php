@@ -5,6 +5,8 @@ namespace YoutubeDownloader\Provider\Youtube;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
+use YoutubeDownloader\Http\HttpClientAware;
+use YoutubeDownloader\Http\HttpClientAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\Toolkit;
@@ -14,9 +16,10 @@ use YoutubeDownloader\VideoInfo\InvalidInputException;
 /**
  * Provider instance for Youtube
  */
-final class Provider implements ProviderInterface, CacheAware, LoggerAware
+final class Provider implements ProviderInterface, CacheAware, HttpClientAware, LoggerAware
 {
 	use CacheAwareTrait;
+	use HttpClientAwareTrait;
 	use LoggerAwareTrait;
 
 	/**
@@ -108,17 +111,35 @@ final class Provider implements ProviderInterface, CacheAware, LoggerAware
 		// $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $input;
 		// thanks to amit kumar @ bloggertale.com for sharing the fix
 		$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
-		$video_info_string = $this->toolkit->curlGet($video_info_url, $this->config);
 
-		/* TODO: Check return from curl for status code */
+		$request = $this->getHttpClient()->createRequest(
+			'GET',
+			$video_info_url
+		);
+
+		$options = ['curl' => []];
+
+		if ( $this->config->get('multipleIPs') === true)
+		{
+			$options['curl'][CURLOPT_INTERFACE] = $this->toolkit->getRandomIp($this->config);
+		}
+
+		$response = $this->getHttpClient()->send($request, $options);
+
+		/* TODO: Check response for status code and Content-Type */
 		$video_info = VideoInfo::createFromStringWithConfig(
-			$video_info_string,
+			$response->getBodyAsString(),
 			$this->config
 		);
 
 		if ( $video_info instanceOf CacheAware )
 		{
 			$video_info->setCache($this->getCache());
+		}
+
+		if ( $video_info instanceOf HttpClientAware )
+		{
+			$video_info->setHttpClient($this->getHttpClient());
 		}
 
 		if ( $video_info instanceOf LoggerAware )

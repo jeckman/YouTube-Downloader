@@ -6,6 +6,8 @@ use YoutubeDownloader\Cache\Cache;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
+use YoutubeDownloader\Http\HttpClientAware;
+use YoutubeDownloader\Http\HttpClientAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
@@ -134,9 +136,10 @@ use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
  * - 'reason',
  * - 'errordetail',
  */
-class VideoInfo implements VideoInfoInterface, CacheAware, LoggerAware
+class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, LoggerAware
 {
 	use CacheAwareTrait;
+	use HttpClientAwareTrait;
 	use LoggerAwareTrait;
 
 	/**
@@ -252,6 +255,11 @@ class VideoInfo implements VideoInfoInterface, CacheAware, LoggerAware
 			if ( $format instanceOf CacheAware )
 			{
 				$format->setCache($this->getCache());
+			}
+
+			if ( $format instanceOf HttpClientAware )
+			{
+				$format->setHttpClient($this->getHttpClient());
 			}
 
 			if ( $format instanceOf LoggerAware )
