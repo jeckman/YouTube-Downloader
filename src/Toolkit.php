@@ -182,12 +182,17 @@ class Toolkit
 
 	/**
 	 * Get the download url for a specific format
+	 *
+	 * @deprecated since version 0.5, to be removed in 0.6. Don't use it anymore.
+	 *
 	 * @param array $avail_formats
 	 * @param string $format
 	 * @return string|null
 	 */
 	public function getDownloadUrlByFormats(array $avail_formats, $format)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.5, to be removed in 0.6. Don\'t use it anymore.', E_USER_DEPRECATED);
+
 		$target_formats = '';
 
 		switch ($format)

@@ -2,6 +2,8 @@
 
 namespace YoutubeDownloader\Application;
 
+use YoutubeDownloader\VideoInfo\VideoInfo;
+
 /**
  * The result controller
  */
@@ -93,7 +95,7 @@ class ResultController extends ControllerAbstract
 			 * Thanks to the python based youtube-dl for info on the formats
 			 *   							http://rg3.github.com/youtube-dl/
 			 */
-			$redirect_url = $toolkit->getDownloadUrlByFormats($video_info->getFormats(), $_GET['format']);
+			$redirect_url = $this->getDownloadUrlByFormat($video_info, $_GET['format']);
 
 			if ( $redirect_url !== null )
 			{
@@ -220,5 +222,80 @@ class ResultController extends ControllerAbstract
 		}
 
 		echo $template->render('getvideo.php', $template_data);
+	}
+
+	/**
+	 * Get the download url for a specific format
+	 *
+	 * @param array $avail_formats
+	 * @param string $format
+	 * @return string|null
+	 */
+	private function getDownloadUrlByFormat(VideoInfo $video_info, $format)
+	{
+		$target_formats = '';
+
+		switch ($format)
+		{
+			case "best":
+				/* largest formats first */
+				$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				break;
+			case "free":
+				/* Here we include WebM but prefer it over FLV */
+				$target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+				break;
+			case "ipad":
+				/* here we leave out WebM video and FLV - looking for MP4 */
+				$target_formats = ['37', '22', '18', '17'];
+				break;
+			default:
+				/* If they passed in a number use it */
+				if (is_numeric($format))
+				{
+					$target_formats[] = $format;
+				}
+				else
+				{
+					$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				}
+				break;
+		}
+
+		/* Now we need to find our best format in the list of available formats */
+		$best_format = '';
+
+		$avail_formats = $video_info->getFormats();
+
+		for ($i = 0; $i < count($target_formats); $i++)
+		{
+			for ($j = 0; $j < count($avail_formats); $j++)
+			{
+				$format = $avail_formats[$j];
+				if ($target_formats[$i] == $format->getItag())
+				{
+					$best_format = $j;
+					break 2;
+				}
+			}
+		}
+
+		$redirect_url = null;
+
+		if ( $best_format === '' )
+		{
+			return null;
+		}
+
+		$best_format = $avail_formats[$best_format];
+
+		$redirect_url = $best_format->getUrl();
+
+		if ( ! empty($redirect_url) )
+		{
+			$redirect_url .= '&title=' . $video_info->getCleanedTitle();
+		}
+
+		return $redirect_url;
 	}
 }
