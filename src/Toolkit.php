@@ -144,13 +144,15 @@ class Toolkit
 
 		$formats = $video_info->getFormats();
 		// find audio with highest quality
-		foreach($formats as $format)
+
+        /** @var \YoutubeDownloader\VideoInfo\Format $format */
+        foreach($formats as $format)
 		{
-			if(strpos($format['type'], 'audio') !== false && intval($format['quality']) > intval($audio_quality))
+		    if(strpos($format->getType(), 'audio') !== false && intval($format->getQuality()) > intval($audio_quality))
 			{
 				$audio_quality = $format['quality'];
-				$media_url = $format['url'];
-				$media_type = str_replace("audio/", "", $format['type']);
+				$media_url = $format->getUrl();
+				$media_type = str_replace("audio/", "", $format->getType());
 			}
 		}
 
@@ -171,8 +173,9 @@ class Toolkit
 				throw new Exception('MP3 downlod failed, no stream was found.');
 			}
 
-			$media_url = $formats[0]['url'];
-			$media_type = str_replace("audio/", "", $formats[0]['type']);
+			$fallbackFormat = $formats[0];
+			$media_url = $fallbackFormat->getUrl();
+			$media_type = str_replace("audio/", "", $fallbackFormat->getType());
 		}
 
 		$mp3dir = realpath($config->get('MP3TempDir'));
