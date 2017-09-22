@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Breaking:** `YoutubeDownloader\Toolkit::get_size()` was removed, use `YoutubeDownloader\Http\CurlClient` instead
 - **Breaking:** `YoutubeDownloader\Toolkit::getDownloadUrlByFormats()` was removed
 
+## [0.5.1] - 2017-09-22
+
+### Fixed
+
+- A bug in the mp3 downloader was fixed
+
 ## [0.5] - 2017-09-15
 
 ### Added
@@ -136,7 +142,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simple library for using the functionality in other projects
 - Web interface for downloading youtube videos
 
-[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.5...HEAD
+[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/jeckman/YouTube-Downloader/compare/0.5...0.5.1
 [0.5]: https://github.com/jeckman/YouTube-Downloader/compare/0.4...0.5
 [0.4]: https://github.com/jeckman/YouTube-Downloader/compare/0.3...0.4
 [0.3]: https://github.com/jeckman/YouTube-Downloader/compare/0.2...0.3
