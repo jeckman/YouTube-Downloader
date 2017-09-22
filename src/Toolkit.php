@@ -275,15 +275,12 @@ class Toolkit
 		$media_url = "";
 		$media_type = "";
 
-		$formats = $video_info->getFormats();
 		// find audio with highest quality
-
-        /** @var \YoutubeDownloader\VideoInfo\Format $format */
-        foreach($formats as $format)
+		foreach($video_info->getFormats() as $format)
 		{
-		    if(strpos($format->getType(), 'audio') !== false && intval($format->getQuality()) > intval($audio_quality))
+			if(strpos($format->getType(), 'audio') !== false && intval($format->getQuality()) > intval($audio_quality))
 			{
-				$audio_quality = $format['quality'];
+				$audio_quality = $format->getQuality();
 				$media_url = $format->getUrl();
 				$media_type = str_replace("audio/", "", $format->getType());
 			}
@@ -328,6 +325,7 @@ class Toolkit
 
 		// Download media from youtube success
 		$mp3Name = $_GET['title'] . '.mp3';
+
 		if($config->get('MP3Quality') !== "high" || $audio_quality === 0)
 		{
 			$audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
