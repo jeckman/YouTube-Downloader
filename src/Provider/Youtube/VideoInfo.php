@@ -168,15 +168,28 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 	 */
 	public static function createFromStringWithConfig($string, Config $config)
 	{
+		// Create options array
+		if ($config === null)
+		{
+			$options = [
+				'decipher_signature' => false,
+			];
+		}
+		else {
+			$options = [
+				'decipher_signature' => $config->get('enable_youtube_decipher_signature'),
+			];
+		}
+
 		parse_str($string, $video_info);
 
-		return new self($video_info, $config);
+		return new self($video_info, $options);
 	}
 
 	/**
 	 * @var array
 	 */
-	private $config;
+	private $options;
 
 	/**
 	 * @var Format[]
@@ -210,25 +223,12 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 	 * Creates a VideoInfo from an array
 	 *
 	 * @param array $video_info
-	 * @param Config $config
+	 * @param array $options
 	 * @return self
 	 */
-	private function __construct(array $video_info, Config $config = null)
+	private function __construct(array $video_info, array $options)
 	{
-		// BC: Create config array
-		if ($config === null)
-		{
-			$config = [
-				'decipher_signature' => false,
-			];
-		}
-		else {
-			$config = [
-				'decipher_signature' => $config->get('enable_youtube_decipher_signature'),
-			];
-		}
-
-		$this->config = $config;
+		$this->options = $options;
 
 		foreach ($this->allowed_keys as $key)
 		{
@@ -364,7 +364,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		{
 			// get the url_encoded_fmt_stream_map, and explode on comma
 			$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-			$this->formats = $this->parseFormats($formats, $this->config);
+			$this->formats = $this->parseFormats($formats, $this->options);
 		}
 
 		return $this->formats;
@@ -381,7 +381,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		{
 			// get the adaptive_fmts, and explode on comma
 			$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->config);
+			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
 		}
 
 		return $this->adaptive_formats;
