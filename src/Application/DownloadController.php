@@ -88,7 +88,7 @@ class DownloadController extends ControllerAbstract
 
 				try
 				{
-					$mp3_info = $toolkit->getDownloadMP3($video_info, $config);
+					$mp3_info = $this->getDownloadMP3($video_info, $config);
 				}
 				catch (Exception $e)
 				{
@@ -134,5 +134,95 @@ class DownloadController extends ControllerAbstract
 
 		// Not found
 		$this->responseWithErrorMessage('File not found 8{');
+	}
+
+	/**
+	 * @param VideoInfo $video_info
+	 * @param Config $config
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	private function getDownloadMP3(VideoInfo $video_info, Config $config)
+	{
+		// generate new url, we can re-use previously generated link and pass it
+		// to "token" parameter, but it is too dangerous to use it with exec()
+		// TODO: Background conversion, Ajax and Caching
+		// @ewwink
+		$audio_quality = 0;
+		$media_url = "";
+		$media_type = "";
+
+		// find audio with highest quality
+		foreach($video_info->getFormats() as $format)
+		{
+			if(strpos($format->getType(), 'audio') !== false && intval($format->getQuality()) > intval($audio_quality))
+			{
+				$audio_quality = $format->getQuality();
+				$media_url = $format->getUrl();
+				$media_type = str_replace("audio/", "", $format->getType());
+			}
+		}
+
+		if(empty($media_url))
+		{
+			if( $config->get('MP3ConvertVideo') !== true )
+			{
+				throw new Exception(
+					'MP3 downlod failed, adaptive audio format not available, try to set config "MP3ConvertVideo" to true'
+				);
+			}
+
+			// some video does not have adaptive or dash format, downloading video instead
+			$formats = $video_info->getAdaptiveFormats();
+
+			if (count($formats) === 0)
+			{
+				throw new Exception('MP3 downlod failed, no stream was found.');
+			}
+
+			$fallbackFormat = $formats[0];
+			$media_url = $fallbackFormat->getUrl();
+			$media_type = str_replace("audio/", "", $fallbackFormat->getType());
+		}
+
+		$mp3dir = realpath($config->get('MP3TempDir'));
+		$mediaName = $_GET['title'] . '.' . $media_type;
+		// -x4: set 4 connection for each download
+		$cmd = '"' . $config->get('aria2Path') . '"' . " -x4 -k1M --continue=true --dir=\"$mp3dir\" --out=$mediaName \"$media_url\" 2>&1" ;
+		exec($cmd, $output);
+
+		if(strpos(implode(" ", $output), "download completed") === false)
+		{
+			throw new Exception(
+				'Download media url from youtube failed.',
+				0,
+				new Exception($output[0])
+			);
+		}
+
+		// Download media from youtube success
+		$mp3Name = $_GET['title'] . '.mp3';
+
+		if($config->get('MP3Quality') !== "high" || $audio_quality === 0)
+		{
+			$audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
+		}
+
+		$cmd = '"' . $config->get('ffmpegPath') . '"' . " -i \"$mp3dir/$mediaName\" -b:a $audio_quality -vn \"$mp3dir/$mp3Name\" 2>&1";
+
+		exec($cmd, $output);
+
+		if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3dir/$mp3Name"))
+		{
+			// Convert media to .mp3 success
+			return array(
+				"status" => "success",
+				"message" => "Convert media to .mp3 success",
+				"mp3" => "$mp3dir/$mp3Name",
+				"debugMessage" => $output
+			);
+		}
 	}
 }

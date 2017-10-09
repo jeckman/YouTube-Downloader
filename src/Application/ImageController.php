@@ -35,15 +35,12 @@ class ImageController extends ControllerAbstract
 	 */
 	public function execute()
 	{
-		$config = $this->get('config');
-		$toolkit = $this->get('toolkit');
-
 		if ( ! isset($_GET['videoid']) )
 		{
 			$this->responseWithErrorMessage('No video id passed in');
 		}
 
-		$my_id = $toolkit->validateVideoId($_GET['videoid']);
+		$my_id = $this->validateVideoId($_GET['videoid']);
 
 		if ( $my_id === null )
 		{
@@ -83,5 +80,31 @@ class ImageController extends ControllerAbstract
 
 		header("Content-Type: image/jpeg"); // set headers
 		readfile($thumbnail_url); // show image
+	}
+
+	/**
+	 * Validates a video ID
+	 *
+	 * This can be an url, embedding url or embedding html code
+	 *
+	 * @param string $video_id
+	 * @return string|null The validated video ID or null, if the video ID is invalid
+	 */
+	private function validateVideoId($video_id)
+	{
+		if (strlen($video_id) <= 11)
+		{
+			return $video_id;
+		}
+
+		if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $video_id, $match))
+		{
+			if (is_array($match) && count($match) > 1)
+			{
+				return $match[1];
+			}
+		}
+
+		return null;
 	}
 }

@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithConfig()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` instead
+- `YoutubeDownloader\Toolkit::validateVideoId()` isn't used anymore and will be removed in 0.7
+- `YoutubeDownloader\Toolkit::formatBytes()` isn't used anymore and will be removed in 0.7
+- `YoutubeDownloader\Toolkit::getDownloadMP3()` isn't used anymore and will be removed in 0.7
 
 ### Removed
 

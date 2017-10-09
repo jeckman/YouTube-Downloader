@@ -64,6 +64,8 @@ class Toolkit
 	/**
 	 * Validates a video ID
 	 *
+	 * @deprecated since version 0.6, to be removed in 0.7.
+	 *
 	 * This can be an url, embedding url or embedding html code
 	 *
 	 * @param string $video_id
@@ -71,6 +73,8 @@ class Toolkit
 	 */
 	public function validateVideoId($video_id)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7.', E_USER_DEPRECATED);
+
 		if (strlen($video_id) <= 11)
 		{
 			return $video_id;
@@ -88,12 +92,16 @@ class Toolkit
 	}
 
 	/**
+	 * @deprecated since version 0.6, to be removed in 0.7.
+	 *
 	 * @param int $bytes
 	 * @param int $precision
 	 * @return string
 	 */
 	public function formatBytes($bytes, $precision = 2)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7.', E_USER_DEPRECATED);
+
 		$units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 		$bytes = max($bytes, 0);
 		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
@@ -104,10 +112,14 @@ class Toolkit
 	}
 
 	/**
+	 * @deprecated since version 0.6, to be removed in 0.7.
+	 *
 	 * @return bool
 	 */
 	public function is_chrome()
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7.', E_USER_DEPRECATED);
+
 		$agent = $_SERVER['HTTP_USER_AGENT'];
 
 		// if user agent is google chrome
@@ -125,6 +137,8 @@ class Toolkit
 	}
 
 	/**
+	 * @deprecated since version 0.6, to be removed in 0.7.
+	 *
 	 * @param VideoInfo $video_info
 	 * @param Config $config
 	 *
@@ -134,6 +148,8 @@ class Toolkit
 	 */
 	public function getDownloadMP3(VideoInfo $video_info, Config $config)
 	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7.', E_USER_DEPRECATED);
+
 		// generate new url, we can re-use previously generated link and pass it
 		// to "token" parameter, but it is too dangerous to use it with exec()
 		// TODO: Background conversion, Ajax and Caching

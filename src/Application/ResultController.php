@@ -161,7 +161,7 @@ class ResultController extends ControllerAbstract
 
 		$template_data['streams'] = [];
 		$template_data['formats'] = [];
-		$template_data['showBrowserExtensions'] = ( $toolkit->is_chrome() and $config->get('showBrowserExtensions') == true );
+		$template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions') == true );
 
 		/* now that we have the array, print the options */
 		foreach ($avail_formats as $avail_format)
@@ -182,7 +182,7 @@ class ResultController extends ControllerAbstract
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
 				'quality' => $avail_format->getQuality(),
-				'size' => $toolkit->formatBytes($size),
+				'size' => $this->formatBytes($size),
 			];
 		}
 
@@ -204,7 +204,7 @@ class ResultController extends ControllerAbstract
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
 				'quality' => $avail_format->getQuality(),
-				'size' => $toolkit->formatBytes($size),
+				'size' => $this->formatBytes($size),
 			];
 		}
 
@@ -297,5 +297,25 @@ class ResultController extends ControllerAbstract
 		}
 
 		return $redirect_url;
+	}
+
+	/**
+	 * Format a byte integer into a human readable string
+	 *
+	 * e.g. 1024 => 1kB
+	 *
+	 * @param int $bytes
+	 * @param int $precision
+	 * @return string
+	 */
+	private function formatBytes($bytes, $precision = 2)
+	{
+		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+		$bytes /= pow(1024, $pow);
+
+		return round($bytes, $precision) . '' . $units[$pow];
 	}
 }
