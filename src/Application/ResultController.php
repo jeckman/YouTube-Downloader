@@ -48,10 +48,16 @@ class ResultController extends ControllerAbstract
 
 		$my_id = $_GET['videoid'];
 
-		$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit(
-			$config,
-			$toolkit
-		);
+		$options = [
+			'decipher_signature' => $config->get('enable_youtube_decipher_signature')
+		];
+
+		if ( $config->get('multipleIPs') === true)
+		{
+			$options['use_ip'] = $toolkit->getRandomIp($config);
+		}
+
+		$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromOptions($options);
 
 		if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
 		{

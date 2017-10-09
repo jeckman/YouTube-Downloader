@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` to create the Youtube Provider with an options array
+- `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` to create the Youtube VideoInfo with an options array
+
+### Deprecated
+
+- `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
+- `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithConfig()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` instead
+
 ### Removed
 
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo::setToCache()` was removed, use `YoutubeDownloader\Provider\Youtube\VideoInfo::getCache()->set()` instead

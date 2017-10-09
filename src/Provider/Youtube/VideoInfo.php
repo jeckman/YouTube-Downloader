@@ -161,29 +161,53 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 	use LoggerAwareTrait;
 
 	/**
-	 * Creates a VideoInfo from string
+	 * Creates a VideoInfo from string with an options array
 	 *
 	 * @param string $video_info
+	 * @param array $options
 	 * @return VideoInfo
 	 */
-	public static function createFromStringWithConfig($string, Config $config)
+	public static function createFromStringWithOptions($string, array $options)
 	{
-		// Create options array
-		if ($config === null)
+		$default = [
+			'decipher_signature' => false,
+		];
+
+		foreach ($default as $key => $value)
 		{
-			$options = [
-				'decipher_signature' => false,
-			];
-		}
-		else {
-			$options = [
-				'decipher_signature' => $config->get('enable_youtube_decipher_signature'),
-			];
+			if ( ! array_key_exists($key, $options))
+			{
+				$options[$key] = $value;
+			}
 		}
 
 		parse_str($string, $video_info);
 
 		return new self($video_info, $options);
+	}
+
+	/**
+	 * Creates a VideoInfo from string
+	 *
+	 * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead
+	 *
+	 * @param string $video_info
+	 * @param Config $config
+	 * @return VideoInfo
+	 */
+	public static function createFromStringWithConfig($string, Config $config)
+	{
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead', E_USER_DEPRECATED);
+
+		$options = [];
+
+		// Create options array
+		if ($config !== null)
+		{
+			$options['decipher_signature'] = $config->get('enable_youtube_decipher_signature');
+		}
+
+		return static::createFromStringWithOptions($string, $options);
 	}
 
 	/**
@@ -289,6 +313,16 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		}
 
 		return $formats;
+	}
+
+	/**
+	 * Get the Provider-ID, e.g. 'youtube', 'vimeo', etc
+	 *
+	 * @return string
+	 */
+	public function getProviderId()
+	{
+		return 'youtube';
 	}
 
 	/**

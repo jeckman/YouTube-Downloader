@@ -41,7 +41,21 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 	use LoggerAwareTrait;
 
 	/**
+	 * Create this Provider from an options array
+	 *
+	 * @param Config $config
+	 * @param Toolkit $toolkit
+	 * @return self
+	 */
+	public static function createFromOptions(array $options)
+	{
+		return new self($options);
+	}
+
+	/**
 	 * Create this Provider from Config and Toolkit
+	 *
+	 * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\Provider::createFromOptions() instead
 	 *
 	 * @param Config $config
 	 * @param Toolkit $toolkit
@@ -49,18 +63,25 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 	 */
 	public static function createFromConfigAndToolkit(Config $config, Toolkit $toolkit)
 	{
-		return new self($config, $toolkit);
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\Provider::createFromOptions() instead', E_USER_DEPRECATED);
+
+		$options = [];
+
+		if ( $config->get('multipleIPs') === true)
+		{
+			$options['use_ip'] = $toolkit->getRandomIp($config);
+		}
+
+		return static::createFromOptions($options);
 	}
 
 	/**
 	 * @var YoutubeDownloader\Config
 	 */
-	private $config;
-
-	/**
-	 * @var YoutubeDownloader\Toolkit
-	 */
-	private $toolkit;
+	private $options = [
+		'use_ip' => false,
+		'enable_youtube_decipher_signature' => false,
+	];
 
 	/**
 	 * Create this Provider
@@ -69,10 +90,15 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 	 * @param Toolkit $toolkit
 	 * @return self
 	 */
-	private function __construct(Config $config, Toolkit $toolkit)
+	private function __construct(array $options)
 	{
-		$this->config = $config;
-		$this->toolkit = $toolkit;
+		foreach ($this->options as $option => $value)
+		{
+			if ( array_key_exists($option, $options) )
+			{
+				$this->options[$option] = $options[$option];
+			}
+		}
 	}
 
 	/**
@@ -137,17 +163,17 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 
 		$options = ['curl' => []];
 
-		if ( $this->config->get('multipleIPs') === true)
+		if ( $this->options['use_ip'] !== false)
 		{
-			$options['curl'][CURLOPT_INTERFACE] = $this->toolkit->getRandomIp($this->config);
+			$options['curl'][CURLOPT_INTERFACE] = $this->options['use_ip'];
 		}
 
 		$response = $this->getHttpClient()->send($request, $options);
 
 		/* TODO: Check response for status code and Content-Type */
-		$video_info = VideoInfo::createFromStringWithConfig(
+		$video_info = VideoInfo::createFromStringWithOptions(
 			$response->getBodyAsString(),
-			$this->config
+			$this->options
 		);
 
 		if ( $video_info instanceOf CacheAware )
