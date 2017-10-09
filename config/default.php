@@ -66,7 +66,7 @@ return [
     // info: highest Youtube audio bitrate is 160k, higher than that is maybe useless
     'MP3TempDir' => 'mp3temp', // temporary download location for media
     'ffmpegPath' => 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe', // ffmpeg location path
-    'aria2Path' => 'C:\cygwin\bin\aria2c.exe', // aria2 location path,
+    'aria2Path' => 'C:\cygwin\bin\aria2c.exe', // aria2 location path, @deprecated
 
     /**
      * show links for install browser extensions?
