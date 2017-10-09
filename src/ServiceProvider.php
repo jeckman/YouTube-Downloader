@@ -128,6 +128,40 @@ class ServiceProvider
 			return new \YoutubeDownloader\Http\CurlClient;
 		});
 
+		// Create Youtube Provider
+		$container->set('YoutubeDownloader\Provider\Youtube\Provider', function($c) {
+			$config = $c->get('YoutubeDownloader\Config');
+			$toolkit = $c->get('YoutubeDownloader\Toolkit');
+
+			$options = [
+				'decipher_signature' => $config->get('enable_youtube_decipher_signature')
+			];
+
+			if ( $config->get('multipleIPs') === true)
+			{
+				$options['use_ip'] = $toolkit->getRandomIp($config);
+			}
+
+			$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromOptions($options);
+
+			if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
+			{
+				$youtube_provider->setCache($c->get('cache'));
+			}
+
+			if ( $youtube_provider instanceOf \YoutubeDownloader\Http\HttpClientAware )
+			{
+				$youtube_provider->setHttpClient($c->get('httpclient'));
+			}
+
+			if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
+			{
+				$youtube_provider->setLogger($c->get('logger'));
+			}
+
+			return $youtube_provider;
+		});
+
 		// Set aliases for BC
 		$container->set('config', 'YoutubeDownloader\Config');
 		$container->set('template', 'YoutubeDownloader\Template\Engine');
