@@ -108,4 +108,26 @@ abstract class ControllerAbstract implements Controller
 
 		return intval($response->getHeaderLine('Content-Length'));
 	}
+
+	/**
+	 * Check if a user-agent is chrome
+	 *
+	 * @param string $agent
+	 * @return bool
+	 */
+	public function isUseragentChrome($agent)
+	{
+		// if user agent is google chrome
+		if (preg_match("/like\sGecko\)\sChrome\//", $agent))
+		{
+			// but not Iron
+			if (!strstr($agent, 'Iron'))
+			{
+				return true;
+			}
+		}
+
+		// if isn't chrome return false
+		return false;
+	}
 }

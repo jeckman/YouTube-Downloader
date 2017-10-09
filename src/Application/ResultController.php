@@ -48,25 +48,7 @@ class ResultController extends ControllerAbstract
 
 		$my_id = $_GET['videoid'];
 
-		$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit(
-			$config,
-			$toolkit
-		);
-
-		if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
-		{
-			$youtube_provider->setCache($this->get('cache'));
-		}
-
-		if ( $youtube_provider instanceOf \YoutubeDownloader\Http\HttpClientAware )
-		{
-			$youtube_provider->setHttpClient($this->get('httpclient'));
-		}
-
-		if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
-		{
-			$youtube_provider->setLogger($this->get('logger'));
-		}
+		$youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
 
 		if ( $youtube_provider->provides($my_id) === false )
 		{
@@ -179,7 +161,7 @@ class ResultController extends ControllerAbstract
 
 		$template_data['streams'] = [];
 		$template_data['formats'] = [];
-		$template_data['showBrowserExtensions'] = ( $toolkit->is_chrome() and $config->get('showBrowserExtensions') == true );
+		$template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions') == true );
 
 		/* now that we have the array, print the options */
 		foreach ($avail_formats as $avail_format)
@@ -200,7 +182,7 @@ class ResultController extends ControllerAbstract
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
 				'quality' => $avail_format->getQuality(),
-				'size' => $toolkit->formatBytes($size),
+				'size' => $this->formatBytes($size),
 			];
 		}
 
@@ -222,7 +204,7 @@ class ResultController extends ControllerAbstract
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
 				'quality' => $avail_format->getQuality(),
-				'size' => $toolkit->formatBytes($size),
+				'size' => $this->formatBytes($size),
 			];
 		}
 
@@ -315,5 +297,25 @@ class ResultController extends ControllerAbstract
 		}
 
 		return $redirect_url;
+	}
+
+	/**
+	 * Format a byte integer into a human readable string
+	 *
+	 * e.g. 1024 => 1kB
+	 *
+	 * @param int $bytes
+	 * @param int $precision
+	 * @return string
+	 */
+	private function formatBytes($bytes, $precision = 2)
+	{
+		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+		$pow = min($pow, count($units) - 1);
+		$bytes /= pow(1024, $pow);
+
+		return round($bytes, $precision) . '' . $units[$pow];
 	}
 }

@@ -28,6 +28,13 @@ namespace YoutubeDownloader\VideoInfo;
 interface VideoInfo
 {
 	/**
+	 * Get the Provider-ID, e.g. 'youtube', 'vimeo', etc
+	 *
+	 * @return string
+	 */
+	public function getProviderId();
+
+	/**
 	 * Get the video_id
 	 *
 	 * @return string

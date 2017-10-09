@@ -161,22 +161,59 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 	use LoggerAwareTrait;
 
 	/**
-	 * Creates a VideoInfo from string
+	 * Creates a VideoInfo from string with an options array
 	 *
 	 * @param string $video_info
+	 * @param array $options
+	 * @return VideoInfo
+	 */
+	public static function createFromStringWithOptions($string, array $options)
+	{
+		$default = [
+			'decipher_signature' => false,
+		];
+
+		foreach ($default as $key => $value)
+		{
+			if ( ! array_key_exists($key, $options))
+			{
+				$options[$key] = $value;
+			}
+		}
+
+		parse_str($string, $video_info);
+
+		return new self($video_info, $options);
+	}
+
+	/**
+	 * Creates a VideoInfo from string
+	 *
+	 * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead
+	 *
+	 * @param string $video_info
+	 * @param Config $config
 	 * @return VideoInfo
 	 */
 	public static function createFromStringWithConfig($string, Config $config)
 	{
-		parse_str($string, $video_info);
+		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead', E_USER_DEPRECATED);
 
-		return new self($video_info, $config);
+		$options = [];
+
+		// Create options array
+		if ($config !== null)
+		{
+			$options['decipher_signature'] = $config->get('enable_youtube_decipher_signature');
+		}
+
+		return static::createFromStringWithOptions($string, $options);
 	}
 
 	/**
 	 * @var array
 	 */
-	private $config;
+	private $options;
 
 	/**
 	 * @var Format[]
@@ -210,25 +247,12 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 	 * Creates a VideoInfo from an array
 	 *
 	 * @param array $video_info
-	 * @param Config $config
+	 * @param array $options
 	 * @return self
 	 */
-	private function __construct(array $video_info, Config $config = null)
+	private function __construct(array $video_info, array $options)
 	{
-		// BC: Create config array
-		if ($config === null)
-		{
-			$config = [
-				'decipher_signature' => false,
-			];
-		}
-		else {
-			$config = [
-				'decipher_signature' => $config->get('enable_youtube_decipher_signature'),
-			];
-		}
-
-		$this->config = $config;
+		$this->options = $options;
 
 		foreach ($this->allowed_keys as $key)
 		{
@@ -289,6 +313,16 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		}
 
 		return $formats;
+	}
+
+	/**
+	 * Get the Provider-ID, e.g. 'youtube', 'vimeo', etc
+	 *
+	 * @return string
+	 */
+	public function getProviderId()
+	{
+		return 'youtube';
 	}
 
 	/**
@@ -364,7 +398,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		{
 			// get the url_encoded_fmt_stream_map, and explode on comma
 			$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-			$this->formats = $this->parseFormats($formats, $this->config);
+			$this->formats = $this->parseFormats($formats, $this->options);
 		}
 
 		return $this->formats;
@@ -381,7 +415,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 		{
 			// get the adaptive_fmts, and explode on comma
 			$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->config);
+			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
 		}
 
 		return $this->adaptive_formats;

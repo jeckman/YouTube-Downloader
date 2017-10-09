@@ -30,10 +30,7 @@ class ProviderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function isMobileUrl($str, $expected)
 	{
-		$config = $this->createMock('\\YoutubeDownloader\\Config');
-		$toolkit = $this->createMock('\\YoutubeDownloader\\Toolkit');
-
-		$provider = Provider::createFromConfigAndToolkit($config, $toolkit);
+		$provider = Provider::createFromOptions([]);
 
 		$this->assertSame($expected, $provider->provides($expected));
 	}

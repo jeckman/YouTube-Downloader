@@ -21,6 +21,8 @@
 namespace YoutubeDownloader\Application;
 
 use Exception;
+use YoutubeDownloader\Config;
+use YoutubeDownloader\VideoInfo\VideoInfo;
 
 /**
  * The download controller
@@ -82,26 +84,13 @@ class DownloadController extends ControllerAbstract
 					);
 				}
 
-				$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit(
-					$config,
-					$toolkit
-				);
-
-				if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
-				{
-					$youtube_provider->setCache($this->get('cache'));
-				}
-
-				if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
-				{
-					$youtube_provider->setLogger($this->get('logger'));
-				}
+				$youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
 
 				$video_info = $youtube_provider->provide($url);
 
 				try
 				{
-					$mp3_info = $toolkit->getDownloadMP3($video_info, $config);
+					$mp3_info = $this->getDownloadMP3($video_info, $config);
 				}
 				catch (Exception $e)
 				{
@@ -118,7 +107,7 @@ class DownloadController extends ControllerAbstract
 				$url = $mp3_info['mp3'];
 			}
 
-			if(isset($mp3_info['mp3']))
+			if ( isset($_GET['getmp3']) and isset($mp3_info['mp3']) )
 			{
 				$size = filesize($mp3_info['mp3']);
 			}
@@ -147,5 +136,116 @@ class DownloadController extends ControllerAbstract
 
 		// Not found
 		$this->responseWithErrorMessage('File not found 8{');
+	}
+
+	/**
+	 * @param VideoInfo $video_info
+	 * @param Config $config
+	 *
+	 * @throws Exception
+	 *
+	 * @return bool
+	 */
+	private function getDownloadMP3(VideoInfo $video_info, Config $config)
+	{
+		// generate new url, we can re-use previously generated link and pass it
+		// to "token" parameter, but it is too dangerous to use it with exec()
+		// TODO: Background conversion, Ajax and Caching
+		// @ewwink
+		$audio_quality = 0;
+		$media_url = '';
+		$media_extension = '';
+		$best_format = null;
+
+		// find audio with highest quality
+		foreach($video_info->getFormats() as $format)
+		{
+			if ( strpos($format->getType(), 'audio') !== false && intval($format->getQuality()) > intval($audio_quality) )
+			{
+				$best_format = $format;
+				$audio_quality = $format->getQuality();
+				$media_extension = str_replace('audio/', '', $best_format->getType());
+			}
+		}
+
+		if ( $best_format === null )
+		{
+			if ( $config->get('MP3ConvertVideo') !== true )
+			{
+				throw new Exception(
+					'MP3 downlod failed, adaptive audio format not available, try to set config "MP3ConvertVideo" to true'
+				);
+			}
+
+			// some video does not have adaptive or dash format, downloading video instead
+			$formats = $video_info->getFormats();
+
+			if (count($formats) === 0)
+			{
+				throw new Exception('MP3 downlod failed, no stream was found.');
+			}
+
+			$best_format = $formats[0];
+			$ext_parst = explode('/', $best_format->getType());
+			$media_extension = $ext_parst[1];
+		}
+
+		$media_url = $best_format->getUrl();
+		$temp_folder = realpath($config->get('MP3TempDir'));
+		$mediaName = $video_info->getCleanedTitle() . '.' . $media_extension;
+
+		$temp_file = $temp_folder . '/' . $mediaName;
+		$mp3_file = $temp_folder . '/' . $video_info->getCleanedTitle() . '.mp3';
+
+		// Return the mp3 file if it already exist
+		if ( file_exists($mp3_file) )
+		{
+			return [
+				"status" => "success",
+				"message" => "Convert media to .mp3 success",
+				"mp3" => $mp3_file,
+				"debugMessage" => '',
+			];
+		}
+
+		// Download file with curl
+		set_time_limit(0);
+		$fp = fopen($temp_folder . '/' . $mediaName, 'w+');
+		$ch = curl_init($media_url);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+		// write curl response to file
+		curl_setopt($ch, CURLOPT_FILE, $fp);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+		$curl_response = curl_exec($ch);
+		curl_close($ch);
+		fclose($fp);
+
+		if ( $curl_response !== true )
+		{
+			throw new Exception('Download media from url "' . $media_url . '" to "' . $temp_file . '" failed.');
+		}
+
+		// Download media from youtube success
+		if ( $config->get('MP3Quality') !== "high" || $audio_quality === 0 )
+		{
+			$audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
+		}
+
+		// Create mp3 file from video with ffmeg
+		$cmd = '"' . $config->get('ffmpegPath') . '"' . " -i \"$temp_file\" -b:a $audio_quality -vn \"$mp3_file\" 2>&1";
+
+		exec($cmd, $output);
+
+		if(strpos(implode(" ", $output), "Output #0, mp3") !== FALSE || file_exists("$mp3_file"))
+		{
+			// Convert media to .mp3 success
+			return [
+				"status" => "success",
+				"message" => "Convert media to .mp3 success",
+				"mp3" => $mp3_file,
+				"debugMessage" => $output,
+			];
+		}
 	}
 }
