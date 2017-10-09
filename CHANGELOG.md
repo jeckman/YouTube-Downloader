@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` to create the Youtube Provider with an options array
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` to create the Youtube VideoInfo with an options array
 
+### Changed
+
+- The mp3 downloader was improved and has no dependendy to aria2 anymore
+
 ### Deprecated
 
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
