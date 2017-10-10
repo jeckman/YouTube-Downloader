@@ -20,6 +20,8 @@
 
 namespace YoutubeDownloader\Tests\Unit\Provider\Youtube;
 
+use YoutubeDownloader\Config;
+use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
 use YoutubeDownloader\Provider\Youtube\VideoInfo;
 
 class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
@@ -29,12 +31,12 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function createFromStringWithConfig()
 	{
-		$config = $this->createMock('\\YoutubeDownloader\\Config');
+		$config = $this->createMock(Config::class);
 
 		$video_info = VideoInfo::createFromStringWithConfig('', $config);
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\VideoInfo\\VideoInfo', $video_info);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Provider\\Youtube\\VideoInfo', $video_info);
+		$this->assertInstanceOf(VideoInfoInterface::class, $video_info);
+		$this->assertInstanceOf(VideoInfo::class, $video_info);
 	}
 
 	/**
@@ -44,8 +46,8 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	{
 		$video_info = VideoInfo::createFromStringWithOptions('', []);
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\VideoInfo\\VideoInfo', $video_info);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Provider\\Youtube\\VideoInfo', $video_info);
+		$this->assertInstanceOf(VideoInfoInterface::class, $video_info);
+		$this->assertInstanceOf(VideoInfo::class, $video_info);
 	}
 
 	/**

@@ -20,7 +20,9 @@
 
 namespace YoutubeDownloader\Tests\Unit\Template;
 
+use Exception;
 use org\bovigo\vfs\vfsStream;
+use YoutubeDownloader\Template\Engine;
 use YoutubeDownloader\Template\Template;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
@@ -36,7 +38,7 @@ class TemplateTest extends TestCase
 	 */
 	public function construct()
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 
 		$this->assertInstanceOf('YoutubeDownloader\Template\Template', new Template($engine, 'template.php'));
 	}
@@ -47,7 +49,7 @@ class TemplateTest extends TestCase
 	 */
 	public function get($data, $key, $default, $expected)
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 
 		$template = new Template($engine, 'template.php');
 		$template->setData($data);
@@ -74,7 +76,7 @@ class TemplateTest extends TestCase
 	*/
 	public function render($filename, $file_content, $data, $expected)
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -112,7 +114,7 @@ class TemplateTest extends TestCase
 	*/
 	public function testInc()
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 		$engine->method('render')
@@ -140,7 +142,7 @@ class TemplateTest extends TestCase
 	*/
 	public function renderCannotFindFile()
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -160,7 +162,7 @@ class TemplateTest extends TestCase
 	*/
 	public function renderRethrowExceptionFromFile()
 	{
-		$engine = $this->createMock('\\YoutubeDownloader\\Template\\Engine');
+		$engine = $this->createMock(Engine::class);
 		$engine->method('getTemplateDirectory')
 			->willReturn(vfsStream::url('templates'));
 
@@ -168,7 +170,7 @@ class TemplateTest extends TestCase
 			'template.php' => '<?php throw new \Exception(\'exception message\'); ?>',
 		]);
 
-		$this->expectException('\\Exception');
+		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('exception message');
 
 		$template = new Template($engine, 'template.php');

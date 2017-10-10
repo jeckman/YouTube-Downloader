@@ -37,7 +37,7 @@ class EngineTest extends TestCase
 	public function createFromDirectory()
 	{
 		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Template\\Engine',
+			Engine::class,
 			Engine::createFromDirectory('')
 		);
 	}

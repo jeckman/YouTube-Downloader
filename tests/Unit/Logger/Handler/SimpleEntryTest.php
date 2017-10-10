@@ -20,6 +20,7 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger\Handler;
 
+use YoutubeDownloader\Logger\Handler\Entry;
 use YoutubeDownloader\Logger\Handler\SimpleEntry;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
@@ -45,10 +46,7 @@ class SimpleEntryTest extends TestCase
 	 */
 	public function implementsEntry()
 	{
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Logger\\Handler\\Entry',
-			$this->entry
-		);
+		$this->assertInstanceOf(Entry::class, $this->entry);
 	}
 
 	/**

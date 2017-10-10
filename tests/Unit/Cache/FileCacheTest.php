@@ -22,6 +22,9 @@ namespace YoutubeDownloader\Tests\Unit\Cache;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Psr\SimpleCache\CacheInterface;
+use YoutubeDownloader\Cache\Cache;
+use YoutubeDownloader\Cache\CacheException;
 use YoutubeDownloader\Cache\FileCache;
 use YoutubeDownloader\Tests\Fixture\Cache\DataProviderTrait;
 use YoutubeDownloader\Tests\Fixture\Cache\Psr16CacheAdapter;
@@ -39,7 +42,7 @@ class FileCacheTest extends TestCase
 		$root = vfsStream::setup('cache');
 
 		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Cache\\FileCache',
+			FileCache::class,
 			FileCache::createFromDirectory($root->url())
 		);
 	}
@@ -55,8 +58,8 @@ class FileCacheTest extends TestCase
 
 		$adapter = new Psr16CacheAdapter($cache);
 
-		$this->assertInstanceOf('\\Psr\\SimpleCache\\CacheInterface', $adapter);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Cache\\Cache', $adapter);
+		$this->assertInstanceOf(CacheInterface::class, $adapter);
+		$this->assertInstanceOf(Cache::class, $adapter);
 	}
 
 	/**
@@ -66,7 +69,7 @@ class FileCacheTest extends TestCase
 	{
 		$root = vfsStream::setup('cache');
 
-		$this->expectException('\\YoutubeDownloader\\Cache\\CacheException');
+		$this->expectException(CacheException::class);
 		$this->expectExceptionMessage('cache directory "vfs://not_existing" does not exist.');
 
 		FileCache::createFromDirectory('vfs://not_existing');
@@ -80,7 +83,7 @@ class FileCacheTest extends TestCase
 		$root = vfsStream::setup('cache');
 		vfsStream::newFile('file', 0000)->at($root);
 
-		$this->expectException('\\YoutubeDownloader\\Cache\\CacheException');
+		$this->expectException(CacheException::class);
 		$this->expectExceptionMessage('cache directory "vfs://cache/file" is not a directory.');
 
 		FileCache::createFromDirectory('vfs://cache/file');
@@ -93,7 +96,7 @@ class FileCacheTest extends TestCase
 	{
 		$root = vfsStream::setup('cache', 0000);
 
-		$this->expectException('\\YoutubeDownloader\\Cache\\CacheException');
+		$this->expectException(CacheException::class);
 		$this->expectExceptionMessage('cache directory "vfs://cache" is not readable.');
 
 		FileCache::createFromDirectory($root->url());
@@ -106,7 +109,7 @@ class FileCacheTest extends TestCase
 	{
 		$root = vfsStream::setup('cache', 0400);
 
-		$this->expectException('\\YoutubeDownloader\\Cache\\CacheException');
+		$this->expectException(CacheException::class);
 		$this->expectExceptionMessage('cache directory "vfs://cache" is not writable.');
 
 		FileCache::createFromDirectory($root->url());

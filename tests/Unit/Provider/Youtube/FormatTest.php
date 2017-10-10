@@ -20,7 +20,9 @@
 
 namespace YoutubeDownloader\Tests\Unit\Provider\Youtube;
 
+use YoutubeDownloader\VideoInfo\Format as IFormat;
 use YoutubeDownloader\Provider\Youtube\Format;
+use YoutubeDownloader\Provider\Youtube\VideoInfo;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class FormatTest extends TestCase
@@ -51,15 +53,15 @@ class FormatTest extends TestCase
 			'ip' => '211.12.135.54',
 		];
 
-		$video_info = $this->createMock('\\YoutubeDownloader\\Provider\\Youtube\\VideoInfo');
+		$video_info = $this->createMock(VideoInfo::class);
 		$video_info->method('getVideoId')->willReturn('ScNNfyq3d_w');
 
 		$config = [];
 
 		$format = Format::createFromArray($video_info, $format_data, $config);
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\VideoInfo\\Format', $format);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Provider\\Youtube\\Format', $format);
+		$this->assertInstanceOf(IFormat::class, $format);
+		$this->assertInstanceOf(Format::class, $format);
 
 		return $format;
 	}

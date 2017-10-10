@@ -20,6 +20,8 @@
 
 namespace YoutubeDownloader\Tests\Unit\Cache;
 
+use Psr\Http\Message\MessageInterface;
+use YoutubeDownloader\Http\Message\Message as IMessage;
 use YoutubeDownloader\Http\MessageTrait;
 use YoutubeDownloader\Tests\Fixture\Http\Message;
 use YoutubeDownloader\Tests\Fixture\Http\Psr7MessageAdapter;
@@ -36,8 +38,8 @@ class MessageTraitTest extends TestCase
 
 		$adapter = new Psr7MessageAdapter($message);
 
-		$this->assertInstanceOf('\\Psr\\Http\\Message\\MessageInterface', $adapter);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Http\\Message\\Message', $adapter);
+		$this->assertInstanceOf(MessageInterface::class, $adapter);
+		$this->assertInstanceOf(IMessage::class, $adapter);
 	}
 
 	/**

@@ -20,6 +20,8 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger;
 
+use Psr\Log\LoggerInterface;
+use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Logger\NullLogger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 use YoutubeDownloader\Tests\Fixture\Logger\Psr3LoggerAdapter;
@@ -33,7 +35,7 @@ class NullLoggerTest extends TestCase
 	{
 		$logger = new NullLogger();
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\Logger\\Logger', $logger);
+		$this->assertInstanceOf(Logger::class, $logger);
 	}
 
 	/**
@@ -45,7 +47,7 @@ class NullLoggerTest extends TestCase
 
 		$adapter = new Psr3LoggerAdapter($logger);
 
-		$this->assertInstanceOf('\\Psr\\Log\\LoggerInterface', $adapter);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Logger\\Logger', $adapter);
+		$this->assertInstanceOf(LoggerInterface::class, $adapter);
+		$this->assertInstanceOf(Logger::class, $adapter);
 	}
 }

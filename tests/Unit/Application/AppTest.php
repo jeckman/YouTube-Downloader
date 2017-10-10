@@ -21,7 +21,10 @@
 namespace YoutubeDownloader\Tests\Unit\Application;
 
 use YoutubeDownloader\Application\App;
+use YoutubeDownloader\Application\Controller;
+use YoutubeDownloader\Application\ControllerFactory;
 use YoutubeDownloader\Container\Container;
+use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class AppTest extends TestCase
@@ -31,9 +34,9 @@ class AppTest extends TestCase
 	 */
 	public function getContainer()
 	{
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+		$logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container = $this->createMock(Container::class);
 		$container->method('get')->with('logger')->willReturn($logger);
 
 		$app = new App($container);
@@ -46,9 +49,9 @@ class AppTest extends TestCase
 	 */
 	public function getVersion()
 	{
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+		$logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container = $this->createMock(Container::class);
 		$container->method('get')->with('logger')->willReturn($logger);
 
 		$app = new App($container);
@@ -61,21 +64,17 @@ class AppTest extends TestCase
 	 */
 	public function runWithRoute()
 	{
-		$controller = $this->createMock(
-			'\\YoutubeDownloader\\Application\\Controller'
-		);
+		$controller = $this->createMock(Controller::class);
 		$controller->expects($this->once())->method('execute');
 
-		$factory = $this->createMock(
-			'\\YoutubeDownloader\\Application\\ControllerFactory'
-		);
+		$factory = $this->createMock(ControllerFactory::class);
 		$factory->expects($this->once())
 			->method('make')
 			->willReturn($controller);
 
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+		$logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container = $this->createMock(Container::class);
 		$container->method('get')->will($this->returnValueMap([
 			['controller_factory', $factory],
 			['logger', $logger],

@@ -20,6 +20,8 @@
 
 namespace YoutubeDownloader\Tests\Fixture\Cache;
 
+use YoutubeDownloader\Cache\InvalidArgumentException;
+
 /**
  * Trait that provides data for tests
  */
@@ -30,7 +32,7 @@ trait DataProviderTrait
 	 */
 	public function InvalidKeyProvider()
 	{
-		$exception_name = '\\YoutubeDownloader\\Cache\\InvalidArgumentException';
+		$exception_name = InvalidArgumentException::class;
 
 		return [
 			[null, $exception_name, 'Cache key must be string, "NULL" given'],

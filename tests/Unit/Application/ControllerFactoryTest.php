@@ -20,7 +20,12 @@
 
 namespace YoutubeDownloader\Tests\Unit\Application;
 
+use Exception;
+use YoutubeDownloader\Application\App;
+use YoutubeDownloader\Application\Controller;
 use YoutubeDownloader\Application\ControllerFactory;
+use YoutubeDownloader\Container\Container;
+use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class ControllerFactoryTest extends TestCase
@@ -30,18 +35,18 @@ class ControllerFactoryTest extends TestCase
 	 */
 	public function make()
 	{
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+		$logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container = $this->createMock(Container::class);
 		$container->method('get')->with('logger')->willReturn($logger);
 
-		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
+		$app = $this->createMock(App::class);
 		$app->method('getContainer')->willReturn($container);
 
 		$factory = new ControllerFactory;
 
 		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Application\\Controller',
+			Controller::class,
 			$factory->make('index', $app)
 		);
 	}
@@ -51,15 +56,15 @@ class ControllerFactoryTest extends TestCase
 	 */
 	public function makeThrowsException()
 	{
-		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
+		$app = $this->createMock(App::class);
 
 		$factory = new ControllerFactory;
 
-		$this->expectException('\\Exception');
+		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('No controller was found for route "fail"');
 
 		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Application\\Controller',
+			Controller::class,
 			$factory->make('fail', $app)
 		);
 	}

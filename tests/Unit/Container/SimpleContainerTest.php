@@ -20,6 +20,10 @@
 
 namespace YoutubeDownloader\Tests\Unit\Container;
 
+use Psr\Container\ContainerInterface;
+use YoutubeDownloader\Container\Container;
+use YoutubeDownloader\Container\ContainerException;
+use YoutubeDownloader\Container\NotFoundException;
 use YoutubeDownloader\Container\SimpleContainer;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 use YoutubeDownloader\Tests\Fixture\Container\Psr11ContainerAdapter;
@@ -33,7 +37,7 @@ class SimpleContainerTest extends TestCase
 	{
 		$container = new SimpleContainer();
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\Container\\Container', $container);
+		$this->assertInstanceOf(Container::class, $container);
 	}
 
 	/**
@@ -45,8 +49,8 @@ class SimpleContainerTest extends TestCase
 
 		$adapter = new Psr11ContainerAdapter($container);
 
-		$this->assertInstanceOf('\\Psr\\Container\\ContainerInterface', $adapter);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Container\\Container', $adapter);
+		$this->assertInstanceOf(ContainerInterface::class, $adapter);
+		$this->assertInstanceOf(Container::class, $adapter);
 	}
 
 	/**
@@ -57,7 +61,7 @@ class SimpleContainerTest extends TestCase
 	{
 		$container = new SimpleContainer();
 
-		$this->expectException('\\YoutubeDownloader\\Container\\ContainerException');
+		$this->expectException(ContainerException::class);
 		$this->expectExceptionMessage('Second argument ($value) must be a Closure or a string as alias to an existing entry.');
 
 		$container->set($id, $value);
@@ -124,7 +128,7 @@ class SimpleContainerTest extends TestCase
 	{
 		$container = new SimpleContainer();
 
-		$this->expectException('\\YoutubeDownloader\\Container\\NotFoundException');
+		$this->expectException(NotFoundException::class);
 		$this->expectExceptionMessage('Entry "foo" don\'t exists in the container');
 
 		$container->get('foo');
