@@ -80,7 +80,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 	 */
 	private $options = [
 		'use_ip' => false,
-		'enable_youtube_decipher_signature' => false,
+		'decipher_signature' => false,
 	];
 
 	/**
