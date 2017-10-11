@@ -29,7 +29,7 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function createFromStringWithConfig()
 	{
-		$config = $this->createMock('\\YoutubeDownloader\\Config');
+		$config = $this->createMock('\\YoutubeDownloader\\Config\\Config');
 
 		$video_info = VideoInfo::createFromStringWithConfig('', $config);
 

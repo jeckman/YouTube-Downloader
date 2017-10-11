@@ -38,9 +38,11 @@ class MainController extends ControllerAbstract
 		$config = $this->get('config');
 		$template = $this->get('template');
 
+		$gui_config = $config->get('gui');
+
 		echo $template->render('index.php', [
 			'app_version' => $this->getAppVersion(),
-			'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions')),
+			'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions']),
 		]);
 	}
 }

@@ -20,14 +20,18 @@
 
 namespace YoutubeDownloader;
 
+@trigger_error('The '.__NAMESPACE__.'\Config class is deprecated since version 0.6 and will be removed in 0.7. Use the YoutubeDownloader\Config\TransformationConfig class instead.', E_USER_DEPRECATED);
+
 use YoutubeDownloader\Config\Config as ConfigInterface;
 use YoutubeDownloader\Config\FileLoader;
 use YoutubeDownloader\Config\TransformationConfig;
 
 /**
  * Config class
+ *
+ * @deprecated since version 0.6, to be removed in 0.7. Use `YoutubeDownloader\Config\TransformationConfig` instead
  */
-class Config
+class Config implements ConfigInterface
 {
 	/**
 	 * Creates the config from files

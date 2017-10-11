@@ -105,19 +105,21 @@ class ResultController extends ControllerAbstract
 			exit;
 		}
 
-		switch ($config->get('ThumbnailImageMode'))
+		$gui_config = $config->get('gui');
+
+		switch ($gui_config['ThumbnailImageMode'])
 		{
-			case 2:
+			case 'proxy':
 				$template_data['show_thumbnail'] = true;
 				$template_data['thumbnail_src'] = 'getimage.php?videoid=' . $my_id;
 				$template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
 				break;
-			case 1:
+			case 'direct':
 				$template_data['show_thumbnail'] = true;
 				$template_data['thumbnail_src'] = $video_info->getThumbnailUrl();
 				$template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
 				break;
-			case 0:
+			case 'none':
 			default:
 				$template_data['show_thumbnail'] = false;
 		}
@@ -159,9 +161,11 @@ class ResultController extends ControllerAbstract
 			$template_data['debug2_ipbits'] = $first_format->getIpbits();
 		}
 
+		$gui_config = $config->get('gui');
+
 		$template_data['streams'] = [];
 		$template_data['formats'] = [];
-		$template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions') == true );
+		$template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions'] == true );
 
 		/* now that we have the array, print the options */
 		foreach ($avail_formats as $avail_format)
@@ -176,8 +180,8 @@ class ResultController extends ControllerAbstract
 			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
 			$template_data['streams'][] = [
-				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
-				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
+				'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
+				'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
 				'direct_url' => $directlink,
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
@@ -198,8 +202,8 @@ class ResultController extends ControllerAbstract
 			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
 			$template_data['formats'][] = [
-				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
-				'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
+				'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
+				'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
 				'direct_url' => $directlink,
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),

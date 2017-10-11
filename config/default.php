@@ -30,11 +30,11 @@ $config['enable_youtube_decipher_signature'] = false;
 /**
  * Thumbnail Image Configuration
  *
- * 0 => don't show thumbnail image
- * 1 => show thumbnail image directly from YouTube
- * 2 => show thumbnail image by proxy from this server
+ * 'none' => don't show thumbnail image
+ * 'direct' => show thumbnail image directly from YouTube
+ * 'proxy' => show thumbnail image by proxy from this server
  */
-$config['ThumbnailImageMode'] = 2;
+$config['gui']['ThumbnailImageMode'] = 'proxy';
 
 /**
  * Video Download Link Configuration
@@ -42,7 +42,14 @@ $config['ThumbnailImageMode'] = 2;
  * 'proxy'  => show only by proxy download link
  * 'both'   => show both direct and by proxy download links
  */
-$config['VideoLinkMode'] = 'both';
+$config['gui']['VideoLinkMode'] = 'both';
+
+/**
+ * show links for install browser extensions?
+ *
+ * true or false
+ */
+$config['gui']['showBrowserExtensions'] = true;
 
 /**
  * MP3 Download Link Configuration
@@ -65,13 +72,6 @@ $config['MP3Quality'] = '128k'; // 'number(k)' (64k, 80k, 96k, 112k, 128k, 160k,
 $config['MP3TempDir'] = realpath(__DIR__ . '/../cache/'); // temporary download location for media
 $config['ffmpegPath'] = 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe'; // ffmpeg location path
 $config['aria2Path'] = 'C:\cygwin\bin\aria2c.exe'; // aria2 location path, @deprecated since 0.6, to be removed in 0.7
-
-/**
- * show links for install browser extensions?
- *
- * true or false
- */
-$config['showBrowserExtensions'] = true;
 
 /**
  * Multiple IPs

@@ -23,7 +23,7 @@ namespace YoutubeDownloader\Provider\Youtube;
 use YoutubeDownloader\Cache\Cache;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
-use YoutubeDownloader\Config;
+use YoutubeDownloader\Config\Config;
 use YoutubeDownloader\Http\HttpClientAware;
 use YoutubeDownloader\Http\HttpClientAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;

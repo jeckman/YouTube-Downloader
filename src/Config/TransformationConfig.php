@@ -76,7 +76,23 @@ class TransformationConfig implements Config
 		// @deprecated since 0.6: ThumbnailImageMode => gui.ThumbnailImageMode
 		if ( array_key_exists('ThumbnailImageMode', $custom) )
 		{
-			$default['gui']['ThumbnailImageMode'] = $custom['ThumbnailImageMode'];
+			switch ($custom['ThumbnailImageMode'])
+			{
+				case 0:
+					$value = 'none';
+					break;
+
+				case 1:
+					$value = 'direct';
+					break;
+
+				case 2:
+				default:
+					$value = 'proxy';
+					break;
+			}
+
+			$default['gui']['ThumbnailImageMode'] = $value;
 			$this->warnings[] = '$config[\'ThumbnailImageMode\'] is deprecated, use $config[\'gui\'][\'ThumbnailImageMode\'] instead';
 		}
 
