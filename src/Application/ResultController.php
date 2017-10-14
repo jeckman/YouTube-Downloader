@@ -233,7 +233,7 @@ class ResultController extends ControllerAbstract
 	 */
 	private function getDownloadUrlByFormat(VideoInfo $video_info, $format)
 	{
-		$target_formats = '';
+		$target_formats = [];
 
 		switch ($format)
 		{
