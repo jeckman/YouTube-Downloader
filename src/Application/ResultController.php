@@ -181,6 +181,7 @@ class ResultController extends ControllerAbstract
 				'direct_url' => $directlink,
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
+				'itag' => $avail_format->getItag(),
 				'quality' => $avail_format->getQuality(),
 				'size' => $this->formatBytes($size),
 			];
@@ -203,6 +204,7 @@ class ResultController extends ControllerAbstract
 				'direct_url' => $directlink,
 				'proxy_url' => $proxylink,
 				'type' => $avail_format->getType(),
+				'itag' => $avail_format->getItag(),
 				'quality' => $avail_format->getQuality(),
 				'size' => $this->formatBytes($size),
 			];
@@ -263,18 +265,17 @@ class ResultController extends ControllerAbstract
 		}
 
 		/* Now we need to find our best format in the list of available formats */
-		$best_format = '';
+		$best_format = null;
 
-		$avail_formats = $video_info->getFormats();
+		$avail_formats = $video_info->getFormats() + $video_info->getAdaptiveFormats();
 
-		for ($i = 0; $i < count($target_formats); $i++)
+		foreach ( $target_formats as $target_format )
 		{
-			for ($j = 0; $j < count($avail_formats); $j++)
+			foreach ( $avail_formats as $format )
 			{
-				$format = $avail_formats[$j];
-				if ($target_formats[$i] == $format->getItag())
+				if ($target_format == $format->getItag())
 				{
-					$best_format = $j;
+					$best_format = $format;
 					break 2;
 				}
 			}
@@ -286,8 +287,6 @@ class ResultController extends ControllerAbstract
 		{
 			return null;
 		}
-
-		$best_format = $avail_formats[$best_format];
 
 		$redirect_url = $best_format->getUrl();
 

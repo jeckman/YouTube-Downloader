@@ -38,6 +38,7 @@ else
 			<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Proxy</a>
 <?php } ?>
 			<div class="label label-warning"><?php echo $format['size']; ?></div>
+			<div class="label label-default"><?php echo $format['itag']; ?></div>
 		</li>
 <?php } ?>
 	</ul>
@@ -54,6 +55,7 @@ else
 		<a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Proxy</a>
 <?php } ?>
 		<div class="label label-warning"><?php echo $format['size']; ?></div>
+		<div class="label label-default"><?php echo $format['itag']; ?></div>
 	</li>
 <?php } ?>
 	</ul>
