@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - The mp3 downloader was improved and has no dependendy to aria2 anymore
 
+### Fixed
+
+- A bug in the downlaoder with adaptive format was fixed
+- The path to the yearly logs folder was fixed
+
 ### Deprecated
 
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
