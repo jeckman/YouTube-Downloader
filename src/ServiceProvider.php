@@ -99,7 +99,7 @@ class ServiceProvider
 				}
 
 				$stream = fopen(
-					$filepath . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
+					$filepath . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
 					'a+'
 				);
 
