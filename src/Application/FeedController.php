@@ -43,6 +43,9 @@ class FeedController extends ControllerAbstract
 		$toolkit = $this->get('toolkit');
         $youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
         $helper = new Helper();
+        
+        $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $site = substr($actual_link, 0, strrpos($actual_link, '/')+1);
             
         $dom=new \DOMDocument();
         if(isset($_GET["channelid"]))
@@ -78,7 +81,7 @@ class FeedController extends ControllerAbstract
             
             // an enclosure element must have the attributes: url, length and type
             $enclosure_url = $dom->createAttribute('url');
-            $enclosure_url->appendChild($dom->createTextNode($redirect_url));
+            $enclosure_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid=' . $video_info->getVideoId() . '&format=' . $_GET['format']));
             $enclosure_length = $dom->createAttribute('length');
             $enclosure_length->appendChild($dom->createTextNode($size));
             $enclosure_type = $dom->createAttribute('type');
