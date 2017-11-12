@@ -8,7 +8,7 @@
 
 PHP Library with Web UI to download videos from YouTube.
 
-## Support for sipher signature
+## Support for Cipher signature
 
 YouTube Downloader finally supports YouTube videos with a cipher signature too. :tada: Please note that this functionallity is hidden behind a config flag because it downloads javascript code from a 3rd party (YouTube) server and interprets it. This MAY harm your server, if the 3rd party server delivers malicious code.
 
