@@ -8,6 +8,69 @@ class Helper
 {
     
     /**
+	 * Get the full info for a specific format
+	 *
+	 * @param array $avail_formats
+	 * @param string $format
+	 * @return string|null
+	 */
+    function getFullInfoByFormat(VideoInfo $video_info, $format)
+	{
+		$target_formats = [];
+
+		switch ($format)
+		{
+			case "best":
+				/* largest formats first */
+				$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				break;
+			case "free":
+				/* Here we include WebM but prefer it over FLV */
+				$target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+				break;
+			case "ipad":
+				/* here we leave out WebM video and FLV - looking for MP4 */
+				$target_formats = ['37', '22', '18', '17'];
+				break;
+			default:
+				/* If they passed in a number use it */
+				if (is_numeric($format))
+				{
+					$target_formats[] = $format;
+				}
+				else
+				{
+					$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+				}
+				break;
+		}
+
+		/* Now we need to find our best format in the list of available formats */
+		$best_format = null;
+
+		$avail_formats = $video_info->getFormats() + $video_info->getAdaptiveFormats();
+
+		foreach ( $target_formats as $target_format )
+		{
+			foreach ( $avail_formats as $format )
+			{
+				if ($target_format == $format->getItag())
+				{
+					$best_format = $format;
+					break 2;
+				}
+			}
+		}
+
+		if ( $best_format === '' )
+		{
+			return null;
+		}
+
+		return $best_format;
+	}
+    
+    /**
 	 * Get the download url for a specific format
 	 *
 	 * @param array $avail_formats

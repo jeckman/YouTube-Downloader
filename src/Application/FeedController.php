@@ -72,8 +72,6 @@ class FeedController extends ControllerAbstract
             $type = $helper->getTypeByFormat($video_info, $_GET['format']);
             
             $original_media = $entry->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'group')->item(0);
-            //echo $original_media->textContent;
-            //$entry->removeChild($original_media);
             $original_content = $original_media->getElementsByTagNameNS('http://search.yahoo.com/mrss/','content')->item(0);
             
             
@@ -90,7 +88,25 @@ class FeedController extends ControllerAbstract
             $enclosure->appendChild($enclosure_url);
             $enclosure->appendChild($enclosure_length);
             $enclosure->appendChild($enclosure_type);
-           $original_media->replaceChild($enclosure,$original_content);
+            $entry->replaceChild($enclosure,$original_media);
+            
+            
+            // add proxy elements
+            //$original_media_1 = $dom->importNode($original_media, true);
+            //$original_content_1 = $original_media_1->getElementsByTagNameNS('http://search.yahoo.com/mrss/','content')->item(0);
+            
+            $enclosure_proxy_url = $dom->createAttribute('url');
+            $enclosure_proxy_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid=' . $video_info->getVideoId() . '&format=' . $_GET['format'] . '&proxy=true'));
+            $enclosure_proxy_length = $dom->createAttribute('length');
+            $enclosure_proxy_length->appendChild($dom->createTextNode($size));
+            $enclosure_proxy_type = $dom->createAttribute('type');
+            $enclosure_proxy_type->appendChild($dom->createTextNode($type));
+            $enclosure_proxy = $dom->createElementNS('http://search.yahoo.com/mrss/','content');
+            $enclosure_proxy->appendChild($enclosure_proxy_url);
+            $enclosure_proxy->appendChild($enclosure_proxy_length);
+            $enclosure_proxy->appendChild($enclosure_proxy_type);
+            //$original_media_1->replaceChild($enclosure_proxy,$original_content_1);
+            $entry->appendChild($enclosure_proxy);
 
         }
         header('Content-Type: text/xml; charset=utf-8', true);

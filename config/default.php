@@ -44,6 +44,14 @@ return [
      * 'both'   => show both direct and by proxy download links
      */
     'VideoLinkMode' => 'both',
+    
+    /**
+     * Caching mode. If normal proxy mode won't work, this makes a copy of the file on the
+     * webserver and downloads it from there
+     * false => proxying works by 'streaming' the file through the server
+     * true => proxying generates a temporary copy of the file on the server
+     */
+    'localCache' => false,
 
     /**
      * MP3 Download Link Configuration

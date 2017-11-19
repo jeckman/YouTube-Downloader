@@ -51,11 +51,13 @@ class DownloadController extends ControllerAbstract
 		// Set operation params
 		$mime = filter_var($_GET['mime']);
 		$ext = str_replace(['/', 'x-'], '', strstr($mime, '/'));
-		$url = base64_decode(filter_var($_GET['token']));
+        // Fix for apache mod_security "Not acceptable!" error. Better hides the url from 
+        // mod_security to stop it from complaining.
+		$url = base64_decode(base64_decode(filter_var($_GET['token'])));
 		$name = urldecode($_GET['title']) . '.' . $ext;
 
 		// Fetch and serve
-		if ($url)
+		if ($url) 
 		{
 			// prevent unauthorized download
 			if($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3']))
@@ -129,7 +131,12 @@ class DownloadController extends ControllerAbstract
 				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 				header('Pragma: public');
 			}
-
+            if(!empty($_GET['cache']) && $_GET['cache'] !== FALSE){
+                file_put_contents('cache/' . $name, fopen($url, 'r'));
+                readfile('cache/' . $name);
+                unlink('cache/' . $name);
+                exit;
+            }
 			readfile($url);
 			exit;
 		}

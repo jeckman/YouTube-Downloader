@@ -97,7 +97,20 @@ class ResultController extends ControllerAbstract
 			 * Thanks to the python based youtube-dl for info on the formats
 			 *   							http://rg3.github.com/youtube-dl/
 			 */
-			$redirect_url = $helper->getDownloadUrlByFormat($video_info, $_GET['format']);
+            if ( !empty($_GET['proxy']) && $_GET['proxy'] !== FALSE)
+            {
+                $best_format = $helper->getFullInfoByFormat($video_info, $_GET['format']);
+            
+                $proxylink = 'download.php?mime=' . $best_format->getType() . '&title=' . urlencode($video_info->getCleanedTitle()) . '&token=' . base64_encode(base64_encode($best_format->getUrl()));
+                if($config->get('localCache') || (!empty($_GET['cache']) && $_GET['cache'] !== FALSE))
+                {
+                    $proxylink = $proxylink . '&cache=true';
+                }
+                header("Location: " . $proxylink);
+                exit;
+            }
+            
+            $redirect_url = $helper->getDownloadUrlByFormat($video_info, $_GET['format']);
 
 			if ( $redirect_url !== null )
 			{
@@ -173,9 +186,14 @@ class ResultController extends ControllerAbstract
 			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
 			$directlink .= '&title=' . $cleanedtitle;
 
-			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
+			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode(base64_encode($avail_format->getUrl()));
 
 			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
+            
+            if($config->get('localCache'))
+            {
+                $proxylink = $proxylink . '&cache=true';
+            }
 
 			$template_data['streams'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
@@ -196,9 +214,14 @@ class ResultController extends ControllerAbstract
 			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
 			$directlink .= '&title=' . $cleanedtitle;
 
-			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
+			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode(base64_encode($avail_format->getUrl()));
 
 			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
+            
+            if($config->get('localCache'))
+            {
+                $proxylink = $proxylink . '&cache=true';
+            }
 
 			$template_data['formats'][] = [
 				'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
@@ -216,7 +239,7 @@ class ResultController extends ControllerAbstract
 		{
 			$mp3_url = sprintf(
 				'download.php?mime=audio/mp3&token=%s&title=%s&getmp3=true',
-				base64_encode($my_id),
+				base64_encode(base64_encode($my_id)),
 				$cleanedtitle
 			);
 
