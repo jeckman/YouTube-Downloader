@@ -34,7 +34,7 @@ return [
 
 You must fit at least this requirements to use YouTube-Downloader:
 
-- PHP >= 5.4
+- PHP >= 5.6
 - Web server (Apache/Nginx/PHP built-in)
 
 ## Installation
