@@ -33,18 +33,18 @@ class ImageControllerTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 	 */
 	public function validateVideoId($str, $expected)
 	{
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+		$logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
+		$container = $this->createMock(Container::class);
 		$container->method('get')->with('logger')->willReturn($logger);
 
-		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
+		$app = $this->createMock(App::class);
 		$app->method('getContainer')->willReturn($container);
 
 		$controller = new ImageController($app);
 
 		// set validateVideoId() accessible
-		$method = new \ReflectionMethod('\\YoutubeDownloader\\Application\\ImageController', 'validateVideoId');
+		$method = new \ReflectionMethod(ImageController::class, 'validateVideoId');
 		$method->setAccessible(true);
 
 		$this->assertSame($expected, $method->invoke($controller, $str));

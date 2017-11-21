@@ -20,8 +20,11 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger\Handler;
 
+use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use YoutubeDownloader\Logger\Handler\Entry;
+use YoutubeDownloader\Logger\Handler\Handler;
 use YoutubeDownloader\Logger\Handler\StreamHandler;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
@@ -39,10 +42,7 @@ class StreamHandlerTest extends TestCase
 
 		$handler = new StreamHandler($stream, []);
 
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Logger\\Handler\\Handler',
-			$handler
-		);
+		$this->assertInstanceOf(Handler::class, $handler);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class StreamHandlerTest extends TestCase
 	{
 		$stream = new \stdClass;
 
-		$this->expectException('\\Exception');
+		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Parameter 1 must be a resource');
 
 		$handler = new StreamHandler($stream, []);
@@ -68,7 +68,7 @@ class StreamHandlerTest extends TestCase
 
 		$stream = fopen('vfs://logs/test.log', 'r');
 
-		$this->expectException('\\Exception');
+		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('The resource must be writable.');
 
 		$handler = new StreamHandler($stream, []);
@@ -86,7 +86,7 @@ class StreamHandlerTest extends TestCase
 
 		$handler = new StreamHandler($stream, ['debug']);
 
-		$entry = $this->createMock('\\YoutubeDownloader\\Logger\\Handler\\Entry');
+		$entry = $this->createMock(Entry::class);
 		$entry->method('getMessage')->willReturn('Log with {message}.');
 		$entry->method('getContext')->willReturn(['message' => 'a debug message']);
 		$entry->method('getLevel')->willReturn('debug');
