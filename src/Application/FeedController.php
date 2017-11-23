@@ -29,38 +29,38 @@ use YoutubeDownloader\VideoInfo\VideoInfo;
  */
 class FeedController extends ControllerAbstract
 {
-	/**
-	 * Excute the Controller
-	 *
-	 * @param string $route
-	 * @param YoutubeDownloader\Application\App $app
-	 *
-	 * @return void
-	 */
-	public function execute()
-	{
-		$config = $this->get('config');
-		$toolkit = $this->get('toolkit');
+    /**
+     * Excute the Controller
+     *
+     * @param string $route
+     * @param YoutubeDownloader\Application\App $app
+     *
+     * @return void
+     */
+    public function execute()
+    {
+        $config = $this->get('config');
+        $toolkit = $this->get('toolkit');
         $youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
-        $helper = new Helper();
         
         $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $site = substr($actual_link, 0, strrpos($actual_link, '/')+1);
+        
+        
             
         $dom=new \DOMDocument();
-        if(isset($_GET["channelid"]))
-        {
+        if (isset($_GET["channelid"])) {
             $dom->load("https://www.youtube.com/feeds/videos.xml?channel_id=" . $_GET["channelid"]);
         }
-        if(isset($_GET["user"]))
-        {
+        if (isset($_GET["user"])) {
             $dom->load("https://www.youtube.com/feeds/videos.xml?user=" . $_GET["user"]);
         }
 
-        $root=$dom->documentElement; // This can differ (I am not sure, it can be only documentElement or documentElement->firstChild or only firstChild)
+        $root=$dom->documentElement;
 
         $entries=$root->getElementsByTagName('entry');
 
+        
         // Loop trough childNodes
         foreach ($entries as $entry) {
             $url=$entry->getElementsByTagName('link')->item(0)->getAttributeNode('href')->nodeValue;
@@ -68,50 +68,50 @@ class FeedController extends ControllerAbstract
             
             $video_id = substr(parse_url($url, PHP_URL_QUERY), 2);
             $video_info = $youtube_provider->provide($video_id);
-            $redirect_url = $helper->getDownloadUrlByFormat($video_info, $_GET['format']);
-            $type = $helper->getTypeByFormat($video_info, $_GET['format']);
+            $full_info = $this->getFullInfoByFormat($video_info, $_GET['format']);
+            $redirect_url = $full_info->getUrl();
+            $type = $full_info->getType();
             
             $original_media = $entry->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'group')->item(0);
-            $original_content = $original_media->getElementsByTagNameNS('http://search.yahoo.com/mrss/','content')->item(0);
-            
+            $original_content = $original_media
+                ->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')->item(0);
             
             $size = $this->getSize($redirect_url, $config, $toolkit);
-            
             // an enclosure element must have the attributes: url, length and type
             $enclosure_url = $dom->createAttribute('url');
-            $enclosure_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid=' . $video_info->getVideoId() . '&format=' . $_GET['format']));
+            $enclosure_url->
+                appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
+                                                 . $video_info->getVideoId() . '&format=' . $_GET['format']));
             $enclosure_length = $dom->createAttribute('length');
             $enclosure_length->appendChild($dom->createTextNode($size));
             $enclosure_type = $dom->createAttribute('type');
             $enclosure_type->appendChild($dom->createTextNode($type));
-            $enclosure = $dom->createElementNS('http://search.yahoo.com/mrss/','content');
+            $enclosure = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
             $enclosure->appendChild($enclosure_url);
             $enclosure->appendChild($enclosure_length);
             $enclosure->appendChild($enclosure_type);
-            $entry->replaceChild($enclosure,$original_media);
-            
+            $entry->replaceChild($enclosure, $original_media);
             
             // add proxy elements
-            //$original_media_1 = $dom->importNode($original_media, true);
-            //$original_content_1 = $original_media_1->getElementsByTagNameNS('http://search.yahoo.com/mrss/','content')->item(0);
             
             $enclosure_proxy_url = $dom->createAttribute('url');
-            $enclosure_proxy_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid=' . $video_info->getVideoId() . '&format=' . $_GET['format'] . '&proxy=true'));
+            $enclosure_proxy_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
+                                                                   . $video_info->getVideoId()
+                                                                   . '&format=' . $_GET['format']
+                                                                   . '&proxy=true'));
             $enclosure_proxy_length = $dom->createAttribute('length');
             $enclosure_proxy_length->appendChild($dom->createTextNode($size));
             $enclosure_proxy_type = $dom->createAttribute('type');
             $enclosure_proxy_type->appendChild($dom->createTextNode($type));
-            $enclosure_proxy = $dom->createElementNS('http://search.yahoo.com/mrss/','content');
+            $enclosure_proxy = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
             $enclosure_proxy->appendChild($enclosure_proxy_url);
             $enclosure_proxy->appendChild($enclosure_proxy_length);
             $enclosure_proxy->appendChild($enclosure_proxy_type);
-            //$original_media_1->replaceChild($enclosure_proxy,$original_content_1);
             $entry->appendChild($enclosure_proxy);
-
         }
         header('Content-Type: text/xml; charset=utf-8', true);
         echo $dom->saveXML();
         
         exit;
-	}
+    }
 }
