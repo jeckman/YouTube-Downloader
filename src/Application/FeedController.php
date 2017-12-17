@@ -69,45 +69,48 @@ class FeedController extends ControllerAbstract
             $video_id = substr(parse_url($url, PHP_URL_QUERY), 2);
             $video_info = $youtube_provider->provide($video_id);
             $full_info = $this->getFullInfoByFormat($video_info, $_GET['format']);
-            $redirect_url = $full_info->getUrl();
-            $type = $full_info->getType();
+            if ($full_info != null) {
+                $redirect_url = $full_info->getUrl();
+                $type = $full_info->getType();
             
-            $original_media = $entry->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'group')->item(0);
-            $original_content = $original_media
-                ->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')->item(0);
             
-            $size = $this->getSize($redirect_url, $config, $toolkit);
-            // an enclosure element must have the attributes: url, length and type
-            $enclosure_url = $dom->createAttribute('url');
-            $enclosure_url->
-                appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
-                                                 . $video_info->getVideoId() . '&format=' . $_GET['format']));
-            $enclosure_length = $dom->createAttribute('length');
-            $enclosure_length->appendChild($dom->createTextNode($size));
-            $enclosure_type = $dom->createAttribute('type');
-            $enclosure_type->appendChild($dom->createTextNode($type));
-            $enclosure = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
-            $enclosure->appendChild($enclosure_url);
-            $enclosure->appendChild($enclosure_length);
-            $enclosure->appendChild($enclosure_type);
-            $entry->replaceChild($enclosure, $original_media);
-            
-            // add proxy elements
-            
-            $enclosure_proxy_url = $dom->createAttribute('url');
-            $enclosure_proxy_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
-                                                                   . $video_info->getVideoId()
-                                                                   . '&format=' . $_GET['format']
-                                                                   . '&proxy=true'));
-            $enclosure_proxy_length = $dom->createAttribute('length');
-            $enclosure_proxy_length->appendChild($dom->createTextNode($size));
-            $enclosure_proxy_type = $dom->createAttribute('type');
-            $enclosure_proxy_type->appendChild($dom->createTextNode($type));
-            $enclosure_proxy = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
-            $enclosure_proxy->appendChild($enclosure_proxy_url);
-            $enclosure_proxy->appendChild($enclosure_proxy_length);
-            $enclosure_proxy->appendChild($enclosure_proxy_type);
-            $entry->appendChild($enclosure_proxy);
+                $original_media = $entry->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'group')->item(0);
+                $original_content = $original_media
+                    ->getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')->item(0);
+
+                $size = $this->getSize($redirect_url, $config, $toolkit);
+                // an enclosure element must have the attributes: url, length and type
+                $enclosure_url = $dom->createAttribute('url');
+                $enclosure_url->
+                    appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
+                                                     . $video_info->getVideoId() . '&format=' . $_GET['format']));
+                $enclosure_length = $dom->createAttribute('length');
+                $enclosure_length->appendChild($dom->createTextNode($size));
+                $enclosure_type = $dom->createAttribute('type');
+                $enclosure_type->appendChild($dom->createTextNode($type));
+                $enclosure = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
+                $enclosure->appendChild($enclosure_url);
+                $enclosure->appendChild($enclosure_length);
+                $enclosure->appendChild($enclosure_type);
+                $entry->replaceChild($enclosure, $original_media);
+
+                // add proxy elements
+
+                $enclosure_proxy_url = $dom->createAttribute('url');
+                $enclosure_proxy_url->appendChild($dom->createTextNode($site . 'getvideo.php?videoid='
+                                                                       . $video_info->getVideoId()
+                                                                       . '&format=' . $_GET['format']
+                                                                       . '&proxy=true'));
+                $enclosure_proxy_length = $dom->createAttribute('length');
+                $enclosure_proxy_length->appendChild($dom->createTextNode($size));
+                $enclosure_proxy_type = $dom->createAttribute('type');
+                $enclosure_proxy_type->appendChild($dom->createTextNode($type));
+                $enclosure_proxy = $dom->createElementNS('http://search.yahoo.com/mrss/', 'content');
+                $enclosure_proxy->appendChild($enclosure_proxy_url);
+                $enclosure_proxy->appendChild($enclosure_proxy_length);
+                $enclosure_proxy->appendChild($enclosure_proxy_type);
+                $entry->appendChild($enclosure_proxy);
+            }
         }
         header('Content-Type: text/xml; charset=utf-8', true);
         echo $dom->saveXML();
