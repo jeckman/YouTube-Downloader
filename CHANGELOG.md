@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Support for PHP 5.4 and 5.5 was dropped
 - The mp3 downloader was improved and has no dependendy to aria2 anymore
+- Code Style was changed to PSR-2
 
 ### Fixed
 

@@ -26,70 +26,70 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class SimpleEntryTest extends TestCase
 {
-	private $entry;
+    private $entry;
 
-	/**
-	 * Create a entry
-	 */
-	public function setUp()
-	{
-		$this->entry = new SimpleEntry(
-			new \DateTime('now'),
-			'debug',
-			'Log of {description}',
-			['description' => 'a debug message']
-		);
-	}
+    /**
+     * Create a entry
+     */
+    public function setUp()
+    {
+        $this->entry = new SimpleEntry(
+            new \DateTime('now'),
+            'debug',
+            'Log of {description}',
+            ['description' => 'a debug message']
+        );
+    }
 
-	/**
-	 * @test SimpleEntry implements Entry
-	 */
-	public function implementsEntry()
-	{
-		$this->assertInstanceOf(Entry::class, $this->entry);
-	}
+    /**
+     * @test SimpleEntry implements Entry
+     */
+    public function implementsEntry()
+    {
+        $this->assertInstanceOf(Entry::class, $this->entry);
+    }
 
-	/**
-	 * @test getMessage
-	 */
-	public function getMessage()
-	{
-		$this->assertSame(
-			'Log of {description}',
-			$this->entry->getMessage()
-		);
-	}
+    /**
+     * @test getMessage
+     */
+    public function getMessage()
+    {
+        $this->assertSame(
+            'Log of {description}',
+            $this->entry->getMessage()
+        );
+    }
 
-	/**
-	 * @test getContext
-	 */
-	public function getContext()
-	{
-		$this->assertSame(
-			['description' => 'a debug message'],
-			$this->entry->getContext()
-		);
-	}
+    /**
+     * @test getContext
+     */
+    public function getContext()
+    {
+        $this->assertSame(
+            ['description' => 'a debug message'],
+            $this->entry->getContext()
+        );
+    }
 
-	/**
-	 * @test getLevel
-	 */
-	public function getLevel()
-	{
-		$this->assertSame(
-			'debug',
-			$this->entry->getLevel()
-		);
-	}
+    /**
+     * @test getLevel
+     */
+    public function getLevel()
+    {
+        $this->assertSame(
+            'debug',
+            $this->entry->getLevel()
+        );
+    }
 
-	/**
-	 * @test getCreatedAt
-	 */
-	public function getCreatedAt()
-	{
-		$this->assertInstanceOf(
-			'DateTime',
-			$this->entry->getCreatedAt()
-		);
-	}
+    /**
+     * @test getCreatedAt
+     */
+    public function getCreatedAt()
+    {
+        $this->assertInstanceOf(
+            'DateTime',
+            $this->entry->getCreatedAt()
+        );
+    }
 }

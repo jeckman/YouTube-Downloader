@@ -156,268 +156,260 @@ use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
  */
 class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, LoggerAware
 {
-	use CacheAwareTrait;
-	use HttpClientAwareTrait;
-	use LoggerAwareTrait;
+    use CacheAwareTrait;
+    use HttpClientAwareTrait;
+    use LoggerAwareTrait;
 
-	/**
-	 * Creates a VideoInfo from string with an options array
-	 *
-	 * @param string $video_info
-	 * @param array $options
-	 * @return VideoInfo
-	 */
-	public static function createFromStringWithOptions($string, array $options)
-	{
-		$default = [
-			'decipher_signature' => false,
-		];
+    /**
+     * Creates a VideoInfo from string with an options array
+     *
+     * @param string $video_info
+     * @param array  $options
+     * @param mixed  $string
+     *
+     * @return VideoInfo
+     */
+    public static function createFromStringWithOptions($string, array $options)
+    {
+        $default = [
+            'decipher_signature' => false,
+        ];
 
-		foreach ($default as $key => $value)
-		{
-			if ( ! array_key_exists($key, $options))
-			{
-				$options[$key] = $value;
-			}
-		}
+        foreach ($default as $key => $value) {
+            if (! array_key_exists($key, $options)) {
+                $options[$key] = $value;
+            }
+        }
 
-		parse_str($string, $video_info);
+        parse_str($string, $video_info);
 
-		return new self($video_info, $options);
-	}
+        return new self($video_info, $options);
+    }
 
-	/**
-	 * Creates a VideoInfo from string
-	 *
-	 * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead
-	 *
-	 * @param string $video_info
-	 * @param Config $config
-	 * @return VideoInfo
-	 */
-	public static function createFromStringWithConfig($string, Config $config)
-	{
-		@trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead', E_USER_DEPRECATED);
+    /**
+     * Creates a VideoInfo from string
+     *
+     * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead
+     *
+     * @param string $video_info
+     * @param Config $config
+     * @param mixed  $string
+     *
+     * @return VideoInfo
+     */
+    public static function createFromStringWithConfig($string, Config $config)
+    {
+        @trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead', E_USER_DEPRECATED);
 
-		$options = [];
+        $options = [];
 
-		// Create options array
-		if ($config !== null)
-		{
-			$options['decipher_signature'] = $config->get('enable_youtube_decipher_signature');
-		}
+        // Create options array
+        if ($config !== null) {
+            $options['decipher_signature'] = $config->get('enable_youtube_decipher_signature');
+        }
 
-		return static::createFromStringWithOptions($string, $options);
-	}
+        return static::createFromStringWithOptions($string, $options);
+    }
 
-	/**
-	 * @var array
-	 */
-	private $options;
+    /**
+     * @var array
+     */
+    private $options;
 
-	/**
-	 * @var Format[]
-	 */
-	private $formats;
+    /**
+     * @var Format[]
+     */
+    private $formats;
 
-	/**
-	 * @var Format[]
-	 */
-	private $adaptive_formats;
+    /**
+     * @var Format[]
+     */
+    private $adaptive_formats;
 
-	/**
-	 * @var array
-	 */
-	private $data = [];
+    /**
+     * @var array
+     */
+    private $data = [];
 
-	/**
-	 * Set the necessary keys
-	 */
-	private $allowed_keys = [
-		'video_id',
-		'status',
-		'reason',
-		'thumbnail_url',
-		'title',
-		'url_encoded_fmt_stream_map',
-		'adaptive_fmts',
-	];
+    /**
+     * Set the necessary keys
+     */
+    private $allowed_keys = [
+        'video_id',
+        'status',
+        'reason',
+        'thumbnail_url',
+        'title',
+        'url_encoded_fmt_stream_map',
+        'adaptive_fmts',
+    ];
 
-	/**
-	 * Creates a VideoInfo from an array
-	 *
-	 * @param array $video_info
-	 * @param array $options
-	 * @return self
-	 */
-	private function __construct(array $video_info, array $options)
-	{
-		$this->options = $options;
+    /**
+     * Creates a VideoInfo from an array
+     *
+     * @param array $video_info
+     * @param array $options
+     *
+     * @return self
+     */
+    private function __construct(array $video_info, array $options)
+    {
+        $this->options = $options;
 
-		foreach ($this->allowed_keys as $key)
-		{
-			if ( isset($video_info[$key]) )
-			{
-				$this->data[$key] = $video_info[$key];
-			}
-			else
-			{
-				$this->data[$key] = null;
-			}
-		}
-	}
+        foreach ($this->allowed_keys as $key) {
+            if (isset($video_info[$key])) {
+                $this->data[$key] = $video_info[$key];
+            } else {
+                $this->data[$key] = null;
+            }
+        }
+    }
 
-	/**
-	 * Parses an array of formats
-	 *
-	 * @param array $format_array
-	 * @param array $config
-	 * @return array
-	 */
-	private function parseFormats(array $format_array, array $config)
-	{
-		$formats = [];
+    /**
+     * Parses an array of formats
+     *
+     * @param array $format_array
+     * @param array $config
+     *
+     * @return array
+     */
+    private function parseFormats(array $format_array, array $config)
+    {
+        $formats = [];
 
-		if (count($format_array) === 1 and $format_array[0] === '' )
-		{
-			return $formats;
-		}
+        if (count($format_array) === 1 and $format_array[0] === '') {
+            return $formats;
+        }
 
-		foreach ($format_array as $format)
-		{
-			parse_str($format, $format_info);
+        foreach ($format_array as $format) {
+            parse_str($format, $format_info);
 
-			if ( count($format_info) <= 1 )
-			{
-				continue;
-			}
+            if (count($format_info) <= 1) {
+                continue;
+            }
 
-			$format = Format::createFromArray($this, $format_info, $config);
+            $format = Format::createFromArray($this, $format_info, $config);
 
-			if ( $format instanceOf CacheAware )
-			{
-				$format->setCache($this->getCache());
-			}
+            if ($format instanceof CacheAware) {
+                $format->setCache($this->getCache());
+            }
 
-			if ( $format instanceOf HttpClientAware )
-			{
-				$format->setHttpClient($this->getHttpClient());
-			}
+            if ($format instanceof HttpClientAware) {
+                $format->setHttpClient($this->getHttpClient());
+            }
 
-			if ( $format instanceOf LoggerAware )
-			{
-				$format->setLogger($this->getLogger());
-			}
+            if ($format instanceof LoggerAware) {
+                $format->setLogger($this->getLogger());
+            }
 
-			$formats[] = $format;
-		}
+            $formats[] = $format;
+        }
 
-		return $formats;
-	}
+        return $formats;
+    }
 
-	/**
-	 * Get the Provider-ID, e.g. 'youtube', 'vimeo', etc
-	 *
-	 * @return string
-	 */
-	public function getProviderId()
-	{
-		return 'youtube';
-	}
+    /**
+     * Get the Provider-ID, e.g. 'youtube', 'vimeo', etc
+     *
+     * @return string
+     */
+    public function getProviderId()
+    {
+        return 'youtube';
+    }
 
-	/**
-	 * Get the video_id
-	 *
-	 * @return string
-	 */
-	public function getVideoId()
-	{
-		return $this->data['video_id'];
-	}
+    /**
+     * Get the video_id
+     *
+     * @return string
+     */
+    public function getVideoId()
+    {
+        return $this->data['video_id'];
+    }
 
-	/**
-	 * Get the status
-	 *
-	 * @return string
-	 */
-	public function getStatus()
-	{
-		return $this->data['status'];
-	}
+    /**
+     * Get the status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->data['status'];
+    }
 
-	/**
-	 * Get the error reason
-	 *
-	 * @return string
-	 */
-	public function getErrorReason()
-	{
-		return $this->data['reason'];
-	}
+    /**
+     * Get the error reason
+     *
+     * @return string
+     */
+    public function getErrorReason()
+    {
+        return $this->data['reason'];
+    }
 
-	/**
-	 * Get the thumbnail_url
-	 *
-	 * @return string
-	 */
-	public function getThumbnailUrl()
-	{
-		return $this->data['thumbnail_url'];
-	}
+    /**
+     * Get the thumbnail_url
+     *
+     * @return string
+     */
+    public function getThumbnailUrl()
+    {
+        return $this->data['thumbnail_url'];
+    }
 
-	/**
-	 * Get the title
-	 *
-	 * @return string
-	 */
-	public function getTitle()
-	{
-		return $this->data['title'];
-	}
+    /**
+     * Get the title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->data['title'];
+    }
 
-	/**
-	 * Get the cleaned title
-	 *
-	 * @return string
-	 */
-	public function getCleanedTitle()
-	{
-		// Removes non-alphanumeric and unicode character.
-	    $title = preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
-		return trim($title, "-");
-	}
+    /**
+     * Get the cleaned title
+     *
+     * @return string
+     */
+    public function getCleanedTitle()
+    {
+        // Removes non-alphanumeric and unicode character.
+        $title = preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
 
-	/**
-	 * Get the Formats
-	 *
-	 * @return Format[] array with Format instances
-	 */
-	public function getFormats()
-	{
-		if ( $this->formats === null )
-		{
-			// get the url_encoded_fmt_stream_map, and explode on comma
-			$formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-			$this->formats = $this->parseFormats($formats, $this->options);
-		}
+        return trim($title, '-');
+    }
 
-		return $this->formats;
-	}
+    /**
+     * Get the Formats
+     *
+     * @return Format[] array with Format instances
+     */
+    public function getFormats()
+    {
+        if ($this->formats === null) {
+            // get the url_encoded_fmt_stream_map, and explode on comma
+            $formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
+            $this->formats = $this->parseFormats($formats, $this->options);
+        }
 
-	/**
-	 * Get the adaptive Formats
-	 *
-	 * @return Format[] array with Format instances
-	 */
-	public function getAdaptiveFormats()
-	{
-		if ( $this->adaptive_formats === null )
-		{
-			// get the adaptive_fmts, and explode on comma
-			$adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-			$this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
-		}
+        return $this->formats;
+    }
 
-		return $this->adaptive_formats;
-	}
+    /**
+     * Get the adaptive Formats
+     *
+     * @return Format[] array with Format instances
+     */
+    public function getAdaptiveFormats()
+    {
+        if ($this->adaptive_formats === null) {
+            // get the adaptive_fmts, and explode on comma
+            $adaptive_formats = explode(',', $this->data['adaptive_fmts']);
+            $this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
+        }
+
+        return $this->adaptive_formats;
+    }
 }

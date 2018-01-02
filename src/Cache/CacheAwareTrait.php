@@ -25,34 +25,32 @@ namespace YoutubeDownloader\Cache;
  */
 trait CacheAwareTrait
 {
-	/**
-	 * @var YoutubeDownloader\Cache\Cache
-	 */
-	private $cache;
+    /**
+     * @var YoutubeDownloader\Cache\Cache
+     */
+    private $cache;
 
-	/**
-	 * Sets a cache instance on the object
-	 *
-	 * @param Cache $cache
-	 * @return null
-	 */
-	public function setCache(Cache $cache)
-	{
-		$this->cache = $cache;
-	}
+    /**
+     * Sets a cache instance on the object
+     *
+     * @param Cache $cache
+     */
+    public function setCache(Cache $cache)
+    {
+        $this->cache = $cache;
+    }
 
-	/**
-	 * Gets a cache instance
-	 *
-	 * @return Cache
-	 */
-	public function getCache()
-	{
-		if ( $this->cache === null )
-		{
-			$this->cache = new NullCache;
-		}
+    /**
+     * Gets a cache instance
+     *
+     * @return Cache
+     */
+    public function getCache()
+    {
+        if ($this->cache === null) {
+            $this->cache = new NullCache;
+        }
 
-		return $this->cache;
-	}
+        return $this->cache;
+    }
 }

@@ -33,8 +33,6 @@ abstract class ControllerAbstract implements Controller
      * Create the controller
      *
      * @param YoutubeDownloader\Container\App $app
-     *
-     * @return void
      */
     public function __construct(App $app)
     {
@@ -72,7 +70,6 @@ abstract class ControllerAbstract implements Controller
      * Echos an error and exit
      *
      * @param string $message
-     * @return void
      */
     protected function responseWithErrorMessage($message)
     {
@@ -114,6 +111,7 @@ abstract class ControllerAbstract implements Controller
      * Check if a user-agent is chrome
      *
      * @param string $agent
+     *
      * @return bool
      */
     public function isUseragentChrome($agent)
@@ -133,8 +131,9 @@ abstract class ControllerAbstract implements Controller
     /**
      * Get the full info for a specific format
      *
-     * @param array $avail_formats
+     * @param array  $avail_formats
      * @param string $format
+     *
      * @return string|null
      */
     protected function getFullInfoByFormat(VideoInfo $video_info, $format)
@@ -142,17 +141,20 @@ abstract class ControllerAbstract implements Controller
         $target_formats = [];
 
         switch ($format) {
-            case "best":
+            case 'best':
                 /* largest formats first */
                 $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+
                 break;
-            case "free":
+            case 'free':
                 /* Here we include WebM but prefer it over FLV */
                 $target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+
                 break;
-            case "ipad":
+            case 'ipad':
                 /* here we leave out WebM video and FLV - looking for MP4 */
                 $target_formats = ['37', '22', '18', '17'];
+
                 break;
             default:
                 /* If they passed in a number use it */
@@ -161,6 +163,7 @@ abstract class ControllerAbstract implements Controller
                 } else {
                     $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
                 }
+
                 break;
         }
 
@@ -173,6 +176,7 @@ abstract class ControllerAbstract implements Controller
             foreach ($avail_formats as $format) {
                 if ($target_format == $format->getItag()) {
                     $best_format = $format;
+
                     break 2;
                 }
             }
@@ -188,8 +192,9 @@ abstract class ControllerAbstract implements Controller
     /**
      * Get the download url for a specific format
      *
-     * @param array $avail_formats
+     * @param array  $avail_formats
      * @param string $format
+     *
      * @return string|null
      */
     protected function getDownloadUrlByFormat(VideoInfo $video_info, $format)
@@ -197,17 +202,20 @@ abstract class ControllerAbstract implements Controller
         $target_formats = [];
 
         switch ($format) {
-            case "best":
+            case 'best':
                 /* largest formats first */
                 $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+
                 break;
-            case "free":
+            case 'free':
                 /* Here we include WebM but prefer it over FLV */
                 $target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+
                 break;
-            case "ipad":
+            case 'ipad':
                 /* here we leave out WebM video and FLV - looking for MP4 */
                 $target_formats = ['37', '22', '18', '17'];
+
                 break;
             default:
                 /* If they passed in a number use it */
@@ -216,6 +224,7 @@ abstract class ControllerAbstract implements Controller
                 } else {
                     $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
                 }
+
                 break;
         }
 
@@ -228,6 +237,7 @@ abstract class ControllerAbstract implements Controller
             foreach ($avail_formats as $format) {
                 if ($target_format == $format->getItag()) {
                     $best_format = $format;
+
                     break 2;
                 }
             }
@@ -251,8 +261,9 @@ abstract class ControllerAbstract implements Controller
     /**
      * Get the type for a specific format
      *
-     * @param array $avail_formats
+     * @param array  $avail_formats
      * @param string $format
+     *
      * @return string|null
      */
     protected function getTypeByFormat(VideoInfo $video_info, $format)
@@ -260,17 +271,20 @@ abstract class ControllerAbstract implements Controller
         $target_formats = [];
 
         switch ($format) {
-            case "best":
+            case 'best':
                 /* largest formats first */
                 $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
+
                 break;
-            case "free":
+            case 'free':
                 /* Here we include WebM but prefer it over FLV */
                 $target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
+
                 break;
-            case "ipad":
+            case 'ipad':
                 /* here we leave out WebM video and FLV - looking for MP4 */
                 $target_formats = ['37', '22', '18', '17'];
+
                 break;
             default:
                 /* If they passed in a number use it */
@@ -279,6 +293,7 @@ abstract class ControllerAbstract implements Controller
                 } else {
                     $target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
                 }
+
                 break;
         }
 
@@ -291,6 +306,7 @@ abstract class ControllerAbstract implements Controller
             foreach ($avail_formats as $format) {
                 if ($target_format == $format->getItag()) {
                     $best_format = $format;
+
                     break 2;
                 }
             }
@@ -311,13 +327,14 @@ abstract class ControllerAbstract implements Controller
         return $format;
     }
     
-        /**
+    /**
      * Format a byte integer into a human readable string
      *
      * e.g. 1024 => 1kB
      *
      * @param int $bytes
      * @param int $precision
+     *
      * @return string
      */
     protected function formatBytes($bytes, $precision = 2)

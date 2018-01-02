@@ -30,42 +30,42 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class ControllerFactoryTest extends TestCase
 {
-	/**
-	 * @test make
-	 */
-	public function make()
-	{
-		$logger = $this->createMock(Logger::class);
+    /**
+     * @test make
+     */
+    public function make()
+    {
+        $logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock(Container::class);
-		$container->method('get')->with('logger')->willReturn($logger);
+        $container = $this->createMock(Container::class);
+        $container->method('get')->with('logger')->willReturn($logger);
 
-		$app = $this->createMock(App::class);
-		$app->method('getContainer')->willReturn($container);
+        $app = $this->createMock(App::class);
+        $app->method('getContainer')->willReturn($container);
 
-		$factory = new ControllerFactory;
+        $factory = new ControllerFactory;
 
-		$this->assertInstanceOf(
-			Controller::class,
-			$factory->make('index', $app)
-		);
-	}
+        $this->assertInstanceOf(
+            Controller::class,
+            $factory->make('index', $app)
+        );
+    }
 
-	/**
-	 * @test make throws Exception
-	 */
-	public function makeThrowsException()
-	{
-		$app = $this->createMock(App::class);
+    /**
+     * @test make throws Exception
+     */
+    public function makeThrowsException()
+    {
+        $app = $this->createMock(App::class);
 
-		$factory = new ControllerFactory;
+        $factory = new ControllerFactory;
 
-		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('No controller was found for route "fail"');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('No controller was found for route "fail"');
 
-		$this->assertInstanceOf(
-			Controller::class,
-			$factory->make('fail', $app)
-		);
-	}
+        $this->assertInstanceOf(
+            Controller::class,
+            $factory->make('fail', $app)
+        );
+    }
 }

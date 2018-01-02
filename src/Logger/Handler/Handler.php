@@ -25,19 +25,21 @@ namespace YoutubeDownloader\Logger\Handler;
  */
 interface Handler
 {
-	/**
-	 * Check if this handler handels a log level
-	 *
-	 * @param string $level A valid log level from LogLevel class
-	 * @return boolean
-	 */
-	public function handles($level);
+    /**
+     * Check if this handler handels a log level
+     *
+     * @param string $level A valid log level from LogLevel class
+     *
+     * @return bool
+     */
+    public function handles($level);
 
-	/**
-	 * Handle an entry
-	 *
-	 * @param Entry $entry
-	 * @return boolean
-	 */
-	public function handle(Entry $entry);
+    /**
+     * Handle an entry
+     *
+     * @param Entry $entry
+     *
+     * @return bool
+     */
+    public function handle(Entry $entry);
 }

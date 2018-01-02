@@ -32,264 +32,276 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class FileCacheTest extends TestCase
 {
-	use DataProviderTrait;
+    use DataProviderTrait;
 
-	/**
-	 * @test createFromDirectory()
-	 */
-	public function createFromDirectory()
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test createFromDirectory()
+     */
+    public function createFromDirectory()
+    {
+        $root = vfsStream::setup('cache');
 
-		$this->assertInstanceOf(
-			FileCache::class,
-			FileCache::createFromDirectory($root->url())
-		);
-	}
+        $this->assertInstanceOf(
+            FileCache::class,
+            FileCache::createFromDirectory($root->url())
+        );
+    }
 
-	/**
-	 * @test FileCache is is compatible with Psr\SimpleCache\CacheInterface
-	 */
-	public function isPsr16Compatible()
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test FileCache is is compatible with Psr\SimpleCache\CacheInterface
+     */
+    public function isPsr16Compatible()
+    {
+        $root = vfsStream::setup('cache');
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$adapter = new Psr16CacheAdapter($cache);
+        $adapter = new Psr16CacheAdapter($cache);
 
-		$this->assertInstanceOf(CacheInterface::class, $adapter);
-		$this->assertInstanceOf(Cache::class, $adapter);
-	}
+        $this->assertInstanceOf(CacheInterface::class, $adapter);
+        $this->assertInstanceOf(Cache::class, $adapter);
+    }
 
-	/**
-	 * @test createFromDirectory()
-	 */
-	public function createFromDirectoryThrowsExceptionIfFolderNotExists()
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test createFromDirectory()
+     */
+    public function createFromDirectoryThrowsExceptionIfFolderNotExists()
+    {
+        $root = vfsStream::setup('cache');
 
-		$this->expectException(CacheException::class);
-		$this->expectExceptionMessage('cache directory "vfs://not_existing" does not exist.');
+        $this->expectException(CacheException::class);
+        $this->expectExceptionMessage('cache directory "vfs://not_existing" does not exist.');
 
-		FileCache::createFromDirectory('vfs://not_existing');
-	}
+        FileCache::createFromDirectory('vfs://not_existing');
+    }
 
-	/**
-	 * @test createFromDirectory()
-	 */
-	public function createFromDirectoryThrowsExceptionIfFolderIsNotDirectory()
-	{
-		$root = vfsStream::setup('cache');
-		vfsStream::newFile('file', 0000)->at($root);
+    /**
+     * @test createFromDirectory()
+     */
+    public function createFromDirectoryThrowsExceptionIfFolderIsNotDirectory()
+    {
+        $root = vfsStream::setup('cache');
+        vfsStream::newFile('file', 0000)->at($root);
 
-		$this->expectException(CacheException::class);
-		$this->expectExceptionMessage('cache directory "vfs://cache/file" is not a directory.');
+        $this->expectException(CacheException::class);
+        $this->expectExceptionMessage('cache directory "vfs://cache/file" is not a directory.');
 
-		FileCache::createFromDirectory('vfs://cache/file');
-	}
+        FileCache::createFromDirectory('vfs://cache/file');
+    }
 
-	/**
-	 * @test createFromDirectory()
-	 */
-	public function createFromDirectoryThrowsExceptionIfFolderNotReadable()
-	{
-		$root = vfsStream::setup('cache', 0000);
+    /**
+     * @test createFromDirectory()
+     */
+    public function createFromDirectoryThrowsExceptionIfFolderNotReadable()
+    {
+        $root = vfsStream::setup('cache', 0000);
 
-		$this->expectException(CacheException::class);
-		$this->expectExceptionMessage('cache directory "vfs://cache" is not readable.');
+        $this->expectException(CacheException::class);
+        $this->expectExceptionMessage('cache directory "vfs://cache" is not readable.');
 
-		FileCache::createFromDirectory($root->url());
-	}
+        FileCache::createFromDirectory($root->url());
+    }
 
-	/**
-	 * @test createFromDirectory()
-	 */
-	public function createFromDirectoryThrowsExceptionIfFolderNotWritable()
-	{
-		$root = vfsStream::setup('cache', 0400);
+    /**
+     * @test createFromDirectory()
+     */
+    public function createFromDirectoryThrowsExceptionIfFolderNotWritable()
+    {
+        $root = vfsStream::setup('cache', 0400);
 
-		$this->expectException(CacheException::class);
-		$this->expectExceptionMessage('cache directory "vfs://cache" is not writable.');
+        $this->expectException(CacheException::class);
+        $this->expectExceptionMessage('cache directory "vfs://cache" is not writable.');
 
-		FileCache::createFromDirectory($root->url());
-	}
+        FileCache::createFromDirectory($root->url());
+    }
 
-	/**
-	 * @test get()
-	 */
-	public function getReturnsValue()
-	{
-		$root = vfsStream::setup('cache', 0600);
-		vfsStream::newFile('key', 0600)
-			->withContent(serialize([
-				'foobar',
-				null,
-			]))
-			->at($root);
+    /**
+     * @test get()
+     */
+    public function getReturnsValue()
+    {
+        $root = vfsStream::setup('cache', 0600);
+        vfsStream::newFile('key', 0600)
+            ->withContent(serialize([
+                'foobar',
+                null,
+            ]))
+            ->at($root);
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->assertSame('foobar', $cache->get('key'));
-	}
+        $this->assertSame('foobar', $cache->get('key'));
+    }
 
-	/**
-	 * @test get()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function getWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test get()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function getWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $root = vfsStream::setup('cache');
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->get($invalid_key);
-	}
+        $cache->get($invalid_key);
+    }
 
-	/**
-	 * @test get()
-	 */
-	public function getNotExistingReturnsDefault()
-	{
-		$root = vfsStream::setup('cache', 0600);
+    /**
+     * @test get()
+     */
+    public function getNotExistingReturnsDefault()
+    {
+        $root = vfsStream::setup('cache', 0600);
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->assertSame('default', $cache->get('key', 'default'));
-	}
+        $this->assertSame('default', $cache->get('key', 'default'));
+    }
 
-	/**
-	 * @test get()
-	 */
-	public function getNotUnserializableReturnsDefault()
-	{
-		$root = vfsStream::setup('cache', 0600);
-		vfsStream::newFile('key', 0600)
-			->withContent('foobar')
-			->at($root);
+    /**
+     * @test get()
+     */
+    public function getNotUnserializableReturnsDefault()
+    {
+        $root = vfsStream::setup('cache', 0600);
+        vfsStream::newFile('key', 0600)
+            ->withContent('foobar')
+            ->at($root);
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->assertSame('default', $cache->get('key', 'default'));
-	}
+        $this->assertSame('default', $cache->get('key', 'default'));
+    }
 
-	/**
-	 * @test get()
-	 */
-	public function getExpiredReturnsDefault()
-	{
-		$root = vfsStream::setup('cache', 0600);
-		vfsStream::newFile('key', 0600)
-			->withContent(serialize([
-				'foobar',
-				1,
-			]))
-			->at($root);
+    /**
+     * @test get()
+     */
+    public function getExpiredReturnsDefault()
+    {
+        $root = vfsStream::setup('cache', 0600);
+        vfsStream::newFile('key', 0600)
+            ->withContent(serialize([
+                'foobar',
+                1,
+            ]))
+            ->at($root);
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->assertSame('default', $cache->get('key', 'default'));
+        $this->assertSame('default', $cache->get('key', 'default'));
 
-		// The expired cache should be deleted
-		$this->assertFalse($root->hasChildren());
-	}
+        // The expired cache should be deleted
+        $this->assertFalse($root->hasChildren());
+    }
 
-	/**
-	 * @test set()
-	 */
-	public function setReturnsTrue()
-	{
-		$root = vfsStream::setup('cache', 0600);
+    /**
+     * @test set()
+     */
+    public function setReturnsTrue()
+    {
+        $root = vfsStream::setup('cache', 0600);
 
-		$cache = FileCache::createFromDirectory(
-			$root->url(),
-			['writeFlags' => 0]
-		);
+        $cache = FileCache::createFromDirectory(
+            $root->url(),
+            ['writeFlags' => 0]
+        );
 
-		$this->assertTrue($cache->set('key', 'foobar'));
+        $this->assertTrue($cache->set('key', 'foobar'));
 
-		$this->assertTrue($root->hasChild('key'));
-		$this->assertSame(
-			'a:2:{i:0;s:6:"foobar";i:1;N;}',
-			$root->getChild('key')->getContent()
-		);
-	}
+        $this->assertTrue($root->hasChild('key'));
+        $this->assertSame(
+            'a:2:{i:0;s:6:"foobar";i:1;N;}',
+            $root->getChild('key')->getContent()
+        );
+    }
 
-	/**
-	 * @test set()
-	 */
-	public function setWithTtlReturnsTrue()
-	{
-		$root = vfsStream::setup('cache', 0600);
+    /**
+     * @test set()
+     */
+    public function setWithTtlReturnsTrue()
+    {
+        $root = vfsStream::setup('cache', 0600);
 
-		$cache = FileCache::createFromDirectory(
-			$root->url(),
-			['writeFlags' => 0]
-		);
+        $cache = FileCache::createFromDirectory(
+            $root->url(),
+            ['writeFlags' => 0]
+        );
 
-		$this->assertTrue($cache->set('key', 'foobar', 3600));
+        $this->assertTrue($cache->set('key', 'foobar', 3600));
 
-		$this->assertTrue($root->hasChild('key'));
-		$this->assertSame(
-			sprintf('a:2:{i:0;s:6:"foobar";i:1;i:%s;}', time()+3600),
-			$root->getChild('key')->getContent()
-		);
-	}
+        $this->assertTrue($root->hasChild('key'));
+        $this->assertSame(
+            sprintf('a:2:{i:0;s:6:"foobar";i:1;i:%s;}', time()+3600),
+            $root->getChild('key')->getContent()
+        );
+    }
 
-	/**
-	 * @test set()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function setWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test set()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function setWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $root = vfsStream::setup('cache');
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->set($invalid_key, 'value');
-	}
+        $cache->set($invalid_key, 'value');
+    }
 
-	/**
-	 * @test delete()
-	 */
-	public function deleteReturnsTrue()
-	{
-		$root = vfsStream::setup('cache', 0600);
-		vfsStream::newFile('key', 0600)
-			->withContent(serialize([
-				'foobar',
-				null,
-			]))
-			->at($root);
+    /**
+     * @test delete()
+     */
+    public function deleteReturnsTrue()
+    {
+        $root = vfsStream::setup('cache', 0600);
+        vfsStream::newFile('key', 0600)
+            ->withContent(serialize([
+                'foobar',
+                null,
+            ]))
+            ->at($root);
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->assertTrue($cache->delete('key'));
-		$this->assertFalse($root->hasChildren());
-	}
+        $this->assertTrue($cache->delete('key'));
+        $this->assertFalse($root->hasChildren());
+    }
 
-	/**
-	 * @test delete()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function deleteWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$root = vfsStream::setup('cache');
+    /**
+     * @test delete()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function deleteWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $root = vfsStream::setup('cache');
 
-		$cache = FileCache::createFromDirectory($root->url());
+        $cache = FileCache::createFromDirectory($root->url());
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->delete($invalid_key);
-	}
+        $cache->delete($invalid_key);
+    }
 }

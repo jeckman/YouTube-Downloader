@@ -25,22 +25,20 @@ namespace YoutubeDownloader\Application;
  */
 class MainController extends ControllerAbstract
 {
-	/**
-	 * Excute the Controller
-	 *
-	 * @param string $route
-	 * @param YoutubeDownloader\Application\App $app
-	 *
-	 * @return void
-	 */
-	public function execute()
-	{
-		$config = $this->get('config');
-		$template = $this->get('template');
+    /**
+     * Excute the Controller
+     *
+     * @param string                            $route
+     * @param YoutubeDownloader\Application\App $app
+     */
+    public function execute()
+    {
+        $config = $this->get('config');
+        $template = $this->get('template');
 
-		echo $template->render('index.php', [
-			'app_version' => $this->getAppVersion(),
-			'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions')),
-		]);
-	}
+        echo $template->render('index.php', [
+            'app_version' => $this->getAppVersion(),
+            'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions')),
+        ]);
+    }
 }

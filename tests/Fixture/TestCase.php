@@ -20,4 +20,6 @@
 
 namespace YoutubeDownloader\Tests\Fixture;
 
-class TestCase extends \PHPUnit\Framework\TestCase {}
+class TestCase extends \PHPUnit\Framework\TestCase
+{
+}

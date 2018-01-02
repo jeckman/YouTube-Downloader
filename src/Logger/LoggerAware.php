@@ -27,11 +27,10 @@ namespace YoutubeDownloader\Logger;
  */
 interface LoggerAware
 {
-	/**
-	 * Sets a logger instance on the object
-	 *
-	 * @param LoggerInterface $logger
-	 * @return null
-	 */
-	public function setLogger(Logger $logger);
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(Logger $logger);
 }

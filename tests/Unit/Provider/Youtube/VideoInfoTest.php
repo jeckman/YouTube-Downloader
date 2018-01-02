@@ -26,129 +26,132 @@ use YoutubeDownloader\Provider\Youtube\VideoInfo;
 
 class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
-	/**
-	 * @test createFromStringWithConfig()
-	 */
-	public function createFromStringWithConfig()
-	{
-		$config = $this->createMock(Config::class);
+    /**
+     * @test createFromStringWithConfig()
+     */
+    public function createFromStringWithConfig()
+    {
+        $config = $this->createMock(Config::class);
 
-		$video_info = VideoInfo::createFromStringWithConfig('', $config);
+        $video_info = VideoInfo::createFromStringWithConfig('', $config);
 
-		$this->assertInstanceOf(VideoInfoInterface::class, $video_info);
-		$this->assertInstanceOf(VideoInfo::class, $video_info);
-	}
+        $this->assertInstanceOf(VideoInfoInterface::class, $video_info);
+        $this->assertInstanceOf(VideoInfo::class, $video_info);
+    }
 
-	/**
-	 * @test createFromStringWithOptions()
-	 */
-	public function createFromStringWithOptions()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('', []);
+    /**
+     * @test createFromStringWithOptions()
+     */
+    public function createFromStringWithOptions()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('', []);
 
-		$this->assertInstanceOf(VideoInfoInterface::class, $video_info);
-		$this->assertInstanceOf(VideoInfo::class, $video_info);
-	}
+        $this->assertInstanceOf(VideoInfoInterface::class, $video_info);
+        $this->assertInstanceOf(VideoInfo::class, $video_info);
+    }
 
-	/**
-	 * @test getProviderId()
-	 */
-	public function getProviderId()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('', []);
+    /**
+     * @test getProviderId()
+     */
+    public function getProviderId()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('', []);
 
-		$this->assertSame('youtube', $video_info->getProviderId());
-	}
+        $this->assertSame('youtube', $video_info->getProviderId());
+    }
 
-	/**
-	 * @test getVideoId()
-	 */
-	public function getVideoId()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('video_id=123abc', []);
+    /**
+     * @test getVideoId()
+     */
+    public function getVideoId()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('video_id=123abc', []);
 
-		$this->assertSame('123abc', $video_info->getVideoId());
-	}
+        $this->assertSame('123abc', $video_info->getVideoId());
+    }
 
-	/**
-	 * @test getStatus()
-	 */
-	public function getStatus()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('status=ok', []);
+    /**
+     * @test getStatus()
+     */
+    public function getStatus()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('status=ok', []);
 
-		$this->assertSame('ok', $video_info->getStatus());
-	}
+        $this->assertSame('ok', $video_info->getStatus());
+    }
 
-	/**
-	 * @test getErrorReason()
-	 */
-	public function getErrorReason()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('reason=This video is unavailable.', []);
+    /**
+     * @test getErrorReason()
+     */
+    public function getErrorReason()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('reason=This video is unavailable.', []);
 
-		$this->assertSame('This video is unavailable.', $video_info->getErrorReason());
-	}
+        $this->assertSame('This video is unavailable.', $video_info->getErrorReason());
+    }
 
-	/**
-	 * @test getThumbnailUrl()
-	 */
-	public function getThumbnailUrl()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('thumbnail_url=http://example.com/image.jpg', []);
+    /**
+     * @test getThumbnailUrl()
+     */
+    public function getThumbnailUrl()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('thumbnail_url=http://example.com/image.jpg', []);
 
-		$this->assertSame('http://example.com/image.jpg', $video_info->getThumbnailUrl());
-	}
+        $this->assertSame('http://example.com/image.jpg', $video_info->getThumbnailUrl());
+    }
 
-	/**
-	 * @test getTitle()
-	 */
-	public function getTitle()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('title=Foo bar', []);
+    /**
+     * @test getTitle()
+     */
+    public function getTitle()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('title=Foo bar', []);
 
-		$this->assertSame('Foo bar', $video_info->getTitle());
-	}
+        $this->assertSame('Foo bar', $video_info->getTitle());
+    }
 
-	/**
-	 * @test getCleanedTitle()
-	 * @dataProvider CleanedTitleProvider
-	 */
-	public function getCleanedTitle($title, $expected)
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('title=' . $title, []);
+    /**
+     * @test getCleanedTitle()
+     * @dataProvider CleanedTitleProvider
+     *
+     * @param mixed $title
+     * @param mixed $expected
+     */
+    public function getCleanedTitle($title, $expected)
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('title=' . $title, []);
 
-		$this->assertSame($expected, $video_info->getCleanedTitle());
-	}
+        $this->assertSame($expected, $video_info->getCleanedTitle());
+    }
 
-	/**
-	 * dataprovider for clean()
-	 */
-	public function CleanedTitleProvider()
-	{
-		return [
-			['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
-			['Как делать бэкапы. Cobian Backup.', 'Cobian-Backup'], // Removes special chars.
-		];
-	}
+    /**
+     * dataprovider for clean()
+     */
+    public function CleanedTitleProvider()
+    {
+        return [
+            ['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
+            ['Как делать бэкапы. Cobian Backup.', 'Cobian-Backup'], // Removes special chars.
+        ];
+    }
 
-	/**
-	 * @test getFormats()
-	 */
-	public function getFormatsIsEmptyArray()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('url_encoded_fmt_stream_map=formats', []);
+    /**
+     * @test getFormats()
+     */
+    public function getFormatsIsEmptyArray()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('url_encoded_fmt_stream_map=formats', []);
 
-		$this->assertSame([], $video_info->getFormats());
-	}
+        $this->assertSame([], $video_info->getFormats());
+    }
 
-	/**
-	 * @test getAdaptiveFormats()
-	 */
-	public function getAdaptiveFormatsIsEmptyArray()
-	{
-		$video_info = VideoInfo::createFromStringWithOptions('adaptive_fmts=adaptive_formats', []);
+    /**
+     * @test getAdaptiveFormats()
+     */
+    public function getAdaptiveFormatsIsEmptyArray()
+    {
+        $video_info = VideoInfo::createFromStringWithOptions('adaptive_fmts=adaptive_formats', []);
 
-		$this->assertSame([], $video_info->getAdaptiveFormats());
-	}
+        $this->assertSame([], $video_info->getAdaptiveFormats());
+    }
 }

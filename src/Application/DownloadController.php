@@ -32,10 +32,8 @@ class DownloadController extends ControllerAbstract
     /**
      * Excute the Controller
      *
-     * @param string $route
+     * @param string                            $route
      * @param YoutubeDownloader\Application\App $app
-     *
-     * @return void
      */
     public function execute()
     {
@@ -58,13 +56,13 @@ class DownloadController extends ControllerAbstract
         // Fetch and serve
         if ($url) {
             // prevent unauthorized download
-            if ($config->get('VideoLinkMode') === "direct" and !isset($_GET['getmp3'])) {
+            if ($config->get('VideoLinkMode') === 'direct' and !isset($_GET['getmp3'])) {
                 $this->responseWithErrorMessage(
                     'VideoLinkMode: proxy download not enabled'
                 );
             }
 
-            if ($config->get('VideoLinkMode') !== "direct"
+            if ($config->get('VideoLinkMode') !== 'direct'
                 and ! isset($_GET['getmp3'])
                 and ! preg_match('@https://[^\.]+\.googlevideo.com/@', $url)
             ) {
@@ -89,7 +87,7 @@ class DownloadController extends ControllerAbstract
                     $message = $e->getMessage();
 
                     if ($config->get('debug') && $e->getPrevious() !== null) {
-                        $message .= " " . $e->getPrevious()->getMessage();
+                        $message .= ' ' . $e->getPrevious()->getMessage();
                     }
 
                     $this->responseWithErrorMessage($message);
@@ -107,9 +105,9 @@ class DownloadController extends ControllerAbstract
             // Generate the server headers
             header('Content-Type: "' . $mime . '"');
             header('Content-Disposition: attachment; filename="' . $name . '"');
-            header("Content-Transfer-Encoding: binary");
+            header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
-            header('Content-Length: '.$size);
+            header('Content-Length: ' . $size);
             header('Pragma: no-cache');
 
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) {
@@ -132,7 +130,7 @@ class DownloadController extends ControllerAbstract
 
     /**
      * @param VideoInfo $video_info
-     * @param Config $config
+     * @param Config    $config
      *
      * @throws Exception
      *
@@ -187,10 +185,10 @@ class DownloadController extends ControllerAbstract
         // Return the mp3 file if it already exist
         if (file_exists($mp3_file)) {
             return [
-                "status" => "success",
-                "message" => "Convert media to .mp3 success",
-                "mp3" => $mp3_file,
-                "debugMessage" => '',
+                'status' => 'success',
+                'message' => 'Convert media to .mp3 success',
+                'mp3' => $mp3_file,
+                'debugMessage' => '',
             ];
         }
 
@@ -212,7 +210,7 @@ class DownloadController extends ControllerAbstract
         }
 
         // Download media from youtube success
-        if ($config->get('MP3Quality') !== "high" || $audio_quality === 0) {
+        if ($config->get('MP3Quality') !== 'high' || $audio_quality === 0) {
             $audio_quality = intval($config->get('MP3Quality')) > intval($audio_quality) ? $audio_quality : $config->get('MP3Quality');
         }
 
@@ -221,13 +219,13 @@ class DownloadController extends ControllerAbstract
 
         exec($cmd, $output);
 
-        if (strpos(implode(" ", $output), "Output #0, mp3") !== false || file_exists("$mp3_file")) {
+        if (strpos(implode(' ', $output), 'Output #0, mp3') !== false || file_exists("$mp3_file")) {
             // Convert media to .mp3 success
             return [
-                "status" => "success",
-                "message" => "Convert media to .mp3 success",
-                "mp3" => $mp3_file,
-                "debugMessage" => $output,
+                'status' => 'success',
+                'message' => 'Convert media to .mp3 success',
+                'mp3' => $mp3_file,
+                'debugMessage' => $output,
             ];
         }
     }
