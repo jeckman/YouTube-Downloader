@@ -27,19 +27,6 @@ use YoutubeDownloader\Provider\Youtube\VideoInfo;
 class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
     /**
-     * @test createFromStringWithConfig()
-     */
-    public function createFromStringWithConfig()
-    {
-        $config = $this->createMock(Config::class);
-
-        $video_info = VideoInfo::createFromStringWithConfig('', $config);
-
-        $this->assertInstanceOf(VideoInfoInterface::class, $video_info);
-        $this->assertInstanceOf(VideoInfo::class, $video_info);
-    }
-
-    /**
      * @test createFromStringWithOptions()
      */
     public function createFromStringWithOptions()

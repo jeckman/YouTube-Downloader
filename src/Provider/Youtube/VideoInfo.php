@@ -187,31 +187,6 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     }
 
     /**
-     * Creates a VideoInfo from string
-     *
-     * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead
-     *
-     * @param string $video_info
-     * @param Config $config
-     * @param mixed  $string
-     *
-     * @return VideoInfo
-     */
-    public static function createFromStringWithConfig($string, Config $config)
-    {
-        @trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions() instead', E_USER_DEPRECATED);
-
-        $options = [];
-
-        // Create options array
-        if ($config !== null) {
-            $options['decipher_signature'] = $config->get('enable_youtube_decipher_signature');
-        }
-
-        return static::createFromStringWithOptions($string, $options);
-    }
-
-    /**
      * @var array
      */
     private $options;

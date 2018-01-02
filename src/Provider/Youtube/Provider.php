@@ -54,29 +54,6 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
     }
 
     /**
-     * Create this Provider from Config and Toolkit
-     *
-     * @deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\Provider::createFromOptions() instead
-     *
-     * @param Config  $config
-     * @param Toolkit $toolkit
-     *
-     * @return self
-     */
-    public static function createFromConfigAndToolkit(Config $config, Toolkit $toolkit)
-    {
-        @trigger_error(__METHOD__ . ' is deprecated since version 0.6, to be removed in 0.7. Use YoutubeDownloader\Provider\Youtube\Provider::createFromOptions() instead', E_USER_DEPRECATED);
-
-        $options = [];
-
-        if ($config->get('multipleIPs') === true) {
-            $options['use_ip'] = $toolkit->getRandomIp($config);
-        }
-
-        return static::createFromOptions($options);
-    }
-
-    /**
      * @var YoutubeDownloader\Config
      */
     private $options = [
