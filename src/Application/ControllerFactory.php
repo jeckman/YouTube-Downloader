@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,36 +27,36 @@ use Exception;
  */
 class ControllerFactory
 {
-	private $controller_map = [
-		'download' => '\\YoutubeDownloader\\Application\\DownloadController',
-		'image' => '\\YoutubeDownloader\\Application\\ImageController',
-		'index' => '\\YoutubeDownloader\\Application\\MainController',
-		'results' => '\\YoutubeDownloader\\Application\\ResultController',
-	];
+    private $controller_map = [
+        'download' => '\\YoutubeDownloader\\Application\\DownloadController',
+        'image' => '\\YoutubeDownloader\\Application\\ImageController',
+        'index' => '\\YoutubeDownloader\\Application\\MainController',
+        'results' => '\\YoutubeDownloader\\Application\\ResultController',
+        'feed' => '\\YoutubeDownloader\\Application\\FeedController',
+    ];
 
-	/**
-	 * Create the Controller
-	 *
-	 * @param string $route
-	 * @param YoutubeDownloader\Application\App $app
-	 *
-	 * @throws Exception if a route was not found
-	 *
-	 * @return Controller
-	 */
-	public function make($route, App $app)
-	{
-		$route = strval($route);
+    /**
+     * Create the Controller
+     *
+     * @param string                            $route
+     * @param YoutubeDownloader\Application\App $app
+     *
+     * @throws Exception if a route was not found
+     *
+     * @return Controller
+     */
+    public function make($route, App $app)
+    {
+        $route = strval($route);
 
-		if ( ! array_key_exists($route, $this->controller_map) )
-		{
-			throw new Exception(
-				sprintf('No controller was found for route "%s"', $route)
-			);
-		}
+        if (! array_key_exists($route, $this->controller_map)) {
+            throw new Exception(
+                sprintf('No controller was found for route "%s"', $route)
+            );
+        }
 
-		$controller_name = $this->controller_map[$route];
+        $controller_name = $this->controller_map[$route];
 
-		return new $controller_name($app);
-	}
+        return new $controller_name($app);
+    }
 }

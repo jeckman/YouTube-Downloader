@@ -17,7 +17,7 @@
  */
 $config['debug'] = false;
 
-/**
+/*
  * Enable the YouTube signature decipher function
  * WARNING: This downloads javascript code from a 3rd party server and interprets it!
  * This MAY harm your server, if the 3rd party server delivers malicious code!
@@ -27,7 +27,7 @@ $config['debug'] = false;
  */
 $config['enable_youtube_decipher_signature'] = false;
 
-/**
+/*
  * Thumbnail Image Configuration
  *
  * 'none' => don't show thumbnail image
@@ -36,7 +36,7 @@ $config['enable_youtube_decipher_signature'] = false;
  */
 $config['gui']['ThumbnailImageMode'] = 'proxy';
 
-/**
+/*
  * Video Download Link Configuration
  * 'direct' => show only direct download link
  * 'proxy'  => show only by proxy download link
@@ -44,14 +44,14 @@ $config['gui']['ThumbnailImageMode'] = 'proxy';
  */
 $config['gui']['VideoLinkMode'] = 'both';
 
-/**
+/*
  * show links for install browser extensions?
  *
  * true or false
  */
 $config['gui']['showBrowserExtensions'] = true;
 
-/**
+/*
  * MP3 Download Link Configuration
  *
  * Basic method for converting Youtube Video or Audio to .mp3
@@ -73,7 +73,7 @@ $config['MP3TempDir'] = realpath(__DIR__ . '/../cache/'); // temporary download 
 $config['ffmpegPath'] = 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe'; // ffmpeg location path
 $config['aria2Path'] = 'C:\cygwin\bin\aria2c.exe'; // aria2 location path, @deprecated since 0.6, to be removed in 0.7
 
-/**
+/*
  * Multiple IPs
  *
  * You can enable this option if you are having problems with youtube IP limit / IP ban.
@@ -141,7 +141,7 @@ $config['IPs'] = [
     //'xxx.xxx.xxx.xxx',
 ];
 
-/**
+/*
  * Set your default timezone
  *
  * e.g. Asia/Tehran or America/New_York

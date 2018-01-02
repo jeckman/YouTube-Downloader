@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,72 +26,75 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class EngineTest extends TestCase
 {
-	public function setUp()
-	{
-		vfsStream::setup('templates');
-	}
+    public function setUp()
+    {
+        vfsStream::setup('templates');
+    }
 
-	/**
-	 * @test createFromString()
-	 */
-	public function createFromDirectory()
-	{
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Template\\Engine',
-			Engine::createFromDirectory('')
-		);
-	}
+    /**
+     * @test createFromString()
+     */
+    public function createFromDirectory()
+    {
+        $this->assertInstanceOf(
+            Engine::class,
+            Engine::createFromDirectory('')
+        );
+    }
 
-	/**
-	 * @test getTemplateDirectory()
-	 * @dataProvider TemplateDirectoryProvider
-	 */
-	public function getTemplateDirectory($directory, $expected)
-	{
-		$engine = Engine::createFromDirectory($directory);
+    /**
+     * @test getTemplateDirectory()
+     * @dataProvider TemplateDirectoryProvider
+     *
+     * @param mixed $directory
+     * @param mixed $expected
+     */
+    public function getTemplateDirectory($directory, $expected)
+    {
+        $engine = Engine::createFromDirectory($directory);
 
-		$this->assertSame($expected, $engine->getTemplateDirectory());
-	}
+        $this->assertSame($expected, $engine->getTemplateDirectory());
+    }
 
-	/**
-	 * TemplateDirectoryProvider
-	 */
-	public function TemplateDirectoryProvider()
-	{
-		return [
-			['foo', 'foo'],
-			['foo' . DIRECTORY_SEPARATOR, 'foo'],
-			['foo/bar', 'foo/bar'],
-			['foo\bar', 'foo\bar'],
-		];
-	}
+    /**
+     * TemplateDirectoryProvider
+     */
+    public function TemplateDirectoryProvider()
+    {
+        return [
+            ['foo', 'foo'],
+            ['foo' . DIRECTORY_SEPARATOR, 'foo'],
+            ['foo/bar', 'foo/bar'],
+            ['foo\bar', 'foo\bar'],
+        ];
+    }
 
-	/**
-	* @test render()
-	*/
-	public function render()
-	{
-		$engine = Engine::createFromDirectory(vfsStream::url('templates'));
+    /**
+     * @test render()
+     */
+    public function render()
+    {
+        $engine = Engine::createFromDirectory(vfsStream::url('templates'));
 
-		vfsStream::create(['template.php' => '<html></html>']);
+        vfsStream::create(['template.php' => '<html></html>']);
 
-		$this->assertSame('<html></html>', $engine->render('template.php'));
-	}
+        $this->assertSame('<html></html>', $engine->render('template.php'));
+    }
 
-	/**
-	* @test render()
-	*/
-	public function renderWithData()
-	{
-		$engine = Engine::createFromDirectory(vfsStream::url('templates'));
+    /**
+     * @test render()
+     */
+    public function renderWithData()
+    {
+        $engine = Engine::createFromDirectory(vfsStream::url('templates'));
 
-		vfsStream::create([
-			'template.php' => '<html><?php echo $this->get(\'foo\'); ?></html>'
-		]);
+        vfsStream::create([
+            'template.php' => '<html><?php echo $this->get(\'foo\'); ?></html>'
+        ]);
 
-		$this->assertSame(
-			'<html>bar</html>',
-			$engine->render('template.php', ['foo' => 'bar'])
-		);
-	}
+        $this->assertSame(
+            '<html>bar</html>',
+            $engine->render('template.php', ['foo' => 'bar'])
+        );
+    }
 }

@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,65 +27,61 @@ use YoutubeDownloader\Container\Container;
  */
 class App
 {
-	/**
-	 * @var string
-	 */
-	private $version = '0.6-dev';
+    /**
+     * @var string
+     */
+    private $version = '0.7-dev';
 
-	/**
-	 * @var YoutubeDownloader\Container\Container
-	 */
-	private $container;
+    /**
+     * @var YoutubeDownloader\Container\Container
+     */
+    private $container;
 
-	/**
-	 * Create the app
-	 *
-	 * @param YoutubeDownloader\Container\Container $container
-	 *
-	 * @return void
-	 */
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
+    /**
+     * Create the app
+     *
+     * @param YoutubeDownloader\Container\Container $container
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
 
-		$this->getContainer()->get('logger')->debug('App started');
-	}
+        $this->getContainer()->get('logger')->debug('App started');
+    }
 
-	/**
-	 * Returns the App version
-	 *
-	 * @return string
-	 */
-	public function getVersion()
-	{
-		return $this->version;
-	}
+    /**
+     * Returns the App version
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
 
-	/**
-	 * Returns the Controller
-	 *
-	 * @return Controller
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
+    /**
+     * Returns the Controller
+     *
+     * @return Controller
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 
-	/**
-	 * Runs the app with a specific route
-	 *
-	 * @param string $route
-	 *
-	 * @return void
-	 */
-	public function runWithRoute($route)
-	{
-		$controller_factory = $this->getContainer()->get('controller_factory');
+    /**
+     * Runs the app with a specific route
+     *
+     * @param string $route
+     */
+    public function runWithRoute($route)
+    {
+        $controller_factory = $this->getContainer()->get('controller_factory');
 
-		$controller = $controller_factory->make($route, $this);
+        $controller = $controller_factory->make($route, $this);
 
-		$controller->execute();
+        $controller->execute();
 
-		$this->getContainer()->get('logger')->debug('Controller executed. App closed.');
-	}
+        $this->getContainer()->get('logger')->debug('Controller executed. App closed.');
+    }
 }

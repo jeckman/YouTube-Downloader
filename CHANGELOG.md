@@ -5,28 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [Unreleased]
 
 ### Added
 
 - new `YoutubeDownloader\Config\TransformationConfig` for a BC friendly configuraion
-- new `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` to create the Youtube Provider with an options array
-- new `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` to create the Youtube VideoInfo with an options array
 
 ### Changed
 
-- The mp3 downloader was improved and has no dependendy to aria2 anymore
 - Moved configuration `$config['ThumbnailImageMode']` to `$config['gui']['ThumbnailImageMode']`
 - Moved configuration `$config['VideoLinkMode']` to `$config['gui']['VideoLinkMode']`
 - Moved configuration `$config['showBrowserExtensions']` to `$config['gui']['showBrowserExtensions']`
 
 ### Deprecated
 
-- `YoutubeDownloader\Config` will be removed in 0.7, use `YoutubeDownloader\Config\TransformationConfig` instead
+- `YoutubeDownloader\Config` will be removed in 0.8, use `YoutubeDownloader\Config\TransformationConfig` instead
+
+### Removed
+
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` was removed, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithConfig()` was removed, use `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` instead
+- **Breaking:** `YoutubeDownloader\Toolkit::validateVideoId()` isn't used anymore and was removed
+- **Breaking:** `YoutubeDownloader\Toolkit::formatBytes()` isn't used anymore and was removed
+- **Breaking:** `YoutubeDownloader\Toolkit::is_chrome()` isn't used anymore and was removed
+- **Breaking:** `YoutubeDownloader\Toolkit::getDownloadMP3()` isn't used anymore and was removed
+
+## [0.6] - 2018-01-02
+
+### Added
+
+- New support for creation of RSS feeds from YouTube channels and user pages
+- `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` to create the Youtube Provider with an options array
+- `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` to create the Youtube VideoInfo with an options array
+
+### Changed
+
+- Support for PHP 5.4 and 5.5 was dropped
+- The mp3 downloader was improved and has no dependendy to aria2 anymore
+- Code Style was changed to PSR-2
+
+### Fixed
+
+- A bug in the downlaoder with adaptive format was fixed
+- The path to the yearly logs folder was fixed
+
+### Deprecated
+
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithConfig()` will be removed in 0.7, use `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` instead
 - `YoutubeDownloader\Toolkit::validateVideoId()` isn't used anymore and will be removed in 0.7
 - `YoutubeDownloader\Toolkit::formatBytes()` isn't used anymore and will be removed in 0.7
+- `YoutubeDownloader\Toolkit::is_chrome()` isn't used anymore and will be removed in 0.7
 - `YoutubeDownloader\Toolkit::getDownloadMP3()` isn't used anymore and will be removed in 0.7
 
 ### Removed
@@ -164,7 +193,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simple library for using the functionality in other projects
 - Web interface for downloading youtube videos
 
-[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.6...HEAD
+[0.6]: https://github.com/jeckman/YouTube-Downloader/compare/0.5.1...0.6
 [0.5.1]: https://github.com/jeckman/YouTube-Downloader/compare/0.5...0.5.1
 [0.5]: https://github.com/jeckman/YouTube-Downloader/compare/0.4...0.5
 [0.4]: https://github.com/jeckman/YouTube-Downloader/compare/0.3...0.4

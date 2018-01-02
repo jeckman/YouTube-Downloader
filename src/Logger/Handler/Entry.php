@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,31 +25,31 @@ namespace YoutubeDownloader\Logger\Handler;
  */
 interface Entry
 {
-	/**
-	 * Returns the message
-	 *
-	 * @return string
-	 */
-	public function getMessage();
+    /**
+     * Returns the message
+     *
+     * @return string
+     */
+    public function getMessage();
 
-	/**
-	 * Returns the context
-	 *
-	 * @return array
-	 */
-	public function getContext();
+    /**
+     * Returns the context
+     *
+     * @return array
+     */
+    public function getContext();
 
-	/**
-	 * Returns the level
-	 *
-	 * @return string
-	 */
-	public function getLevel();
+    /**
+     * Returns the level
+     *
+     * @return string
+     */
+    public function getLevel();
 
-	/**
-	 * Returns the created DateTime
-	 *
-	 * @return DateTime
-	 */
-	public function getCreatedAt();
+    /**
+     * Returns the created DateTime
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt();
 }

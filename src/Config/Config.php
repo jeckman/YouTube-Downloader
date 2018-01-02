@@ -25,13 +25,15 @@ namespace YoutubeDownloader\Config;
  */
 interface Config
 {
-	/**
-	 * Get a config value
-	 *
-	 * @throws \InvalidArgumentException if argument $key don't exists
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function get($key);
+    /**
+     * Get a config value
+     *
+     *
+     * @param string $key
+     *
+     * @throws \InvalidArgumentException if argument $key don't exists
+     *
+     * @return mixed
+     */
+    public function get($key);
 }

@@ -4,3 +4,5 @@ composer.lock
 config/custom.php
 logs/*
 vendor
+/php-cs-fixer.phar
+/.php_cs.cache

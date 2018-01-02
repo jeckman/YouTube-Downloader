@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,299 +27,210 @@ use YoutubeDownloader\VideoInfo\VideoInfo;
  */
 class ResultController extends ControllerAbstract
 {
-	/**
-	 * Excute the Controller
-	 *
-	 * @param string $route
-	 * @param YoutubeDownloader\Application\App $app
-	 *
-	 * @return void
-	 */
-	public function execute()
-	{
-		$config = $this->get('config');
-		$template = $this->get('template');
-		$toolkit = $this->get('toolkit');
+    /**
+     * Excute the Controller
+     *
+     * @param string                            $route
+     * @param YoutubeDownloader\Application\App $app
+     */
+    public function execute()
+    {
+        $config = $this->get('config');
+        $template = $this->get('template');
+        $toolkit = $this->get('toolkit');
 
-		if( ! isset($_GET['videoid']) )
-		{
-			$this->responseWithErrorMessage('No video id passed in');
-		}
+        if (! isset($_GET['videoid'])) {
+            $this->responseWithErrorMessage('No video id passed in');
+        }
 
-		$my_id = $_GET['videoid'];
+        $my_id = $_GET['videoid'];
 
-		$youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
+        $youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
 
-		if ( $youtube_provider->provides($my_id) === false )
-		{
-			$this->responseWithErrorMessage('Invalid url');
-		}
+        if ($youtube_provider->provides($my_id) === false) {
+            $this->responseWithErrorMessage('Invalid url');
+        }
 
-		if (isset($_GET['type']))
-		{
-			$my_type = $_GET['type'];
-		}
-		else
-		{
-			$my_type = 'redirect';
-		}
+        if (isset($_GET['type'])) {
+            $my_type = $_GET['type'];
+        } else {
+            $my_type = 'redirect';
+        }
 
-		$template_data = [
-			'app_version' => $this->getAppVersion(),
-		];
+        $template_data = [
+            'app_version' => $this->getAppVersion(),
+        ];
 
-		$video_info = $youtube_provider->provide($my_id);
+        $video_info = $youtube_provider->provide($my_id);
 
-		if ($video_info->getStatus() == 'fail')
-		{
-			$message = 'Error in video ID: ' . $video_info->getErrorReason();
+        if ($video_info->getStatus() == 'fail') {
+            $message = 'Error in video ID: ' . $video_info->getErrorReason();
 
-			if ($config->get('debug'))
-			{
-				$message .= '<pre>' . var_dump($video_info) . '</pre>';
-			}
+            if ($config->get('debug')) {
+                $message .= '<pre>' . var_dump($video_info) . '</pre>';
+            }
 
-			$this->responseWithErrorMessage($message);
-		}
+            $this->responseWithErrorMessage($message);
+        }
 
-		if ( $my_type !== 'Download' )
-		{
-			/* In this else, the request didn't come from a form but from something else
-			 * like an RSS feed.
-			 * As a result, we just want to return the best format, which depends on what
-			 * the user provided in the url.
-			 * If they provided "format=best" we just use the largest.
-			 * If they provided "format=free" we provide the best non-flash version
-			 * If they provided "format=ipad" we pull the best MP4 version
-			 *
-			 * Thanks to the python based youtube-dl for info on the formats
-			 *   							http://rg3.github.com/youtube-dl/
-			 */
-			$redirect_url = $this->getDownloadUrlByFormat($video_info, $_GET['format']);
+        if ($my_type !== 'Download') {
+            /* In this else, the request didn't come from a form but from something else
+             * like an RSS feed.
+             * As a result, we just want to return the best format, which depends on what
+             * the user provided in the url.
+             * If they provided "format=best" we just use the largest.
+             * If they provided "format=free" we provide the best non-flash version
+             * If they provided "format=ipad" we pull the best MP4 version
+             *
+             * Thanks to the python based youtube-dl for info on the formats
+             *   							http://rg3.github.com/youtube-dl/
+             */
+            if (!empty($_GET['proxy']) && $_GET['proxy'] !== false) {
+                $best_format = $this->getFullInfoByFormat($video_info, $_GET['format']);
 
-			if ( $redirect_url !== null )
-			{
-				header("Location: $redirect_url");
-			}
+                $proxylink = 'download.php?mime=' . $best_format->getType()
+                    . '&title=' . urlencode($video_info->getCleanedTitle())
+                    . '&token=' . base64_encode(base64_encode($best_format->getUrl()));
+                if ($config->get('localCache') || (!empty($_GET['cache']) && $_GET['cache'] !== false)) {
+                    $proxylink = $proxylink . '&cache=true';
+                }
+                header('Location: ' . $proxylink);
+                exit;
+            }
 
-			exit;
-		}
+            $redirect_url = $this->getDownloadUrlByFormat($video_info, $_GET['format']);
 
-		$gui_config = $config->get('gui');
+            if ($redirect_url !== null) {
+                header("Location: $redirect_url");
+            }
 
-		switch ($gui_config['ThumbnailImageMode'])
-		{
-			case 'proxy':
-				$template_data['show_thumbnail'] = true;
-				$template_data['thumbnail_src'] = 'getimage.php?videoid=' . $my_id;
-				$template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
-				break;
-			case 'direct':
-				$template_data['show_thumbnail'] = true;
-				$template_data['thumbnail_src'] = $video_info->getThumbnailUrl();
-				$template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
-				break;
-			case 'none':
-			default:
-				$template_data['show_thumbnail'] = false;
-		}
+            exit;
+        }
 
-		$my_title = $video_info->getTitle();
-		$cleanedtitle = $video_info->getCleanedTitle();
+        $gui_config = $config->get('gui');
 
-		$template_data['video_title'] = $video_info->getTitle();
+        switch ($gui_config['ThumbnailImageMode']) {
+            case 'proxy':
+                $template_data['show_thumbnail'] = true;
+                $template_data['thumbnail_src'] = 'getimage.php?videoid=' . $my_id;
+                $template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
 
-		if (count($video_info->getFormats()) == 0)
-		{
-			$this->responseWithErrorMessage(
-				'No format stream map found - was the video id correct?'
-			);
-		}
+                break;
+            case 'direct':
+                $template_data['show_thumbnail'] = true;
+                $template_data['thumbnail_src'] = $video_info->getThumbnailUrl();
+                $template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
 
-		if ($config->get('debug'))
-		{
-			$debug1 = '';
+                break;
+            case 'none':
+            default:
+                $template_data['show_thumbnail'] = false;
+        }
 
-			if ($config->get('multipleIPs') === true)
-			{
-				$debug1 .= 'Outgoing IP: ' . print_r($toolkit->getRandomIp($config), true);
-			}
+        $my_title = $video_info->getTitle();
+        $cleanedtitle = $video_info->getCleanedTitle();
 
-			$template_data['show_debug1'] = true;
-			$template_data['debug1'] = @var_export($video_info, true);
-		}
+        $template_data['video_title'] = $video_info->getTitle();
 
-		/* create an array of available download formats */
-		$avail_formats = $video_info->getFormats();
+        if (count($video_info->getFormats()) == 0) {
+            $this->responseWithErrorMessage(
+                'No format stream map found - was the video id correct?'
+            );
+        }
 
-		if ($config->get('debug'))
-		{
-			$first_format = $avail_formats[0];
-			$template_data['show_debug2'] = true;
-			$template_data['debug2_expires'] = $first_format->getExpires();
-			$template_data['debug2_ip'] = $first_format->getIp();
-			$template_data['debug2_ipbits'] = $first_format->getIpbits();
-		}
+        if ($config->get('debug')) {
+            $debug1 = '';
 
-		$gui_config = $config->get('gui');
+            if ($config->get('multipleIPs') === true) {
+                $debug1 .= 'Outgoing IP: ' . print_r($toolkit->getRandomIp($config), true);
+            }
 
-		$template_data['streams'] = [];
-		$template_data['formats'] = [];
-		$template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions'] == true );
+            $template_data['show_debug1'] = true;
+            $template_data['debug1'] = @var_export($video_info, true);
+        }
 
-		/* now that we have the array, print the options */
-		foreach ($avail_formats as $avail_format)
-		{
-			$directlink = $avail_format->getUrl();
-			// $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
-			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
-			$directlink .= '&title=' . $cleanedtitle;
+        /* create an array of available download formats */
+        $avail_formats = $video_info->getFormats();
 
-			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
+        if ($config->get('debug')) {
+            $first_format = $avail_formats[0];
+            $template_data['show_debug2'] = true;
+            $template_data['debug2_expires'] = $first_format->getExpires();
+            $template_data['debug2_ip'] = $first_format->getIp();
+            $template_data['debug2_ipbits'] = $first_format->getIpbits();
+        }
 
-			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
+        $gui_config = $config->get('gui');
 
-			$template_data['streams'][] = [
-				'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
-				'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
-				'direct_url' => $directlink,
-				'proxy_url' => $proxylink,
-				'type' => $avail_format->getType(),
-				'quality' => $avail_format->getQuality(),
-				'size' => $this->formatBytes($size),
-			];
-		}
+        $template_data['streams'] = [];
+        $template_data['formats'] = [];
+        $template_data['showBrowserExtensions'] = ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions'] == true);
 
-		foreach ($video_info->getAdaptiveFormats() as $avail_format)
-		{
-			$directlink = $avail_format->getUrl();
-			// $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
-			// $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
-			$directlink .= '&title=' . $cleanedtitle;
+        /* now that we have the array, print the options */
+        foreach ($avail_formats as $avail_format) {
+            $directlink = $avail_format->getUrl();
+            // $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
+            // $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
+            $directlink .= '&title=' . $cleanedtitle;
 
-			$proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode($avail_format->getUrl());
+            $proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode(base64_encode($avail_format->getUrl()));
 
-			$size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
+            $size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
-			$template_data['formats'][] = [
-				'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
-				'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
-				'direct_url' => $directlink,
-				'proxy_url' => $proxylink,
-				'type' => $avail_format->getType(),
-				'quality' => $avail_format->getQuality(),
-				'size' => $this->formatBytes($size),
-			];
-		}
+            if ($config->get('localCache')) {
+                $proxylink = $proxylink . '&cache=true';
+            }
 
-		if($config->get('MP3Enable'))
-		{
-			$mp3_url = sprintf(
-				'download.php?mime=audio/mp3&token=%s&title=%s&getmp3=true',
-				base64_encode($my_id),
-				$cleanedtitle
-			);
+            $template_data['streams'][] = [
+                'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
+                'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
+                'direct_url' => $directlink,
+                'proxy_url' => $proxylink,
+                'type' => $avail_format->getType(),
+                'itag' => $avail_format->getItag(),
+                'quality' => $avail_format->getQuality(),
+                'size' => $this->formatBytes($size),
+            ];
+        }
 
-			$template_data['showMP3Download'] = true;
-			$template_data['mp3_download_url'] = $mp3_url;
-			$template_data['mp3_download_quality'] = $config->get('MP3Quality');
-		}
+        foreach ($video_info->getAdaptiveFormats() as $avail_format) {
+            $directlink = $avail_format->getUrl();
+            // $directlink = explode('.googlevideo.com/', $avail_format->getUrl());
+            // $directlink = 'http://redirector.googlevideo.com/' . $directlink[1] . '&ratebypass=yes&gcr=sg';
+            $directlink .= '&title=' . $cleanedtitle;
 
-		echo $template->render('getvideo.php', $template_data);
-	}
+            $proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode(base64_encode($avail_format->getUrl()));
 
-	/**
-	 * Get the download url for a specific format
-	 *
-	 * @param array $avail_formats
-	 * @param string $format
-	 * @return string|null
-	 */
-	private function getDownloadUrlByFormat(VideoInfo $video_info, $format)
-	{
-		$target_formats = '';
+            $size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
 
-		switch ($format)
-		{
-			case "best":
-				/* largest formats first */
-				$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
-				break;
-			case "free":
-				/* Here we include WebM but prefer it over FLV */
-				$target_formats = ['38', '46', '37', '45', '22', '44', '35', '43', '34', '18', '6', '5', '17', '13'];
-				break;
-			case "ipad":
-				/* here we leave out WebM video and FLV - looking for MP4 */
-				$target_formats = ['37', '22', '18', '17'];
-				break;
-			default:
-				/* If they passed in a number use it */
-				if (is_numeric($format))
-				{
-					$target_formats[] = $format;
-				}
-				else
-				{
-					$target_formats = ['38', '37', '46', '22', '45', '35', '44', '34', '18', '43', '6', '5', '17', '13'];
-				}
-				break;
-		}
+            if ($config->get('localCache')) {
+                $proxylink = $proxylink . '&cache=true';
+            }
 
-		/* Now we need to find our best format in the list of available formats */
-		$best_format = '';
+            $template_data['formats'][] = [
+                'show_direct_url' => ($gui_config['VideoLinkMode'] === 'direct' || $gui_config['VideoLinkMode'] === 'both'),
+                'show_proxy_url' => ($gui_config['VideoLinkMode'] === 'proxy' || $gui_config['VideoLinkMode'] === 'both'),
+                'direct_url' => $directlink,
+                'proxy_url' => $proxylink,
+                'type' => $avail_format->getType(),
+                'itag' => $avail_format->getItag(),
+                'quality' => $avail_format->getQuality(),
+                'size' => $this->formatBytes($size),
+            ];
+        }
 
-		$avail_formats = $video_info->getFormats();
+        if ($config->get('MP3Enable')) {
+            $mp3_url = sprintf(
+                'download.php?mime=audio/mp3&token=%s&title=%s&getmp3=true',
+                base64_encode(base64_encode($my_id)),
+                $cleanedtitle
+            );
 
-		for ($i = 0; $i < count($target_formats); $i++)
-		{
-			for ($j = 0; $j < count($avail_formats); $j++)
-			{
-				$format = $avail_formats[$j];
-				if ($target_formats[$i] == $format->getItag())
-				{
-					$best_format = $j;
-					break 2;
-				}
-			}
-		}
+            $template_data['showMP3Download'] = true;
+            $template_data['mp3_download_url'] = $mp3_url;
+            $template_data['mp3_download_quality'] = $config->get('MP3Quality');
+        }
 
-		$redirect_url = null;
-
-		if ( $best_format === '' )
-		{
-			return null;
-		}
-
-		$best_format = $avail_formats[$best_format];
-
-		$redirect_url = $best_format->getUrl();
-
-		if ( ! empty($redirect_url) )
-		{
-			$redirect_url .= '&title=' . $video_info->getCleanedTitle();
-		}
-
-		return $redirect_url;
-	}
-
-	/**
-	 * Format a byte integer into a human readable string
-	 *
-	 * e.g. 1024 => 1kB
-	 *
-	 * @param int $bytes
-	 * @param int $precision
-	 * @return string
-	 */
-	private function formatBytes($bytes, $precision = 2)
-	{
-		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-		$bytes = max($bytes, 0);
-		$pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-		$pow = min($pow, count($units) - 1);
-		$bytes /= pow(1024, $pow);
-
-		return round($bytes, $precision) . '' . $units[$pow];
-	}
+        echo $template->render('getvideo.php', $template_data);
+    }
 }

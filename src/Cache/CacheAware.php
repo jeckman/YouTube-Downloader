@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,10 @@ namespace YoutubeDownloader\Cache;
  */
 interface CacheAware
 {
-	/**
-	 * Sets a cache instance on the object
-	 *
-	 * @param Cache $cache
-	 * @return null
-	 */
-	public function setCache(Cache $cache);
+    /**
+     * Sets a cache instance on the object
+     *
+     * @param Cache $cache
+     */
+    public function setCache(Cache $cache);
 }

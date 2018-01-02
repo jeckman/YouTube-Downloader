@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,88 +20,89 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger;
 
+use YoutubeDownloader\Logger\Logger;
+use YoutubeDownloader\Logger\Handler\Handler;
 use YoutubeDownloader\Logger\HandlerAwareLogger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class HandlerAwareLoggerTest extends TestCase
 {
-	/**
-	 * @test HandlerAwareLogger implements Logger
-	 */
-	public function implementsLogger()
-	{
-		$handler = $this->createMock(
-			'\\YoutubeDownloader\\Logger\\Handler\\Handler'
-		);
-		$logger = new HandlerAwareLogger($handler);
+    /**
+     * @test HandlerAwareLogger implements Logger
+     */
+    public function implementsLogger()
+    {
+        $handler = $this->createMock(Handler::class);
+        $logger = new HandlerAwareLogger($handler);
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\Logger\\Logger', $logger);
-	}
+        $this->assertInstanceOf(Logger::class, $logger);
+    }
 
-	/**
-	 * @test all logger methods
-	 *
-	 * @dataProvider LoggerMethodsDataProvider
-	 */
-	public function loggerMethods($method, $message, array $context)
-	{
-		$handler = $this->createMock(
-			'\\YoutubeDownloader\\Logger\\Handler\\Handler'
-		);
-		$handler->method('handles')->with($method)->willReturn(true);
-		$handler->expects($this->once())->method('handle')->willReturn(null);
+    /**
+     * @test all logger methods
+     *
+     * @dataProvider LoggerMethodsDataProvider
+     *
+     * @param mixed $method
+     * @param mixed $message
+     */
+    public function loggerMethods($method, $message, array $context)
+    {
+        $handler = $this->createMock(Handler::class);
+        $handler->method('handles')->with($method)->willReturn(true);
+        $handler->expects($this->once())->method('handle')->willReturn(null);
 
-		$logger = new HandlerAwareLogger($handler);
+        $logger = new HandlerAwareLogger($handler);
 
-		$this->assertNull($logger->$method($message, $context));
-	}
+        $this->assertNull($logger->$method($message, $context));
+    }
 
-	/**
-	 * LoggerMethodsDataProvider
-	 */
-	public function LoggerMethodsDataProvider()
-	{
-		return [
-			[
-				'emergency',
-				'Log of {description}',
-				['description' => 'an emergency'],
-			],
-			[
-				'alert',
-				'Log of {description}',
-				['description' => 'an alert'],
-			],
-			[
-				'critical',
-				'Log of {description}',
-				['description' => 'critical'],
-			],
-			[
-				'error',
-				'Log of {description}',
-				['description' => 'an error'],
-			],
-			[
-				'warning',
-				'Log of {description}',
-				['description' => 'a warning'],
-			],
-			[
-				'notice',
-				'Log of {description}',
-				['description' => 'a notice'],
-			],
-			[
-				'info',
-				'Log of {description}',
-				['description' => 'an info message'],
-			],
-			[
-				'debug',
-				'Log of {description}',
-				['description' => 'a debug message'],
-			],
-		];
-	}
+    /**
+     * LoggerMethodsDataProvider
+     */
+    public function LoggerMethodsDataProvider()
+    {
+        return [
+            [
+                'emergency',
+                'Log of {description}',
+                ['description' => 'an emergency'],
+            ],
+            [
+                'alert',
+                'Log of {description}',
+                ['description' => 'an alert'],
+            ],
+            [
+                'critical',
+                'Log of {description}',
+                ['description' => 'critical'],
+            ],
+            [
+                'error',
+                'Log of {description}',
+                ['description' => 'an error'],
+            ],
+            [
+                'warning',
+                'Log of {description}',
+                ['description' => 'a warning'],
+            ],
+            [
+                'notice',
+                'Log of {description}',
+                ['description' => 'a notice'],
+            ],
+            [
+                'info',
+                'Log of {description}',
+                ['description' => 'an info message'],
+            ],
+            [
+                'debug',
+                'Log of {description}',
+                ['description' => 'a debug message'],
+            ],
+        ];
+    }
 }

@@ -8,7 +8,7 @@
 
 PHP Library with Web UI to download videos from YouTube.
 
-## Support for sipher signature
+## Support for Cipher signature
 
 YouTube Downloader finally supports YouTube videos with a cipher signature too. :tada: Please note that this functionallity is hidden behind a config flag because it downloads javascript code from a 3rd party (YouTube) server and interprets it. This MAY harm your server, if the 3rd party server delivers malicious code.
 
@@ -34,7 +34,7 @@ return [
 
 You must fit at least this requirements to use YouTube-Downloader:
 
-- PHP >= 5.4
+- PHP >= 5.6
 - Web server (Apache/Nginx/PHP built-in)
 
 ## Installation
@@ -92,6 +92,21 @@ You can also pass in a specific format number, if you know it.
 
 Note this approach, because it redirects you to the file itself, currently bypasses the
 proxy option, so if your browser/server setup requires the proxy to work these will fail.
+
+### Feed subscription
+
+You can subscribe both to YouTube channels and users via RSS. Feeds can be generated in
+the formats listed above.
+
+Generating a feed for a YouTube channel works as follows:
+
+http://example.com/yt/feed.php?channelid=UChELZ_JMGNYuxObfrXoER6A&format=best
+
+To generate a feed for a YouTube user:
+
+http://example.com/yt/feed.php?user=heisenewsticker&format=free
+
+The generated feed is a standard RSS feed and can be subscribed to in any feed reader.
 
 ## Upgrading
 

@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,126 +45,127 @@ use YoutubeDownloader\Http\Message\Request as RequestInterface;
  */
 class Request implements RequestInterface
 {
-	use MessageTrait;
+    use MessageTrait;
 
-	/**
-	 * @var string The target for this request
-	 */
-	private $target = '/';
+    /**
+     * @var string The target for this request
+     */
+    private $target = '/';
 
-	/**
-	 * @var string The method for this request
-	 */
-	private $method;
+    /**
+     * @var string The method for this request
+     */
+    private $method;
 
-	/**
-	 * @param string $method HTTP method
-	 * @param string $target The target url for this request
-	 * @param array $headers Request headers
-	 * @param string|null $body Request body
-	 * @param string $version Protocol version
-	 */
-	public function __construct($method, $target, array $headers = [], $body = null, $version = '1.1')
-	{
-		$this->method = strtoupper($method);
-		$this->target = strval($target);
-		$this->version = strval($version);
-		$this->body = strval($body);
+    /**
+     * @param string      $method  HTTP method
+     * @param string      $target  The target url for this request
+     * @param array       $headers Request headers
+     * @param string|null $body    Request body
+     * @param string      $version Protocol version
+     */
+    public function __construct($method, $target, array $headers = [], $body = null, $version = '1.1')
+    {
+        $this->method = strtoupper($method);
+        $this->target = strval($target);
+        $this->version = strval($version);
+        $this->body = strval($body);
 
-		foreach ($headers as $header_name => $value)
-		{
-			if ( ! is_array($value) )
-			{
-				$value = [$value];
-			}
+        foreach ($headers as $header_name => $value) {
+            if (! is_array($value)) {
+                $value = [$value];
+            }
 
-			$values = [];
+            $values = [];
 
-			foreach ($value as $val)
-			{
-				$values[] = trim($val);
-			}
+            foreach ($value as $val) {
+                $values[] = trim($val);
+            }
 
-			$this->headers[$header_name] = $values;
-		}
-	}
+            $this->headers[$header_name] = $values;
+        }
+    }
 
-	/**
-	 * Retrieves the message's request target.
-	 *
-	 * Retrieves the message's request-target either as it will appear (for
-	 * clients), as it appeared at request (for servers), or as it was
-	 * specified for the instance (see withRequestTarget()).
-	 *
-	 * In most cases, this will be the origin-form of the composed URI,
-	 * unless a value was provided to the concrete implementation (see
-	 * withRequestTarget() below).
-	 *
-	 * If no URI is available, and no request-target has been specifically
-	 * provided, this method MUST return the string "/".
-	 *
-	 * @return string
-	 */
-	public function getRequestTarget()
-	{
-		return $this->target;
-	}
+    /**
+     * Retrieves the message's request target.
+     *
+     * Retrieves the message's request-target either as it will appear (for
+     * clients), as it appeared at request (for servers), or as it was
+     * specified for the instance (see withRequestTarget()).
+     *
+     * In most cases, this will be the origin-form of the composed URI,
+     * unless a value was provided to the concrete implementation (see
+     * withRequestTarget() below).
+     *
+     * If no URI is available, and no request-target has been specifically
+     * provided, this method MUST return the string "/".
+     *
+     * @return string
+     */
+    public function getRequestTarget()
+    {
+        return $this->target;
+    }
 
-	/**
-	 * Return an instance with the specific request-target.
-	 *
-	 * If the request needs a non-origin-form request-target — e.g., for
-	 * specifying an absolute-form, authority-form, or asterisk-form —
-	 * this method may be used to create an instance with the specified
-	 * request-target, verbatim.
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that has the
-	 * changed request target.
-	 *
-	 * @see http://tools.ietf.org/html/rfc7230#section-5.3 (for the various
-	 *     request-target forms allowed in request messages)
-	 * @param mixed $requestTarget
-	 * @return static
-	 */
-	public function withRequestTarget($requestTarget)
-	{
-		$clone = clone $this;
-		$clone->target = (string) $requestTarget;
+    /**
+     * Return an instance with the specific request-target.
+     *
+     * If the request needs a non-origin-form request-target — e.g., for
+     * specifying an absolute-form, authority-form, or asterisk-form —
+     * this method may be used to create an instance with the specified
+     * request-target, verbatim.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request target.
+     *
+     * @see http://tools.ietf.org/html/rfc7230#section-5.3 (for the various
+     *     request-target forms allowed in request messages)
+     *
+     * @param mixed $requestTarget
+     *
+     * @return static
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        $clone = clone $this;
+        $clone->target = (string) $requestTarget;
 
-		return $clone;
-	}
+        return $clone;
+    }
 
-	/**
-	 * Retrieves the HTTP method of the request.
-	 *
-	 * @return string Returns the request method.
-	 */
-	public function getMethod()
-	{
-		return $this->method;
-	}
+    /**
+     * Retrieves the HTTP method of the request.
+     *
+     * @return string returns the request method
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
 
-	/**
-	 * Return an instance with the provided HTTP method.
-	 *
-	 * While HTTP method names are typically all uppercase characters, HTTP
-	 * method names are case-sensitive and thus implementations SHOULD NOT
-	 * modify the given string.
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that has the
-	 * changed request method.
-	 *
-	 * @param string $method Case-sensitive method.
-	 * @return static
-	 * @throws \InvalidArgumentException for invalid HTTP methods.
-	 */
-	public function withMethod($method)
-	{
-		$clone = clone $this;
-		$clone->method = strtoupper($method);
+    /**
+     * Return an instance with the provided HTTP method.
+     *
+     * While HTTP method names are typically all uppercase characters, HTTP
+     * method names are case-sensitive and thus implementations SHOULD NOT
+     * modify the given string.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * changed request method.
+     *
+     * @param string $method case-sensitive method
+     *
+     * @throws \InvalidArgumentException for invalid HTTP methods
+     *
+     * @return static
+     */
+    public function withMethod($method)
+    {
+        $clone = clone $this;
+        $clone->method = strtoupper($method);
 
-		return $clone;
-	}
+        return $clone;
+    }
 }

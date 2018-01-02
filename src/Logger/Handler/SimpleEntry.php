@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,65 +27,66 @@ use DateTime;
  */
 class SimpleEntry implements Entry
 {
-	private $message;
-	private $context;
-	private $level;
-	private $created_at;
+    private $message;
+    private $context;
+    private $level;
+    private $created_at;
 
-	/**
-	 * Create an entry
-	 *
-	 * @param DateTime $created_at
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array $context
-	 * @return self
-	 */
-	public function __construct(DateTime $created_at, $level, $message, array $context = array())
-	{
-		$this->created_at = $created_at;
-		$this->level = $level;
-		$this->message = $message;
-		$this->context = $context;
-	}
+    /**
+     * Create an entry
+     *
+     * @param DateTime $created_at
+     * @param mixed    $level
+     * @param string   $message
+     * @param array    $context
+     *
+     * @return self
+     */
+    public function __construct(DateTime $created_at, $level, $message, array $context = [])
+    {
+        $this->created_at = $created_at;
+        $this->level = $level;
+        $this->message = $message;
+        $this->context = $context;
+    }
 
-	/**
-	 * Returns the message
-	 *
-	 * @return string
-	 */
-	public function getMessage()
-	{
-		return $this->message;
-	}
+    /**
+     * Returns the message
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 
-	/**
-	 * Returns the context
-	 *
-	 * @return array
-	 */
-	public function getContext()
-	{
-		return $this->context;
-	}
+    /**
+     * Returns the context
+     *
+     * @return array
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
 
-	/**
-	 * Returns the level
-	 *
-	 * @return string
-	 */
-	public function getLevel()
-	{
-		return $this->level;
-	}
+    /**
+     * Returns the level
+     *
+     * @return string
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
 
-	/**
-	 * Returns the created DateTime
-	 *
-	 * @return DateTime
-	 */
-	public function getCreatedAt()
-	{
-		return $this->created_at;
-	}
+    /**
+     * Returns the created DateTime
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
 }

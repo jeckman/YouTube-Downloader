@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,138 +28,127 @@ use YoutubeDownloader\Logger\Logger;
  */
 class Psr3LoggerAdapter implements LoggerInterface, Logger
 {
-	/**
-	 * @var YoutubeDownloader\Logger\Logger
-	 */
-	private $logger;
+    /**
+     * @var YoutubeDownloader\Logger\Logger
+     */
+    private $logger;
 
-	/**
-	 * @param YoutubeDownloader\Logger\Logger $logger
-	 *
-	 * @return void
-	 */
-	public function __construct(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @param YoutubeDownloader\Logger\Logger $logger
+     */
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	/**
-	 * System is unusable.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function emergency($message, array $context = array())
-	{
-		return $this->logger->emergency($message, $context);
-	}
+    /**
+     * System is unusable.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function emergency($message, array $context = [])
+    {
+        return $this->logger->emergency($message, $context);
+    }
 
-	/**
-	 * Action must be taken immediately.
-	 *
-	 * Example: Entire website down, database unavailable, etc. This should
-	 * trigger the SMS alerts and wake you up.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function alert($message, array $context = array())
-	{
-		return $this->logger->alert($message, $context);
-	}
+    /**
+     * Action must be taken immediately.
+     *
+     * Example: Entire website down, database unavailable, etc. This should
+     * trigger the SMS alerts and wake you up.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function alert($message, array $context = [])
+    {
+        return $this->logger->alert($message, $context);
+    }
 
-	/**
-	 * Critical conditions.
-	 *
-	 * Example: Application component unavailable, unexpected exception.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function critical($message, array $context = array())
-	{
-		return $this->logger->critical($message, $context);
-	}
+    /**
+     * Critical conditions.
+     *
+     * Example: Application component unavailable, unexpected exception.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function critical($message, array $context = [])
+    {
+        return $this->logger->critical($message, $context);
+    }
 
-	/**
-	 * Runtime errors that do not require immediate action but should typically
-	 * be logged and monitored.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function error($message, array $context = array())
-	{
-		return $this->logger->error($message, $context);
-	}
+    /**
+     * Runtime errors that do not require immediate action but should typically
+     * be logged and monitored.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function error($message, array $context = [])
+    {
+        return $this->logger->error($message, $context);
+    }
 
-	/**
-	 * Exceptional occurrences that are not errors.
-	 *
-	 * Example: Use of deprecated APIs, poor use of an API, undesirable things
-	 * that are not necessarily wrong.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function warning($message, array $context = array())
-	{
-		return $this->logger->warning($message, $context);
-	}
+    /**
+     * Exceptional occurrences that are not errors.
+     *
+     * Example: Use of deprecated APIs, poor use of an API, undesirable things
+     * that are not necessarily wrong.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function warning($message, array $context = [])
+    {
+        return $this->logger->warning($message, $context);
+    }
 
-	/**
-	 * Normal but significant events.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function notice($message, array $context = array())
-	{
-		return $this->logger->notice($message, $context);
-	}
+    /**
+     * Normal but significant events.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function notice($message, array $context = [])
+    {
+        return $this->logger->notice($message, $context);
+    }
 
-	/**
-	 * Interesting events.
-	 *
-	 * Example: User logs in, SQL logs.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function info($message, array $context = array())
-	{
-		return $this->logger->info($message, $context);
-	}
+    /**
+     * Interesting events.
+     *
+     * Example: User logs in, SQL logs.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function info($message, array $context = [])
+    {
+        return $this->logger->info($message, $context);
+    }
 
-	/**
-	 * Detailed debug information.
-	 *
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function debug($message, array $context = array())
-	{
-		return $this->logger->debug($message, $context);
-	}
+    /**
+     * Detailed debug information.
+     *
+     * @param string $message
+     * @param array  $context
+     */
+    public function debug($message, array $context = [])
+    {
+        return $this->logger->debug($message, $context);
+    }
 
-	/**
-	 * Logs with an arbitrary level.
-	 *
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array $context
-	 * @return null
-	 */
-	public function log($level, $message, array $context = array())
-	{
-		return $this->logger->log($leverl, $message, $context);
-	}
+    /**
+     * Logs with an arbitrary level.
+     *
+     * @param mixed  $level
+     * @param string $message
+     * @param array  $context
+     */
+    public function log($level, $message, array $context = [])
+    {
+        return $this->logger->log($leverl, $message, $context);
+    }
 }

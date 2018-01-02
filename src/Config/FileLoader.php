@@ -25,46 +25,45 @@ namespace YoutubeDownloader\Config;
  */
 class FileLoader implements Loader
 {
-	private $config;
+    private $config;
 
-	/**
-	 * Loads the config from a file
-	 *
-	 * @param string $path
-	 * @return array
-	 */
-	public function __construct($path)
-	{
-		$path = (string) $path;
+    /**
+     * Loads the config from a file
+     *
+     * @param string $path
+     *
+     * @return array
+     */
+    public function __construct($path)
+    {
+        $path = (string) $path;
 
-		if ( ! file_exists($path) )
-		{
-			throw new \Exception(sprintf(
-				'Config file %s must exist and must be readable.',
-				$path
-			));
-		}
+        if (! file_exists($path)) {
+            throw new \Exception(sprintf(
+                'Config file %s must exist and must be readable.',
+                $path
+            ));
+        }
 
-		$config = require($path);
+        $config = require($path);
 
-		if ( ! is_array($config) )
-		{
-			throw new \Exception(sprintf(
-				'Config file %s must return an array.',
-				$path
-			));
-		}
+        if (! is_array($config)) {
+            throw new \Exception(sprintf(
+                'Config file %s must return an array.',
+                $path
+            ));
+        }
 
-		$this->config = $config;
-	}
+        $this->config = $config;
+    }
 
-	/**
-	 * export the config as array
-	 *
-	 * @return array
-	 */
-	public function exportAsArray()
-	{
-		return $this->config;
-	}
+    /**
+     * export the config as array
+     *
+     * @return array
+     */
+    public function exportAsArray()
+    {
+        return $this->config;
+    }
 }

@@ -25,139 +25,138 @@ namespace YoutubeDownloader\Config;
  */
 class TransformationConfig implements Config
 {
-	/**
-	 * Creates the config from Loaders
-	 *
-	 * @param Loader $default the default config
-	 * @param Loader $custom the custom config
-	 * @return Config
-	 */
-	public static function createFromLoaders(Loader $default, Loader $custom = null)
-	{
-		$custom_config = [];
+    /**
+     * Creates the config from Loaders
+     *
+     * @param Loader $default the default config
+     * @param Loader $custom  the custom config
+     *
+     * @return Config
+     */
+    public static function createFromLoaders(Loader $default, Loader $custom = null)
+    {
+        $custom_config = [];
 
-		if ( $custom !== null )
-		{
-			$custom_config = $custom->exportAsArray();
-		}
+        if ($custom !== null) {
+            $custom_config = $custom->exportAsArray();
+        }
 
-		return new self($default->exportAsArray(), $custom_config);
-	}
+        return new self($default->exportAsArray(), $custom_config);
+    }
 
-	private $data = [];
+    private $data = [];
 
-	private $warnings = [];
+    private $warnings = [];
 
-	/**
-	 * Creates a Config from two arrays
-	 *
-	 * @param array $default
-	 * @param array $custom
-	 * @return self
-	 */
-	private function __construct(array $default, array $custom)
-	{
-		$default = $this->transform($default, $custom);
+    /**
+     * Creates a Config from two arrays
+     *
+     * @param array $default
+     * @param array $custom
+     *
+     * @return self
+     */
+    private function __construct(array $default, array $custom)
+    {
+        $default = $this->transform($default, $custom);
 
-		$config = $this->merge($default, $custom);
+        $config = $this->merge($default, $custom);
 
-		$this->data = $config;
-	}
+        $this->data = $config;
+    }
 
-	/**
-	 * Transform deprecated custom configuration into the default configuration
-	 *
-	 * @param array $default
-	 * @param array $custom
-	 * @return array The transformed $default array
-	 */
-	private function transform(array $default, array $custom)
-	{
-		// @deprecated since 0.6: ThumbnailImageMode => gui.ThumbnailImageMode
-		if ( array_key_exists('ThumbnailImageMode', $custom) )
-		{
-			switch ($custom['ThumbnailImageMode'])
-			{
-				case 0:
-					$value = 'none';
-					break;
+    /**
+     * Transform deprecated custom configuration into the default configuration
+     *
+     * @param array $default
+     * @param array $custom
+     *
+     * @return array The transformed $default array
+     */
+    private function transform(array $default, array $custom)
+    {
+        // @deprecated since 0.7: ThumbnailImageMode => gui.ThumbnailImageMode
+        if (array_key_exists('ThumbnailImageMode', $custom)) {
+            switch ($custom['ThumbnailImageMode']) {
+                case 0:
+                    $value = 'none';
 
-				case 1:
-					$value = 'direct';
-					break;
+                    break;
 
-				case 2:
-				default:
-					$value = 'proxy';
-					break;
-			}
+                case 1:
+                    $value = 'direct';
 
-			$default['gui']['ThumbnailImageMode'] = $value;
-			$this->warnings[] = '$config[\'ThumbnailImageMode\'] is deprecated, use $config[\'gui\'][\'ThumbnailImageMode\'] instead';
-		}
+                    break;
 
-		// @deprecated since 0.6: VideoLinkMode => gui.VideoLinkMode
-		if ( array_key_exists('VideoLinkMode', $custom) )
-		{
-			$default['gui']['VideoLinkMode'] = $custom['VideoLinkMode'];
-			$this->warnings[] = '$config[\'VideoLinkMode\'] is deprecated, use $config[\'gui\'][\'VideoLinkMode\'] instead';
-		}
+                case 2:
+                default:
+                    $value = 'proxy';
 
-		// @deprecated since 0.6: showBrowserExtensions => gui.showBrowserExtensions
-		if ( array_key_exists('showBrowserExtensions', $custom) )
-		{
-			$default['gui']['showBrowserExtensions'] = $custom['showBrowserExtensions'];
-			$this->warnings[] = '$config[\'showBrowserExtensions\'] is deprecated, use $config[\'gui\'][\'showBrowserExtensions\'] instead';
-		}
+                    break;
+            }
 
-		return $default;
-	}
+            $default['gui']['ThumbnailImageMode'] = $value;
+            $this->warnings[] = '$config[\'ThumbnailImageMode\'] is deprecated, use $config[\'gui\'][\'ThumbnailImageMode\'] instead';
+        }
 
-	/**
-	 * merge two configuration arrays
-	 *
-	 * @param array $default
-	 * @param array $custom
-	 * @return self
-	 */
-	private function merge(array $default, array $custom)
-	{
-		foreach ($default as $key => $value)
-		{
-			if ( ! array_key_exists($key, $custom) )
-			{
-				continue;
-			}
+        // @deprecated since 0.7: VideoLinkMode => gui.VideoLinkMode
+        if (array_key_exists('VideoLinkMode', $custom)) {
+            $default['gui']['VideoLinkMode'] = $custom['VideoLinkMode'];
+            $this->warnings[] = '$config[\'VideoLinkMode\'] is deprecated, use $config[\'gui\'][\'VideoLinkMode\'] instead';
+        }
 
-			if ( is_array($value) and ! empty($value) )
-			{
-				$default[$key] = $this->merge($value, $custom[$key]);
+        // @deprecated since 0.7: showBrowserExtensions => gui.showBrowserExtensions
+        if (array_key_exists('showBrowserExtensions', $custom)) {
+            $default['gui']['showBrowserExtensions'] = $custom['showBrowserExtensions'];
+            $this->warnings[] = '$config[\'showBrowserExtensions\'] is deprecated, use $config[\'gui\'][\'showBrowserExtensions\'] instead';
+        }
 
-				continue;
-			}
+        return $default;
+    }
 
-			$default[$key] = $custom[$key];
-		}
+    /**
+     * merge two configuration arrays
+     *
+     * @param array $default
+     * @param array $custom
+     *
+     * @return self
+     */
+    private function merge(array $default, array $custom)
+    {
+        foreach ($default as $key => $value) {
+            if (! array_key_exists($key, $custom)) {
+                continue;
+            }
 
-		return $default;
-	}
+            if (is_array($value) and ! empty($value)) {
+                $default[$key] = $this->merge($value, $custom[$key]);
 
-	/**
-	 * Get a config value
-	 *
-	 * @param string $key
-	 * @return mixed
-	 */
-	public function get($key)
-	{
-		if ( array_key_exists($key, $this->data) )
-		{
-			return $this->data[$key];
-		}
+                continue;
+            }
 
-		throw new \InvalidArgumentException(sprintf(
-			'The key "" don\' exist in this Config',
-			(string) $key
-		));
-	}
+            $default[$key] = $custom[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get a config value
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function get($key)
+    {
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
+
+        throw new \InvalidArgumentException(sprintf(
+            'The key "" don\' exist in this Config',
+            (string) $key
+        ));
+    }
 }

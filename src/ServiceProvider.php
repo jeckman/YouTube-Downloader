@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,149 +28,142 @@ use YoutubeDownloader\Container\SimpleContainer;
  */
 class ServiceProvider
 {
-	private $config;
+    private $config;
 
-	/**
-	 * @param Config $config
-	 * @return self
-	 */
-	public function __construct(Config $config)
-	{
-		$this->config = $config;
-	}
+    /**
+     * @param Config $config
+     *
+     * @return self
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
 
-	/**
-	 * Register the Services on a Container
-	 *
-	 * @param SimpleContainer $container
-	 * @return void
-	 */
-	public function register(SimpleContainer $container)
-	{
-		$ds = \DIRECTORY_SEPARATOR;
+    /**
+     * Register the Services on a Container
+     *
+     * @param SimpleContainer $container
+     */
+    public function register(SimpleContainer $container)
+    {
+        $ds = \DIRECTORY_SEPARATOR;
 
-		$container->set('YoutubeDownloader\Config\Config', function($c) {
-			return $this->config;
-		});
+        $container->set('YoutubeDownloader\Config\Config', function ($c) {
+            return $this->config;
+        });
 
-		// Create Template\Engine
-		$container->set('YoutubeDownloader\Template\Engine', function($c) {
-			return \YoutubeDownloader\Template\Engine::createFromDirectory(
-				__DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'templates'
-			);
-		});
+        // Create Template\Engine
+        $container->set('YoutubeDownloader\Template\Engine', function ($c) {
+            return \YoutubeDownloader\Template\Engine::createFromDirectory(
+                __DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'templates'
+            );
+        });
 
-		// Create Application\ControllerFactory
-		$container->set('YoutubeDownloader\Application\ControllerFactory', function($c) {
-			return new \YoutubeDownloader\Application\ControllerFactory;
-		});
+        // Create Application\ControllerFactory
+        $container->set('YoutubeDownloader\Application\ControllerFactory', function ($c) {
+            return new \YoutubeDownloader\Application\ControllerFactory;
+        });
 
-		// Create Toolkit
-		$container->set('YoutubeDownloader\Toolkit', function($c) {
-			return new \YoutubeDownloader\Toolkit;
-		});
+        // Create Toolkit
+        $container->set('YoutubeDownloader\Toolkit', function ($c) {
+            return new \YoutubeDownloader\Toolkit;
+        });
 
-		// Create Cache
-		$container->set('YoutubeDownloader\Cache\Cache', function($c) {
-			return \YoutubeDownloader\Cache\FileCache::createFromDirectory(
-				__DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'cache'
-			);
-		});
+        // Create Cache
+        $container->set('YoutubeDownloader\Cache\Cache', function ($c) {
+            return \YoutubeDownloader\Cache\FileCache::createFromDirectory(
+                __DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'cache'
+            );
+        });
 
-		// Create Logger
-		$container->set('YoutubeDownloader\Logger\Logger', function($c) {
-			$logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
-				new \YoutubeDownloader\Logger\Handler\NullHandler()
-			);
+        // Create Logger
+        $container->set('YoutubeDownloader\Logger\Logger', function ($c) {
+            $logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
+                new \YoutubeDownloader\Logger\Handler\NullHandler()
+            );
 
-			if ( $c->get('YoutubeDownloader\Config\Config')->get('debug') === true )
-			{
-				# code...
-				$now = new \DateTime('now', new \DateTimeZone($c->get('YoutubeDownloader\Config\Config')->get('default_timezone')));
+            if ($c->get('YoutubeDownloader\Config\Config')->get('debug') === true) {
+                # code...
+                $now = new \DateTime('now', new \DateTimeZone($c->get('YoutubeDownloader\Config\Config')->get('default_timezone')));
 
-				$filepath = sprintf(
-					'%s' . \DIRECTORY_SEPARATOR . '%s',
-					__DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'logs',
-					$now->format('Y')
-				);
+                $filepath = sprintf(
+                    '%s' . \DIRECTORY_SEPARATOR . '%s',
+                    __DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'logs',
+                    $now->format('Y')
+                );
 
-				if ( ! file_exists($filepath) )
-				{
-					mkdir($filepath);
-				}
+                if (! file_exists($filepath)) {
+                    mkdir($filepath);
+                }
 
-				$stream = fopen(
-					$filepath . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
-					'a+'
-				);
+                $stream = fopen(
+                    $filepath . \DIRECTORY_SEPARATOR . $now->format('Y-m-d') . '.log',
+                    'a+'
+                );
 
-				if ( is_resource($stream) )
-				{
-					$handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
-						\YoutubeDownloader\Logger\LogLevel::EMERGENCY,
-						\YoutubeDownloader\Logger\LogLevel::ALERT,
-						\YoutubeDownloader\Logger\LogLevel::CRITICAL,
-						\YoutubeDownloader\Logger\LogLevel::ERROR,
-						\YoutubeDownloader\Logger\LogLevel::WARNING,
-						\YoutubeDownloader\Logger\LogLevel::NOTICE,
-						\YoutubeDownloader\Logger\LogLevel::INFO,
-						\YoutubeDownloader\Logger\LogLevel::DEBUG,
-					]);
+                if (is_resource($stream)) {
+                    $handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
+                        \YoutubeDownloader\Logger\LogLevel::EMERGENCY,
+                        \YoutubeDownloader\Logger\LogLevel::ALERT,
+                        \YoutubeDownloader\Logger\LogLevel::CRITICAL,
+                        \YoutubeDownloader\Logger\LogLevel::ERROR,
+                        \YoutubeDownloader\Logger\LogLevel::WARNING,
+                        \YoutubeDownloader\Logger\LogLevel::NOTICE,
+                        \YoutubeDownloader\Logger\LogLevel::INFO,
+                        \YoutubeDownloader\Logger\LogLevel::DEBUG,
+                    ]);
 
-					$logger->addHandler($handler);
-				}
-			}
+                    $logger->addHandler($handler);
+                }
+            }
 
-			return $logger;
-		});
+            return $logger;
+        });
 
-		// Create HttpClient
-		$container->set('YoutubeDownloader\Http\Client', function($c) {
-			return new \YoutubeDownloader\Http\CurlClient;
-		});
+        // Create HttpClient
+        $container->set('YoutubeDownloader\Http\Client', function ($c) {
+            return new \YoutubeDownloader\Http\CurlClient;
+        });
 
-		// Create Youtube Provider
-		$container->set('YoutubeDownloader\Provider\Youtube\Provider', function($c) {
-			$config = $c->get('YoutubeDownloader\Config\Config');
-			$toolkit = $c->get('YoutubeDownloader\Toolkit');
+        // Create Youtube Provider
+        $container->set('YoutubeDownloader\Provider\Youtube\Provider', function ($c) {
+            $config = $c->get('YoutubeDownloader\Config\Config');
+            $toolkit = $c->get('YoutubeDownloader\Toolkit');
 
-			$options = [
-				'decipher_signature' => $config->get('enable_youtube_decipher_signature')
-			];
+            $options = [
+                'decipher_signature' => $config->get('enable_youtube_decipher_signature')
+            ];
 
-			if ( $config->get('multipleIPs') === true)
-			{
-				$options['use_ip'] = $toolkit->getRandomIp($config);
-			}
+            if ($config->get('multipleIPs') === true) {
+                $options['use_ip'] = $toolkit->getRandomIp($config);
+            }
 
-			$youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromOptions($options);
+            $youtube_provider = \YoutubeDownloader\Provider\Youtube\Provider::createFromOptions($options);
 
-			if ( $youtube_provider instanceOf \YoutubeDownloader\Cache\CacheAware )
-			{
-				$youtube_provider->setCache($c->get('cache'));
-			}
+            if ($youtube_provider instanceof \YoutubeDownloader\Cache\CacheAware) {
+                $youtube_provider->setCache($c->get('cache'));
+            }
 
-			if ( $youtube_provider instanceOf \YoutubeDownloader\Http\HttpClientAware )
-			{
-				$youtube_provider->setHttpClient($c->get('httpclient'));
-			}
+            if ($youtube_provider instanceof \YoutubeDownloader\Http\HttpClientAware) {
+                $youtube_provider->setHttpClient($c->get('httpclient'));
+            }
 
-			if ( $youtube_provider instanceOf \YoutubeDownloader\Logger\LoggerAware )
-			{
-				$youtube_provider->setLogger($c->get('logger'));
-			}
+            if ($youtube_provider instanceof \YoutubeDownloader\Logger\LoggerAware) {
+                $youtube_provider->setLogger($c->get('logger'));
+            }
 
-			return $youtube_provider;
-		});
+            return $youtube_provider;
+        });
 
-		// Set aliases for BC
-		$container->set('YoutubeDownloader\Config', 'YoutubeDownloader\Config\Config');
-		$container->set('config', 'YoutubeDownloader\Config\Config');
-		$container->set('template', 'YoutubeDownloader\Template\Engine');
-		$container->set('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
-		$container->set('toolkit', 'YoutubeDownloader\Toolkit');
-		$container->set('cache', 'YoutubeDownloader\Cache\Cache');
-		$container->set('logger', 'YoutubeDownloader\Logger\Logger');
-		$container->set('httpclient', 'YoutubeDownloader\Http\Client');
-	}
+        // Set aliases for BC
+        $container->set('YoutubeDownloader\Config', 'YoutubeDownloader\Config\Config');
+        $container->set('config', 'YoutubeDownloader\Config\Config');
+        $container->set('template', 'YoutubeDownloader\Template\Engine');
+        $container->set('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
+        $container->set('toolkit', 'YoutubeDownloader\Toolkit');
+        $container->set('cache', 'YoutubeDownloader\Cache\Cache');
+        $container->set('logger', 'YoutubeDownloader\Logger\Logger');
+        $container->set('httpclient', 'YoutubeDownloader\Http\Client');
+    }
 }

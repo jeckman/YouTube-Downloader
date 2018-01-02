@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,47 +20,52 @@
 
 namespace YoutubeDownloader\Tests\Unit\Application;
 
+use Exception;
+use YoutubeDownloader\Application\App;
+use YoutubeDownloader\Application\Controller;
 use YoutubeDownloader\Application\ControllerFactory;
+use YoutubeDownloader\Container\Container;
+use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class ControllerFactoryTest extends TestCase
 {
-	/**
-	 * @test make
-	 */
-	public function make()
-	{
-		$logger = $this->createMock('\\YoutubeDownloader\\Logger\\Logger');
+    /**
+     * @test make
+     */
+    public function make()
+    {
+        $logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock('\\YoutubeDownloader\\Container\\Container');
-		$container->method('get')->with('logger')->willReturn($logger);
+        $container = $this->createMock(Container::class);
+        $container->method('get')->with('logger')->willReturn($logger);
 
-		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
-		$app->method('getContainer')->willReturn($container);
+        $app = $this->createMock(App::class);
+        $app->method('getContainer')->willReturn($container);
 
-		$factory = new ControllerFactory;
+        $factory = new ControllerFactory;
 
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Application\\Controller',
-			$factory->make('index', $app)
-		);
-	}
+        $this->assertInstanceOf(
+            Controller::class,
+            $factory->make('index', $app)
+        );
+    }
 
-	/**
-	 * @test make throws Exception
-	 */
-	public function makeThrowsException()
-	{
-		$app = $this->createMock('\\YoutubeDownloader\\Application\\App');
+    /**
+     * @test make throws Exception
+     */
+    public function makeThrowsException()
+    {
+        $app = $this->createMock(App::class);
 
-		$factory = new ControllerFactory;
+        $factory = new ControllerFactory;
 
-		$this->expectException('\\Exception');
-		$this->expectExceptionMessage('No controller was found for route "fail"');
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('No controller was found for route "fail"');
 
-		$this->assertInstanceOf(
-			'\\YoutubeDownloader\\Application\\Controller',
-			$factory->make('fail', $app)
-		);
-	}
+        $this->assertInstanceOf(
+            Controller::class,
+            $factory->make('fail', $app)
+        );
+    }
 }

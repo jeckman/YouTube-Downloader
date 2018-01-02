@@ -25,10 +25,10 @@ namespace YoutubeDownloader\Config;
  */
 interface Loader
 {
-	/**
-	 * export the config as array
-	 *
-	 * @return array
-	 */
-	public function exportAsArray();
+    /**
+     * export the config as array
+     *
+     * @return array
+     */
+    public function exportAsArray();
 }

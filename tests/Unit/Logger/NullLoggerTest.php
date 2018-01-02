@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,32 +20,34 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger;
 
+use Psr\Log\LoggerInterface;
+use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Logger\NullLogger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 use YoutubeDownloader\Tests\Fixture\Logger\Psr3LoggerAdapter;
 
 class NullLoggerTest extends TestCase
 {
-	/**
-	 * @test NullLogger implements Logger
-	 */
-	public function implementsLogger()
-	{
-		$logger = new NullLogger();
+    /**
+     * @test NullLogger implements Logger
+     */
+    public function implementsLogger()
+    {
+        $logger = new NullLogger();
 
-		$this->assertInstanceOf('\\YoutubeDownloader\\Logger\\Logger', $logger);
-	}
+        $this->assertInstanceOf(Logger::class, $logger);
+    }
 
-	/**
-	 * @test NullLogger is compatible with Psr\Log\LoggerInterface
-	 */
-	public function isPsr3Compatible()
-	{
-		$logger = new NullLogger();
+    /**
+     * @test NullLogger is compatible with Psr\Log\LoggerInterface
+     */
+    public function isPsr3Compatible()
+    {
+        $logger = new NullLogger();
 
-		$adapter = new Psr3LoggerAdapter($logger);
+        $adapter = new Psr3LoggerAdapter($logger);
 
-		$this->assertInstanceOf('\\Psr\\Log\\LoggerInterface', $adapter);
-		$this->assertInstanceOf('\\YoutubeDownloader\\Logger\\Logger', $adapter);
-	}
+        $this->assertInstanceOf(LoggerInterface::class, $adapter);
+        $this->assertInstanceOf(Logger::class, $adapter);
+    }
 }

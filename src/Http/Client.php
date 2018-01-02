@@ -2,7 +2,7 @@
 
 /*
  * PHP script for downloading videos from youtube
- * Copyright (C) 2012-2017  John Eckman
+ * Copyright (C) 2012-2018  John Eckman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,26 +28,28 @@ use YoutubeDownloader\Http\Message\Response as ResponseInterface;
  */
 interface Client
 {
-	/**
-	 * Factory for a new Request
-	 *
-	 * @param string $method HTTP method
-	 * @param string $target The target url for this request
-	 * @param array $headers Request headers
-	 * @param string|null $body Request body
-	 * @param string $version Protocol version
-	 * @return RequestInterface
-	 */
-	public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
+    /**
+     * Factory for a new Request
+     *
+     * @param string      $method  HTTP method
+     * @param string      $target  The target url for this request
+     * @param array       $headers Request headers
+     * @param string|null $body    Request body
+     * @param string      $version Protocol version
+     *
+     * @return RequestInterface
+     */
+    public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
 
-	/**
-	 * Sends a Request and returns a Response
-	 *
-	 * $options can be used to set client specific data per request, like curl options
-	 *
-	 * @param RequestInterface $request,
-	 * @param array $options client specific options for a client instance
-	 * @return ResponseInterface
-	 */
-	public function send(RequestInterface $request, array $options = []);
+    /**
+     * Sends a Request and returns a Response
+     *
+     * $options can be used to set client specific data per request, like curl options
+     *
+     * @param RequestInterface $request,
+     * @param array            $options  client specific options for a client instance
+     *
+     * @return ResponseInterface
+     */
+    public function send(RequestInterface $request, array $options = []);
 }
