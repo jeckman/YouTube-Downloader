@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- New support for creation of RSS feeds from YouTube channels and user pages
 - `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` to create the Youtube Provider with an options array
 - `YoutubeDownloader\Provider\Youtube\VideoInfo::createFromStringWithOptions()` to create the Youtube VideoInfo with an options array
 
