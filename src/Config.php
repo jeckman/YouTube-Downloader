@@ -52,6 +52,7 @@ class Config
 	private $allowed_keys = [
 		'enable_youtube_decipher_signature',
 		'ThumbnailImageMode',
+        'localCache',
 		'VideoLinkMode',
 		'MP3Enable',
 		'MP3ConvertVideo',

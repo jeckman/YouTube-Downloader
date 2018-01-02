@@ -32,6 +32,7 @@ class ControllerFactory
 		'image' => '\\YoutubeDownloader\\Application\\ImageController',
 		'index' => '\\YoutubeDownloader\\Application\\MainController',
 		'results' => '\\YoutubeDownloader\\Application\\ResultController',
+        'feed' => '\\YoutubeDownloader\\Application\\FeedController',
 	];
 
 	/**

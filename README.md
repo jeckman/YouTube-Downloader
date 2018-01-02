@@ -93,6 +93,21 @@ You can also pass in a specific format number, if you know it.
 Note this approach, because it redirects you to the file itself, currently bypasses the
 proxy option, so if your browser/server setup requires the proxy to work these will fail.
 
+### Feed subscription
+
+You can subscribe both to YouTube channels and users via RSS. Feeds can be generated in
+the formats listed above.
+
+Generating a feed for a YouTube channel works as follows:
+
+http://example.com/yt/feed.php?channelid=UChELZ_JMGNYuxObfrXoER6A&format=best
+
+To generate a feed for a YouTube user:
+
+http://example.com/yt/feed.php?user=heisenewsticker&format=free
+
+The generated feed is a standard RSS feed and can be subscribed to in any feed reader.
+
 ## Upgrading
 
 ### ZIP Download
