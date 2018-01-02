@@ -155,9 +155,11 @@ By running `php -S localhost:8080` PHP starts the built-in server and you can us
 
 ### PHP Styleguide
 
-All PHP files muss adhere to [PSR-2](http://www.php-fig.org/psr/psr-2/) with these exceptions:
+All PHP files muss adhere to [PSR-2](http://www.php-fig.org/psr/psr-2/).
 
-* Code MUST use tabs for indenting, not 4 spaces.
+We also have a `.php_cs.dist` file for the [PHP-CS-Fixer](https://github.com/FriendsOfPHP/PHP-CS-Fixer) so you can simply run the following command to fit the PHP Styleguide.
+
+```php php-cs-fixer.phar fix```
 
 ### HTML/CSS Styleguide
 
