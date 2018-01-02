@@ -1,8 +1,15 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in('src')
-    ->in('tests')
+    ->in('./')
+    ->name('*.php')
+    ->exclude([
+        'cache',
+        'logs',
+        'templates',
+        'vendor',
+    ])
+    ->ignoreDotFiles(true)
 ;
 
 return PhpCsFixer\Config::create()

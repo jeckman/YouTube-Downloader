@@ -7,7 +7,7 @@
  */
 
 return [
-    /**
+    /*
      * Debug mode
      * WARNING: This outputs debug information while processing.
      * This could leak sensitive server data to the browser.
@@ -18,7 +18,7 @@ return [
      */
     'debug' => false,
 
-    /**
+    /*
      * Enable the YouTube signature decipher function
      * WARNING: This downloads javascript code from a 3rd party server and interprets it!
      * This MAY harm your server, if the 3rd party server delivers malicious code!
@@ -28,7 +28,7 @@ return [
      */
     'enable_youtube_decipher_signature' => false,
 
-    /**
+    /*
      * Thumbnail Image Configuration
      *
      * 0 => don't show thumbnail image
@@ -37,7 +37,7 @@ return [
      */
     'ThumbnailImageMode' => 2,
 
-    /**
+    /*
      * Video Download Link Configuration
      * 'direct' => show only direct download link
      * 'proxy'  => show only by proxy download link
@@ -45,7 +45,7 @@ return [
      */
     'VideoLinkMode' => 'both',
     
-    /**
+    /*
      * Caching mode. If normal proxy mode won't work, this makes a copy of the file on the
      * webserver and downloads it from there
      * false => proxying works by 'streaming' the file through the server
@@ -53,7 +53,7 @@ return [
      */
     'localCache' => false,
 
-    /**
+    /*
      * MP3 Download Link Configuration
      *
      * Basic method for converting Youtube Video or Audio to .mp3
@@ -76,14 +76,14 @@ return [
     'ffmpegPath' => 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe', // ffmpeg location path
     'aria2Path' => 'C:\cygwin\bin\aria2c.exe', // aria2 location path, @deprecated since 0.6, to be removed in 0.7
 
-    /**
+    /*
      * show links for install browser extensions?
      *
      * true or false
      */
     'showBrowserExtensions' => true,
 
-    /**
+    /*
      * Multiple IPs
      *
      * You can enable this option if you are having problems with youtube IP limit / IP ban.
@@ -154,7 +154,7 @@ return [
         // add as many ips as you want (they must be available in the server conf (ex: /etc/network/interfaces fro ubuntu/debian)
     ],
 
-    /**
+    /*
      * Set your default timezone
      *
      * e.g. Asia/Tehran or America/New_York
