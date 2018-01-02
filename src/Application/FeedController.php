@@ -32,10 +32,8 @@ class FeedController extends ControllerAbstract
     /**
      * Excute the Controller
      *
-     * @param string $route
+     * @param string                            $route
      * @param YoutubeDownloader\Application\App $app
-     *
-     * @return void
      */
     public function execute()
     {
@@ -43,17 +41,17 @@ class FeedController extends ControllerAbstract
         $toolkit = $this->get('toolkit');
         $youtube_provider = $this->get('YoutubeDownloader\Provider\Youtube\Provider');
         
-        $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $actual_link = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $site = substr($actual_link, 0, strrpos($actual_link, '/')+1);
         
         
             
         $dom=new \DOMDocument();
-        if (isset($_GET["channelid"])) {
-            $dom->load("https://www.youtube.com/feeds/videos.xml?channel_id=" . $_GET["channelid"]);
+        if (isset($_GET['channelid'])) {
+            $dom->load('https://www.youtube.com/feeds/videos.xml?channel_id=' . $_GET['channelid']);
         }
-        if (isset($_GET["user"])) {
-            $dom->load("https://www.youtube.com/feeds/videos.xml?user=" . $_GET["user"]);
+        if (isset($_GET['user'])) {
+            $dom->load('https://www.youtube.com/feeds/videos.xml?user=' . $_GET['user']);
         }
 
         $root=$dom->documentElement;

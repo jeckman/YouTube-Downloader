@@ -41,113 +41,113 @@ use YoutubeDownloader\Http\Message\Response as ResponseInterface;
  */
 class Response implements ResponseInterface
 {
-	use MessageTrait;
+    use MessageTrait;
 
-	/**
-	 * @var string The status code
-	 */
-	private $code = 200;
+    /**
+     * @var string The status code
+     */
+    private $code = 200;
 
-	/**
-	 * @var string The reason phrase
-	 */
-	private $reason = 'OK';
+    /**
+     * @var string The reason phrase
+     */
+    private $reason = 'OK';
 
-	/**
-	 * @param int $code Status code
-	 * @param array $headers Response headers
-	 * @param string|null $body Response body
-	 * @param string $protocol Protocol version
-	 * @param string $reason Reason phrase
-	 */
-	public function __construct(
-		$code = 200,
-		array $headers = [],
-		$body = null,
-		$protocol = '1.1',
-		$reason = ''
-	)
-	{
-		$this->code = intval($code);
-		$this->body = strval($body);
-		$this->protocol = strval($protocol);
-		$this->reason = strval($reason);
+    /**
+     * @param int         $code     Status code
+     * @param array       $headers  Response headers
+     * @param string|null $body     Response body
+     * @param string      $protocol Protocol version
+     * @param string      $reason   Reason phrase
+     */
+    public function __construct(
+        $code = 200,
+        array $headers = [],
+        $body = null,
+        $protocol = '1.1',
+        $reason = ''
+    ) {
+        $this->code = intval($code);
+        $this->body = strval($body);
+        $this->protocol = strval($protocol);
+        $this->reason = strval($reason);
 
-		foreach ($headers as $header_name => $value)
-		{
-			if ( ! is_array($value) )
-			{
-				$value = [$value];
-			}
+        foreach ($headers as $header_name => $value) {
+            if (! is_array($value)) {
+                $value = [$value];
+            }
 
-			$values = [];
+            $values = [];
 
-			foreach ($value as $val)
-			{
-				$values[] = trim($val);
-			}
+            foreach ($value as $val) {
+                $values[] = trim($val);
+            }
 
-			$this->headers[$header_name] = $values;
-		}
-	}
+            $this->headers[$header_name] = $values;
+        }
+    }
 
-	/**
-	 * Gets the response status code.
-	 *
-	 * The status code is a 3-digit integer result code of the server's attempt
-	 * to understand and satisfy the request.
-	 *
-	 * @return int Status code.
-	 */
-	public function getStatusCode()
-	{
-		return $this->code;
-	}
+    /**
+     * Gets the response status code.
+     *
+     * The status code is a 3-digit integer result code of the server's attempt
+     * to understand and satisfy the request.
+     *
+     * @return int status code
+     */
+    public function getStatusCode()
+    {
+        return $this->code;
+    }
 
-	/**
-	 * Return an instance with the specified status code and, optionally, reason phrase.
-	 *
-	 * If no reason phrase is specified, implementations MAY choose to default
-	 * to the RFC 7231 or IANA recommended reason phrase for the response's
-	 * status code.
-	 *
-	 * This method MUST be implemented in such a way as to retain the
-	 * immutability of the message, and MUST return an instance that has the
-	 * updated status and reason phrase.
-	 *
-	 * @see http://tools.ietf.org/html/rfc7231#section-6
-	 * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-	 * @param int $code The 3-digit integer result code to set.
-	 * @param string $reasonPhrase The reason phrase to use with the
-	 *     provided status code; if none is provided, implementations MAY
-	 *     use the defaults as suggested in the HTTP specification.
-	 * @return static
-	 * @throws \InvalidArgumentException For invalid status code arguments.
-	 */
-	public function withStatus($code, $reasonPhrase = '')
-	{
-		$clone = clone $this;
-		$clone->code = (int) $code;
-		$clone->reason = (string) $reasonPhrase;
+    /**
+     * Return an instance with the specified status code and, optionally, reason phrase.
+     *
+     * If no reason phrase is specified, implementations MAY choose to default
+     * to the RFC 7231 or IANA recommended reason phrase for the response's
+     * status code.
+     *
+     * This method MUST be implemented in such a way as to retain the
+     * immutability of the message, and MUST return an instance that has the
+     * updated status and reason phrase.
+     *
+     * @see http://tools.ietf.org/html/rfc7231#section-6
+     * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     *
+     * @param int    $code         the 3-digit integer result code to set
+     * @param string $reasonPhrase the reason phrase to use with the
+     *                             provided status code; if none is provided, implementations MAY
+     *                             use the defaults as suggested in the HTTP specification
+     *
+     * @throws \InvalidArgumentException for invalid status code arguments
+     *
+     * @return static
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        $clone = clone $this;
+        $clone->code = (int) $code;
+        $clone->reason = (string) $reasonPhrase;
 
-		return $clone;
-	}
+        return $clone;
+    }
 
-	/**
-	 * Gets the response reason phrase associated with the status code.
-	 *
-	 * Because a reason phrase is not a required element in a response
-	 * status line, the reason phrase value MAY be empty. Implementations MAY
-	 * choose to return the default RFC 7231 recommended reason phrase (or those
-	 * listed in the IANA HTTP Status Code Registry) for the response's
-	 * status code.
-	 *
-	 * @see http://tools.ietf.org/html/rfc7231#section-6
-	 * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-	 * @return string Reason phrase; must return an empty string if none present.
-	 */
-	public function getReasonPhrase()
-	{
-		return $this->reason;
-	}
+    /**
+     * Gets the response reason phrase associated with the status code.
+     *
+     * Because a reason phrase is not a required element in a response
+     * status line, the reason phrase value MAY be empty. Implementations MAY
+     * choose to return the default RFC 7231 recommended reason phrase (or those
+     * listed in the IANA HTTP Status Code Registry) for the response's
+     * status code.
+     *
+     * @see http://tools.ietf.org/html/rfc7231#section-6
+     * @see http://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+     *
+     * @return string reason phrase; must return an empty string if none present
+     */
+    public function getReasonPhrase()
+    {
+        return $this->reason;
+    }
 }

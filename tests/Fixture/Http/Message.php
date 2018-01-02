@@ -28,5 +28,5 @@ use YoutubeDownloader\Http\Message\Message as MessageInterface;
  */
 class Message implements MessageInterface
 {
-	use MessageTrait;
+    use MessageTrait;
 }

@@ -25,11 +25,10 @@ namespace YoutubeDownloader\Cache;
  */
 interface CacheAware
 {
-	/**
-	 * Sets a cache instance on the object
-	 *
-	 * @param Cache $cache
-	 * @return null
-	 */
-	public function setCache(Cache $cache);
+    /**
+     * Sets a cache instance on the object
+     *
+     * @param Cache $cache
+     */
+    public function setCache(Cache $cache);
 }

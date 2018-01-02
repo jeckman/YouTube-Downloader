@@ -29,59 +29,59 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class AppTest extends TestCase
 {
-	/**
-	 * @test getContainer
-	 */
-	public function getContainer()
-	{
-		$logger = $this->createMock(Logger::class);
+    /**
+     * @test getContainer
+     */
+    public function getContainer()
+    {
+        $logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock(Container::class);
-		$container->method('get')->with('logger')->willReturn($logger);
+        $container = $this->createMock(Container::class);
+        $container->method('get')->with('logger')->willReturn($logger);
 
-		$app = new App($container);
+        $app = new App($container);
 
-		$this->assertSame($container, $app->getContainer());
-	}
+        $this->assertSame($container, $app->getContainer());
+    }
 
-	/**
-	 * @test getVersion
-	 */
-	public function getVersion()
-	{
-		$logger = $this->createMock(Logger::class);
+    /**
+     * @test getVersion
+     */
+    public function getVersion()
+    {
+        $logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock(Container::class);
-		$container->method('get')->with('logger')->willReturn($logger);
+        $container = $this->createMock(Container::class);
+        $container->method('get')->with('logger')->willReturn($logger);
 
-		$app = new App($container);
+        $app = new App($container);
 
-		$this->assertSame('0.6-dev', $app->getVersion());
-	}
+        $this->assertSame('0.6-dev', $app->getVersion());
+    }
 
-	/**
-	 * @test runWithRoute
-	 */
-	public function runWithRoute()
-	{
-		$controller = $this->createMock(Controller::class);
-		$controller->expects($this->once())->method('execute');
+    /**
+     * @test runWithRoute
+     */
+    public function runWithRoute()
+    {
+        $controller = $this->createMock(Controller::class);
+        $controller->expects($this->once())->method('execute');
 
-		$factory = $this->createMock(ControllerFactory::class);
-		$factory->expects($this->once())
-			->method('make')
-			->willReturn($controller);
+        $factory = $this->createMock(ControllerFactory::class);
+        $factory->expects($this->once())
+            ->method('make')
+            ->willReturn($controller);
 
-		$logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(Logger::class);
 
-		$container = $this->createMock(Container::class);
-		$container->method('get')->will($this->returnValueMap([
-			['controller_factory', $factory],
-			['logger', $logger],
-		]));
+        $container = $this->createMock(Container::class);
+        $container->method('get')->will($this->returnValueMap([
+            ['controller_factory', $factory],
+            ['logger', $logger],
+        ]));
 
-		$app = new App($container);
+        $app = new App($container);
 
-		$app->runWithRoute('test');
-	}
+        $app->runWithRoute('test');
+    }
 }

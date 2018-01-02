@@ -25,31 +25,31 @@ namespace YoutubeDownloader\Logger\Handler;
  */
 interface Entry
 {
-	/**
-	 * Returns the message
-	 *
-	 * @return string
-	 */
-	public function getMessage();
+    /**
+     * Returns the message
+     *
+     * @return string
+     */
+    public function getMessage();
 
-	/**
-	 * Returns the context
-	 *
-	 * @return array
-	 */
-	public function getContext();
+    /**
+     * Returns the context
+     *
+     * @return array
+     */
+    public function getContext();
 
-	/**
-	 * Returns the level
-	 *
-	 * @return string
-	 */
-	public function getLevel();
+    /**
+     * Returns the level
+     *
+     * @return string
+     */
+    public function getLevel();
 
-	/**
-	 * Returns the created DateTime
-	 *
-	 * @return DateTime
-	 */
-	public function getCreatedAt();
+    /**
+     * Returns the created DateTime
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt();
 }

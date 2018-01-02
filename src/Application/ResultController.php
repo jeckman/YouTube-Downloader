@@ -30,10 +30,8 @@ class ResultController extends ControllerAbstract
     /**
      * Excute the Controller
      *
-     * @param string $route
+     * @param string                            $route
      * @param YoutubeDownloader\Application\App $app
-     *
-     * @return void
      */
     public function execute()
     {
@@ -77,16 +75,16 @@ class ResultController extends ControllerAbstract
 
         if ($my_type !== 'Download') {
             /* In this else, the request didn't come from a form but from something else
-			 * like an RSS feed.
-			 * As a result, we just want to return the best format, which depends on what
-			 * the user provided in the url.
-			 * If they provided "format=best" we just use the largest.
-			 * If they provided "format=free" we provide the best non-flash version
-			 * If they provided "format=ipad" we pull the best MP4 version
-			 *
-			 * Thanks to the python based youtube-dl for info on the formats
-			 *   							http://rg3.github.com/youtube-dl/
-			 */
+             * like an RSS feed.
+             * As a result, we just want to return the best format, which depends on what
+             * the user provided in the url.
+             * If they provided "format=best" we just use the largest.
+             * If they provided "format=free" we provide the best non-flash version
+             * If they provided "format=ipad" we pull the best MP4 version
+             *
+             * Thanks to the python based youtube-dl for info on the formats
+             *   							http://rg3.github.com/youtube-dl/
+             */
             if (!empty($_GET['proxy']) && $_GET['proxy'] !== false) {
                 $best_format = $this->getFullInfoByFormat($video_info, $_GET['format']);
             
@@ -96,7 +94,7 @@ class ResultController extends ControllerAbstract
                 if ($config->get('localCache') || (!empty($_GET['cache']) && $_GET['cache'] !== false)) {
                     $proxylink = $proxylink . '&cache=true';
                 }
-                header("Location: " . $proxylink);
+                header('Location: ' . $proxylink);
                 exit;
             }
             
@@ -114,11 +112,13 @@ class ResultController extends ControllerAbstract
                 $template_data['show_thumbnail'] = true;
                 $template_data['thumbnail_src'] = 'getimage.php?videoid=' . $my_id;
                 $template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
+
                 break;
             case 1:
                 $template_data['show_thumbnail'] = true;
                 $template_data['thumbnail_src'] = $video_info->getThumbnailUrl();
                 $template_data['thumbnail_anchor'] = 'getimage.php?videoid=' . $my_id . '&sz=hd';
+
                 break;
             case 0:
             default:
@@ -160,7 +160,7 @@ class ResultController extends ControllerAbstract
 
         $template_data['streams'] = [];
         $template_data['formats'] = [];
-        $template_data['showBrowserExtensions'] = ( $this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions') == true );
+        $template_data['showBrowserExtensions'] = ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $config->get('showBrowserExtensions') == true);
 
         /* now that we have the array, print the options */
         foreach ($avail_formats as $avail_format) {

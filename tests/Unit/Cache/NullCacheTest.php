@@ -26,96 +26,108 @@ use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class NullCacheTest extends TestCase
 {
-	use DataProviderTrait;
+    use DataProviderTrait;
 
-	/**
-	 * @test get()
-	 */
-	public function getReturnsDefault()
-	{
-		$cache = new NullCache;
+    /**
+     * @test get()
+     */
+    public function getReturnsDefault()
+    {
+        $cache = new NullCache;
 
-		$this->assertSame('default', $cache->get('key', 'default'));
-	}
+        $this->assertSame('default', $cache->get('key', 'default'));
+    }
 
-	/**
-	 * @test get()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function getWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$cache = new NullCache;
+    /**
+     * @test get()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function getWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $cache = new NullCache;
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->get($invalid_key);
-	}
+        $cache->get($invalid_key);
+    }
 
-	/**
-	 * @test set()
-	 */
-	public function setReturnsTrue()
-	{
-		$cache = new NullCache;
+    /**
+     * @test set()
+     */
+    public function setReturnsTrue()
+    {
+        $cache = new NullCache;
 
-		$this->assertTrue($cache->set('key', 'foobar'));
+        $this->assertTrue($cache->set('key', 'foobar'));
 
-		// Test that the setted value not returns
-		$this->assertSame('default', $cache->get('key', 'default'));
-	}
+        // Test that the setted value not returns
+        $this->assertSame('default', $cache->get('key', 'default'));
+    }
 
-	/**
-	 * @test set()
-	 */
-	public function setWithTtlReturnsTrue()
-	{
-		$cache = new NullCache;
+    /**
+     * @test set()
+     */
+    public function setWithTtlReturnsTrue()
+    {
+        $cache = new NullCache;
 
-		$this->assertTrue($cache->set('key', 'foobar', 3600));
+        $this->assertTrue($cache->set('key', 'foobar', 3600));
 
-		// Test that the setted value not returns
-		$this->assertSame('default', $cache->get('key', 'default'));
-	}
+        // Test that the setted value not returns
+        $this->assertSame('default', $cache->get('key', 'default'));
+    }
 
-	/**
-	 * @test set()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function setWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$cache = new NullCache;
+    /**
+     * @test set()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function setWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $cache = new NullCache;
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->set($invalid_key, 'value');
-	}
+        $cache->set($invalid_key, 'value');
+    }
 
-	/**
-	 * @test delete()
-	 */
-	public function deleteReturnsTrue()
-	{
-		$cache = new NullCache;
+    /**
+     * @test delete()
+     */
+    public function deleteReturnsTrue()
+    {
+        $cache = new NullCache;
 
-		$this->assertTrue($cache->delete('key'));
-	}
+        $this->assertTrue($cache->delete('key'));
+    }
 
-	/**
-	 * @test delete()
-	 *
-	 * @dataProvider InvalidKeyProvider
-	 */
-	public function deleteWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
-	{
-		$cache = new NullCache;
+    /**
+     * @test delete()
+     *
+     * @dataProvider InvalidKeyProvider
+     *
+     * @param mixed $invalid_key
+     * @param mixed $exception_name
+     * @param mixed $message
+     */
+    public function deleteWithInvalidKeyThrowsException($invalid_key, $exception_name, $message)
+    {
+        $cache = new NullCache;
 
-		$this->expectException($exception_name);
-		$this->expectExceptionMessage($message);
+        $this->expectException($exception_name);
+        $this->expectExceptionMessage($message);
 
-		$cache->delete($invalid_key);
-	}
+        $cache->delete($invalid_key);
+    }
 }

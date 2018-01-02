@@ -25,4 +25,6 @@ namespace YoutubeDownloader\VideoInfo;
  *
  * This exception is thrown if there is an error with the input
  */
-class InvalidInputException extends Exception {}
+class InvalidInputException extends Exception
+{
+}

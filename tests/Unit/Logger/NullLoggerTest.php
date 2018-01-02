@@ -28,26 +28,26 @@ use YoutubeDownloader\Tests\Fixture\Logger\Psr3LoggerAdapter;
 
 class NullLoggerTest extends TestCase
 {
-	/**
-	 * @test NullLogger implements Logger
-	 */
-	public function implementsLogger()
-	{
-		$logger = new NullLogger();
+    /**
+     * @test NullLogger implements Logger
+     */
+    public function implementsLogger()
+    {
+        $logger = new NullLogger();
 
-		$this->assertInstanceOf(Logger::class, $logger);
-	}
+        $this->assertInstanceOf(Logger::class, $logger);
+    }
 
-	/**
-	 * @test NullLogger is compatible with Psr\Log\LoggerInterface
-	 */
-	public function isPsr3Compatible()
-	{
-		$logger = new NullLogger();
+    /**
+     * @test NullLogger is compatible with Psr\Log\LoggerInterface
+     */
+    public function isPsr3Compatible()
+    {
+        $logger = new NullLogger();
 
-		$adapter = new Psr3LoggerAdapter($logger);
+        $adapter = new Psr3LoggerAdapter($logger);
 
-		$this->assertInstanceOf(LoggerInterface::class, $adapter);
-		$this->assertInstanceOf(Logger::class, $adapter);
-	}
+        $this->assertInstanceOf(LoggerInterface::class, $adapter);
+        $this->assertInstanceOf(Logger::class, $adapter);
+    }
 }
