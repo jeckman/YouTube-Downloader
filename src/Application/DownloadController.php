@@ -179,8 +179,8 @@ class DownloadController extends ControllerAbstract
         $temp_folder = realpath($config->get('MP3TempDir'));
         $mediaName = $video_info->getCleanedTitle() . '.' . $media_extension;
 
-        $temp_file = $temp_folder . '/' . $mediaName;
-        $mp3_file = $temp_folder . '/' . $video_info->getCleanedTitle() . '.mp3';
+        $temp_file = $temp_folder . \DIRECTORY_SEPARATOR . $mediaName;
+        $mp3_file = $temp_folder . \DIRECTORY_SEPARATOR . $video_info->getCleanedTitle() . '.mp3';
 
         // Return the mp3 file if it already exist
         if (file_exists($mp3_file)) {
@@ -194,7 +194,7 @@ class DownloadController extends ControllerAbstract
 
         // Download file with curl
         set_time_limit(0);
-        $fp = fopen($temp_folder . '/' . $mediaName, 'w+');
+        $fp = fopen($temp_file, 'w+');
         $ch = curl_init($media_url);
         curl_setopt($ch, CURLOPT_TIMEOUT, 50);
         // write curl response to file
@@ -202,11 +202,12 @@ class DownloadController extends ControllerAbstract
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
         $curl_response = curl_exec($ch);
+        $possibleErrorMessage = curl_error($ch);
         curl_close($ch);
         fclose($fp);
 
         if ($curl_response !== true) {
-            throw new Exception('Download media from url "' . $media_url . '" to "' . $temp_file . '" failed.');
+            throw new Exception('Download media from url "' . $media_url . '" to "' . $temp_file . '" failed. Reason: ' . $possibleErrorMessage);
         }
 
         // Download media from youtube success
