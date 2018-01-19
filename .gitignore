@@ -1,6 +1,5 @@
 cache/*
 composer.phar
-composer.lock
 config/custom.php
 logs/*
 vendor
