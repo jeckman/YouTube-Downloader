@@ -40,19 +40,21 @@ class SignatureDecipher
      */
     public static function getPlayerInfoByVideoId($videoID)
     {
-        $playerID = self::loadURL('https://www.youtube.com/watch?v=' . $videoID);
-        $playerID = explode("\/yts\/jsbin\/player-", $playerID);
+        $data = self::loadURL('https://www.youtube.com/watch?v=' . $videoID);
+        $data = explode("/yts/jsbin/player", $data)[1];
+        $data = explode('"', $data)[0];
+        $playerURL = 'https://www.youtube.com/yts/jsbin/player'.$data;
 
-        if (count($playerID) === 0) {
+        try{
+            $playerID = explode("-", explode("/", $data)[0]);
+            $playerID = $playerID[count($playerID)-1];
+        } catch(\Exception $e){
             throw new \Exception(sprintf(
                 'Failed to retrieve player script for video id: %s',
                 $videoID
             ));
+            return false;
         }
-
-        $playerID = $playerID[1];
-        $playerURL = str_replace('\/', '/', explode('"', $playerID)[0]);
-        $playerID = explode('/', $playerURL)[0];
 
         return [
             $playerID,
@@ -72,9 +74,7 @@ class SignatureDecipher
      */
     public static function downloadRawPlayerScript($playerURL)
     {
-        return self::loadURL(
-            'https://youtube.com/yts/jsbin/player-' . $playerURL
-        );
+        return self::loadURL($playerURL);
     }
 
     /**
@@ -93,6 +93,39 @@ class SignatureDecipher
             $logger = new NullLogger;
         }
 
+        // Todo: This opcode should be saved to cache
+        $opcode = self::extractDecipherOpcode($decipherScript, $logger);
+
+        $decipheredSignature = self::executeSignaturePattern(
+            $opcode['decipherPatterns'],
+            $opcode['deciphers'],
+            $signature,
+            $logger
+        );
+
+        // For debugging
+        $logger->debug(
+            '{method}: Results:',
+            ['method' => __METHOD__]
+        );
+
+        $logger->debug(
+            '{method}: Signature = {signature}',
+            ['method' => __METHOD__, 'signature' => $signature]
+        );
+
+        $logger->debug(
+            '{method}: Deciphered = {decipheredSignature}',
+            ['method' => __METHOD__, 'decipheredSignature' => $decipheredSignature]
+        );
+
+        //file_put_contents("Deciphers".rand(1, 100000).".log", ob_get_contents()); // If you need to debug all video
+
+        //Return signature
+        return $decipheredSignature;
+    }
+
+    public static function extractDecipherOpcode($decipherScript, Logger $logger){
         $logger->debug(
             '{method}: Load player script and execute patterns from player script',
             ['method' => __METHOD__]
@@ -176,36 +209,13 @@ class SignatureDecipher
         $decipherPatterns = str_replace('(a,', '->(', $decipherPatterns);
         $decipherPatterns = explode(';', explode('){', $decipherPatterns)[1]);
 
-        $decipheredSignature = self::executeSignaturePattern(
-            $decipherPatterns,
-            $deciphers,
-            $signature,
-            $logger
-        );
-
-        // For debugging
-        $logger->debug(
-            '{method}: Results:',
-            ['method' => __METHOD__]
-        );
-
-        $logger->debug(
-            '{method}: Signature = {signature}',
-            ['method' => __METHOD__, 'signature' => $signature]
-        );
-
-        $logger->debug(
-            '{method}: Deciphered = {decipheredSignature}',
-            ['method' => __METHOD__, 'decipheredSignature' => $decipheredSignature]
-        );
-
-        //file_put_contents("Deciphers".rand(1, 100000).".log", ob_get_contents()); // If you need to debug all video
-
-        //Return signature
-        return $decipheredSignature;
+        return [
+            'decipherPatterns'=>$decipherPatterns,
+            'deciphers'=>$deciphers
+        ];
     }
 
-    private static function executeSignaturePattern($patterns, $deciphers, $signature, Logger $logger)
+    public static function executeSignaturePattern($patterns, $deciphers, $signature, Logger $logger)
     {
         $logger->debug(
             '{method}: Patterns = {patterns}',
@@ -299,10 +309,12 @@ class SignatureDecipher
     private static function loadURL($url)
     {
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_ENCODING, "gzip");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         $data = curl_exec($ch);
         curl_close($ch);
 
