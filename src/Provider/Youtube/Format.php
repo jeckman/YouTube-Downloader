@@ -162,7 +162,6 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
         }
 
         $this->data['url'] = $this->raw_data['url'] . $signature;
-        die($this->data['url']);
 
         $type = explode(';', $this->raw_data['type']);
         $this->data['type'] = $type[0];
