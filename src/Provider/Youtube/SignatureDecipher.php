@@ -77,14 +77,14 @@ class SignatureDecipher
         return self::loadURL($playerURL);
     }
 
-    /**
+    /** [Deprecated]
      * decipher a signature with a raw player script
      *
      * @param string $decipherScript
      * @param string $signature
      * @param Logger $logger
      *
-     * @return string returns the decipherd signature
+     * @return string returns the deciphered signature
      */
     public static function decipherSignatureWithRawPlayerScript($decipherScript, $signature, Logger $logger = null)
     {
@@ -93,7 +93,6 @@ class SignatureDecipher
             $logger = new NullLogger;
         }
 
-        // Todo: This opcode should be saved to cache
         $opcode = self::extractDecipherOpcode($decipherScript, $logger);
 
         $decipheredSignature = self::executeSignaturePattern(
@@ -125,6 +124,14 @@ class SignatureDecipher
         return $decipheredSignature;
     }
 
+    /**
+     * extract decipher opcode from raw player script
+     *
+     * @param string $decipherScript
+     * @param Logger $logger
+     *
+     * @return array return operation codes
+     */
     public static function extractDecipherOpcode($decipherScript, Logger $logger){
         $logger->debug(
             '{method}: Load player script and execute patterns from player script',
@@ -215,6 +222,16 @@ class SignatureDecipher
         ];
     }
 
+    /**
+     * decipher a signature with opcodes
+     *
+     * @param string $patterns
+     * @param string $deciphers
+     * @param string $signature
+     * @param Logger $logger
+     *
+     * @return string return deciphered signature
+     */
     public static function executeSignaturePattern($patterns, $deciphers, $signature, Logger $logger)
     {
         $logger->debug(
