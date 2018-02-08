@@ -18,29 +18,17 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace YoutubeDownloader\Application;
+namespace YoutubeDownloader\Config;
 
 /**
- * The main controller
+ * interface for config loader
  */
-class MainController extends ControllerAbstract
+interface Loader
 {
     /**
-     * Excute the Controller
+     * export the config as array
      *
-     * @param string                            $route
-     * @param YoutubeDownloader\Application\App $app
+     * @return array
      */
-    public function execute()
-    {
-        $config = $this->get('config');
-        $template = $this->get('template');
-
-        $gui_config = $config->get('gui');
-
-        echo $template->render('index.php', [
-            'app_version' => $this->getAppVersion(),
-            'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions']),
-        ]);
-    }
+    public function exportAsArray();
 }

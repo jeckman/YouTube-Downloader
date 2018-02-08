@@ -18,29 +18,22 @@
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace YoutubeDownloader\Application;
+namespace YoutubeDownloader\Config;
 
 /**
- * The main controller
+ * interface for Config class
  */
-class MainController extends ControllerAbstract
+interface Config
 {
     /**
-     * Excute the Controller
+     * Get a config value
      *
-     * @param string                            $route
-     * @param YoutubeDownloader\Application\App $app
+     *
+     * @param string $key
+     *
+     * @throws \InvalidArgumentException if argument $key don't exists
+     *
+     * @return mixed
      */
-    public function execute()
-    {
-        $config = $this->get('config');
-        $template = $this->get('template');
-
-        $gui_config = $config->get('gui');
-
-        echo $template->render('index.php', [
-            'app_version' => $this->getAppVersion(),
-            'showBrowserExtensions' => ($this->isUseragentChrome($_SERVER['HTTP_USER_AGENT']) and $gui_config['showBrowserExtensions']),
-        ]);
-    }
+    public function get($key);
 }

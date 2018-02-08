@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new `YoutubeDownloader\Config\TransformationConfig` for a BC friendly configuraion
+
+### Changed
+
+- Moved configuration `$config['ThumbnailImageMode']` to `$config['gui']['ThumbnailImageMode']`
+- Moved configuration `$config['VideoLinkMode']` to `$config['gui']['VideoLinkMode']`
+- Moved configuration `$config['showBrowserExtensions']` to `$config['gui']['showBrowserExtensions']`
+
+### Deprecated
+
+- `YoutubeDownloader\Config` will be removed in 0.8, use `YoutubeDownloader\Config\TransformationConfig` instead
+
 ### Removed
 
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\Provider::createFromConfigAndToolkit()` was removed, use `YoutubeDownloader\Provider\Youtube\Provider::createFromOptions()` instead

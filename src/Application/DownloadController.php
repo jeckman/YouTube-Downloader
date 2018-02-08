@@ -21,7 +21,7 @@
 namespace YoutubeDownloader\Application;
 
 use Exception;
-use YoutubeDownloader\Config;
+use YoutubeDownloader\Config\Config;
 use YoutubeDownloader\VideoInfo\VideoInfo;
 
 /**
@@ -55,14 +55,16 @@ class DownloadController extends ControllerAbstract
 
         // Fetch and serve
         if ($url) {
+            $gui_config = $config->get('gui');
+
             // prevent unauthorized download
-            if ($config->get('VideoLinkMode') === 'direct' and !isset($_GET['getmp3'])) {
+            if ($gui_config['VideoLinkMode'] === 'direct' and !isset($_GET['getmp3'])) {
                 $this->responseWithErrorMessage(
                     'VideoLinkMode: proxy download not enabled'
                 );
             }
 
-            if ($config->get('VideoLinkMode') !== 'direct'
+            if ($gui_config['VideoLinkMode'] !== 'direct'
                 and ! isset($_GET['getmp3'])
                 and ! preg_match('@https://[^\.]+\.googlevideo.com/@', $url)
             ) {

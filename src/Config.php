@@ -20,10 +20,18 @@
 
 namespace YoutubeDownloader;
 
+@trigger_error('The ' . __NAMESPACE__ . '\Config class is deprecated since version 0.7 and will be removed in 0.8. Use the YoutubeDownloader\Config\TransformationConfig class instead.', E_USER_DEPRECATED);
+
+use YoutubeDownloader\Config\Config as ConfigInterface;
+use YoutubeDownloader\Config\FileLoader;
+use YoutubeDownloader\Config\TransformationConfig;
+
 /**
  * Config class
+ *
+ * @deprecated since version 0.7, to be removed in 0.8. Use `YoutubeDownloader\Config\TransformationConfig` instead
  */
-class Config
+class Config implements ConfigInterface
 {
     /**
      * Creates the config from files
@@ -35,52 +43,32 @@ class Config
      */
     public static function createFromFiles($default, $custom = null)
     {
-        $default_config = require($default);
-        $custom_config = [];
+        $args = [new FileLoader($default)];
 
-        if (file_exists($custom)) {
-            $custom_config = require($custom);
+        if ($custom !== null) {
+            $args[] = new FileLoader($custom);
         }
 
-        $config = array_replace_recursive($default_config, $custom_config);
+        $config = call_user_func_array(
+            [TransformationConfig::class, 'createFromLoaders'],
+            $args
+        );
 
         return new self($config);
     }
 
-    private $data = [];
-
-    private $allowed_keys = [
-        'enable_youtube_decipher_signature',
-        'ThumbnailImageMode',
-        'localCache',
-        'VideoLinkMode',
-        'MP3Enable',
-        'MP3ConvertVideo',
-        'MP3Quality',
-        'MP3TempDir',
-        'ffmpegPath',
-        'aria2Path',
-        'showBrowserExtensions',
-        'multipleIPs',
-        'IPs',
-        'default_timezone',
-        'debug',
-    ];
+    private $config;
 
     /**
-     * Creates a Config from an array
+     * Creates a Config from another config
      *
      * @param array $config
      *
      * @return self
      */
-    private function __construct(array $config)
+    private function __construct(ConfigInterface $config)
     {
-        foreach ($this->allowed_keys as $key) {
-            if (array_key_exists($key, $config)) {
-                $this->data[$key] = $config[$key];
-            }
-        }
+        $this->config = $config;
     }
 
     /**
@@ -92,10 +80,6 @@ class Config
      */
     public function get($key)
     {
-        if (array_key_exists($key, $this->data)) {
-            return $this->data[$key];
-        }
-
-        throw new \InvalidArgumentException;
+        return $this->config->get($key);
     }
 }

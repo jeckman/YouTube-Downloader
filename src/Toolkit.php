@@ -21,6 +21,7 @@
 namespace YoutubeDownloader;
 
 use Exception;
+use YoutubeDownloader\Config\Config;
 use YoutubeDownloader\VideoInfo\VideoInfo;
 
 /**

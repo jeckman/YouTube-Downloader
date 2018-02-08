@@ -22,7 +22,7 @@ namespace YoutubeDownloader\Provider\Youtube;
 
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
-use YoutubeDownloader\Config;
+use YoutubeDownloader\Config\Config;
 use YoutubeDownloader\Http\HttpClientAware;
 use YoutubeDownloader\Http\HttpClientAwareTrait;
 use YoutubeDownloader\Logger\LoggerAware;
@@ -54,7 +54,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
     }
 
     /**
-     * @var YoutubeDownloader\Config
+     * @var array
      */
     private $options = [
         'use_ip' => false,
@@ -64,8 +64,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
     /**
      * Create this Provider
      *
-     * @param Config  $config
-     * @param Toolkit $toolkit
+     * @param array $options
      *
      * @return self
      */

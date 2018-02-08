@@ -20,6 +20,7 @@
 
 namespace YoutubeDownloader;
 
+use YoutubeDownloader\Config\Config;
 use YoutubeDownloader\Container\SimpleContainer;
 
 /**
@@ -48,7 +49,7 @@ class ServiceProvider
     {
         $ds = \DIRECTORY_SEPARATOR;
 
-        $container->set('YoutubeDownloader\Config', function ($c) {
+        $container->set('YoutubeDownloader\Config\Config', function ($c) {
             return $this->config;
         });
 
@@ -82,9 +83,9 @@ class ServiceProvider
                 new \YoutubeDownloader\Logger\Handler\NullHandler()
             );
 
-            if ($c->get('YoutubeDownloader\Config')->get('debug') === true) {
+            if ($c->get('YoutubeDownloader\Config\Config')->get('debug') === true) {
                 # code...
-                $now = new \DateTime('now', new \DateTimeZone($c->get('YoutubeDownloader\Config')->get('default_timezone')));
+                $now = new \DateTime('now', new \DateTimeZone($c->get('YoutubeDownloader\Config\Config')->get('default_timezone')));
 
                 $filepath = sprintf(
                     '%s' . \DIRECTORY_SEPARATOR . '%s',
@@ -127,7 +128,7 @@ class ServiceProvider
 
         // Create Youtube Provider
         $container->set('YoutubeDownloader\Provider\Youtube\Provider', function ($c) {
-            $config = $c->get('YoutubeDownloader\Config');
+            $config = $c->get('YoutubeDownloader\Config\Config');
             $toolkit = $c->get('YoutubeDownloader\Toolkit');
 
             $options = [
@@ -156,7 +157,8 @@ class ServiceProvider
         });
 
         // Set aliases for BC
-        $container->set('config', 'YoutubeDownloader\Config');
+        $container->set('YoutubeDownloader\Config', 'YoutubeDownloader\Config\Config');
+        $container->set('config', 'YoutubeDownloader\Config\Config');
         $container->set('template', 'YoutubeDownloader\Template\Engine');
         $container->set('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
         $container->set('toolkit', 'YoutubeDownloader\Toolkit');
