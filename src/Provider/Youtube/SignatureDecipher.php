@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-// Because we will processing 1MB of file I will not use RegExp for processing strings
 
 namespace YoutubeDownloader\Provider\Youtube;
 
@@ -26,6 +25,10 @@ use YoutubeDownloader\Logger\NullLogger;
 
 /**
  * a youtube signatur decipher
+ *
+ * @author StefansArya <arya.cipta@yahoo.com>
+ *
+ * Because it will processing 1MB of file it will not use RegExp for processing strings
  */
 class SignatureDecipher
 {
@@ -41,18 +44,19 @@ class SignatureDecipher
     public static function getPlayerInfoByVideoId($videoID)
     {
         $data = self::loadURL('https://www.youtube.com/watch?v=' . $videoID);
-        $data = explode("/yts/jsbin/player", $data)[1];
+        $data = explode('/yts/jsbin/player', $data)[1];
         $data = explode('"', $data)[0];
-        $playerURL = 'https://www.youtube.com/yts/jsbin/player'.$data;
+        $playerURL = 'https://www.youtube.com/yts/jsbin/player' . $data;
 
-        try{
-            $playerID = explode("-", explode("/", $data)[0]);
+        try {
+            $playerID = explode('-', explode('/', $data)[0]);
             $playerID = $playerID[count($playerID)-1];
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception(sprintf(
                 'Failed to retrieve player script for video id: %s',
                 $videoID
             ));
+
             return false;
         }
 
@@ -77,8 +81,10 @@ class SignatureDecipher
         return self::loadURL($playerURL);
     }
 
-    /** [Deprecated]
+    /**
      * decipher a signature with a raw player script
+     *
+     * @deprecated since version 0.7, to be removed in 0.8.
      *
      * @param string $decipherScript
      * @param string $signature
@@ -88,6 +94,8 @@ class SignatureDecipher
      */
     public static function decipherSignatureWithRawPlayerScript($decipherScript, $signature, Logger $logger = null)
     {
+        @trigger_error(__METHOD__ . ' is deprecated since version 0.7, to be removed in 0.8.', E_USER_DEPRECATED);
+
         // BC: Use NullLogger if no Logger was set
         if ($logger === null) {
             $logger = new NullLogger;
@@ -132,7 +140,8 @@ class SignatureDecipher
      *
      * @return array return operation codes
      */
-    public static function extractDecipherOpcode($decipherScript, Logger $logger){
+    public static function extractDecipherOpcode($decipherScript, Logger $logger)
+    {
         $logger->debug(
             '{method}: Load player script and execute patterns from player script',
             ['method' => __METHOD__]
@@ -217,13 +226,15 @@ class SignatureDecipher
         $decipherPatterns = explode(';', explode('){', $decipherPatterns)[1]);
 
         return [
-            'decipherPatterns'=>$decipherPatterns,
-            'deciphers'=>$deciphers
+            'decipherPatterns' => $decipherPatterns,
+            'deciphers' => $deciphers,
         ];
     }
 
     /**
      * decipher a signature with opcodes
+     *
+     * @internal
      *
      * @param string $patterns
      * @param string $deciphers
@@ -326,7 +337,7 @@ class SignatureDecipher
     private static function loadURL($url)
     {
         $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_ENCODING, "gzip");
+        curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);

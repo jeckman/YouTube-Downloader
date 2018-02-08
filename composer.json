@@ -4,7 +4,7 @@
     "description": "YouTube-Downloader",
     "homepage": "https://github.com/jeckman/YouTube-Downloader",
     "keywords": ["YouTube-Downloader", "YouTube", "Downloader"],
-    "license": "GPL2",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "John Eckman",
