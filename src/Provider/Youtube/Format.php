@@ -136,16 +136,20 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
 
             $cache_key = 'playerscript_' . $playerID;
 
-            $decipherScript = $this->getCache()->get($cache_key, null);
+            $opcode = $this->getCache()->get($cache_key, null);
 
-            if ($decipherScript === null) {
-                $decipherScript = SignatureDecipher::downloadRawPlayerScript($playerURL);
+            if ($opcode === null) {
+                $opcode = SignatureDecipher::downloadRawPlayerScript($playerURL);
+                $opcode = json_encode(SignatureDecipher::extractDecipherOpcode($opcode, $this->getLogger()));
 
-                $this->getCache()->set($cache_key, $decipherScript, 3600*24);
+                $this->getCache()->set($cache_key, $opcode, 3600*24);
             }
 
-            $sig = SignatureDecipher::decipherSignatureWithRawPlayerScript(
-                $decipherScript,
+            $opcode = json_decode($opcode, true);
+
+            $sig = SignatureDecipher::executeSignaturePattern(
+                $opcode['decipherPatterns'],
+                $opcode['deciphers'],
                 $this->raw_data['s'],
                 $this->getLogger()
             );
