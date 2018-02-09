@@ -128,14 +128,36 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
 
         // The video signature need to be deciphered
         if (isset($this->raw_data['s']) and $this->config['decipher_signature']) {
-            // TODO: Remove signature decipher from Format
-            $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
 
-            $playerID = $player_info[0];
-            $playerURL = $player_info[1];
+            // TODO: Remove signature decipher from Format
+            $videoIds = $this->getCache()->get('videoIds', null);
+            if(!$videoIds) $videoIds = [];
+            
+            if(!in_array($this->getVideoId(), $videoIds)) {
+                $videoIds[] = $this->getVideoId();
+                $this->getCache()->set('videoIds', $videoIds, 3600*24);
+                
+                // getPlayerInfoByVideoId should be run once only for a video
+                $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
+
+                $playerID = $player_info[0];
+                $playerURL = $player_info[1];
+                $this->getCache()->set('playerID', [$playerID, $playerURL], 3600*24);
+            }
+            else {
+                $playerID = $this->getCache()->get('playerID', null);
+                if($playerID){
+                    $playerURL = $playerID[1];
+                    $playerID = $playerID[0];
+                } else {
+               		$this->getCache()->set('videoIds', false, 3600*24);
+               		$this->getCache()->set('playerID', false, 3600*24);
+               		return $this->parseUrl();
+            	}
+            }
+
 
             $cache_key = 'playerscript_' . $playerID;
-
             $opcode = $this->getCache()->get($cache_key, null);
 
             if ($opcode === null) {
