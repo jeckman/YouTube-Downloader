@@ -323,6 +323,7 @@ class SignatureDecipher
                             '{method}: (Swapping array)',
                             ['method' => __METHOD__]
                         );
+
                     break;
                     case 'a.splice(0,b)':
                         $processSignature = array_slice($processSignature, $number);
