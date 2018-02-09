@@ -128,14 +128,32 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
 
         // The video signature need to be deciphered
         if (isset($this->raw_data['s']) and $this->config['decipher_signature']) {
-            // TODO: Remove signature decipher from Format
-            $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
 
+            // TODO: Remove signature decipher from Format
+            $videoIds = $this->getCache()->get('videoIds', []);
+            
+            if(!in_array($this->getVideoId(), $videoIds)) {
+                $videoIds[] = $this->getVideoId();
+                $this->getCache()->set('videoIds', $videoIds, 900);
+                
+                // getPlayerInfoByVideoId should be run once only for a video
+                $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
+
+                $this->getCache()->set('playerID', $player_info, 900);
+            }
+            else {
+                $player_info = $this->getCache()->get('playerID', null);
+                if ($player_info === null){
+               		$this->getCache()->delete('videoIds');
+                	$this->getCache()->delete('playerID');
+               		return $this->parseUrl();
+            	}
+            }
+        
             $playerID = $player_info[0];
             $playerURL = $player_info[1];
 
             $cache_key = 'playerscript_' . $playerID;
-
             $opcode = $this->getCache()->get($cache_key, null);
 
             if ($opcode === null) {
