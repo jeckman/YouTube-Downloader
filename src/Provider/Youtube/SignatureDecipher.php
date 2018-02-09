@@ -315,6 +315,15 @@ class SignatureDecipher
                         );
 
                     break;
+                    case 'var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c':
+                        $c = $processSignature[0];
+                        $processSignature[0] = $processSignature[$number%count($processSignature)];
+                        $processSignature[$number%count($processSignature)] = $c;
+                        $logger->debug(
+                            '{method}: (Swapping array)',
+                            ['method' => __METHOD__]
+                        );
+                    break;
                     case 'a.splice(0,b)':
                         $processSignature = array_slice($processSignature, $number);
                         $logger->debug(
