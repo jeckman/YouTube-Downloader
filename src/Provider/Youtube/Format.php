@@ -143,7 +143,7 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
             }
             else {
                 $player_info = $this->getCache()->get('playerID', null);
-                if ($player_info === null)
+                if ($player_info === null){
                		$this->getCache()->delete('videoIds');
                 	$this->getCache()->delete('playerID');
                		return $this->parseUrl();
