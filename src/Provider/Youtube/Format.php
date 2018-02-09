@@ -134,12 +134,12 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
             
             if(!in_array($this->getVideoId(), $videoIds)) {
                 $videoIds[] = $this->getVideoId();
-                $this->getCache()->set('videoIds', $videoIds, 3600*24);
+                $this->getCache()->set('videoIds', $videoIds, 900);
                 
                 // getPlayerInfoByVideoId should be run once only for a video
                 $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
 
-                $this->getCache()->set('playerID', $player_info, 3600*24);
+                $this->getCache()->set('playerID', $player_info, 900);
             }
             else {
                 $player_info = $this->getCache()->get('playerID', null);
