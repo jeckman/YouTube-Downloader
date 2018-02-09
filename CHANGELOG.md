@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+- new dictionary for `YoutubeDownloader\Provider\Youtube\SignatureDecipher` to handle the YouTube signature change
 - `composer.lock` as it is needed by some services
 - new method `YoutubeDownloader\Provider\Youtube\SignatureDecipher::extractDecipherOpcode()` for extracting the decipher operation codes
 
