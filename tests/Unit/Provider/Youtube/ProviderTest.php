@@ -35,7 +35,7 @@ class ProviderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
     {
         $provider = Provider::createFromOptions([]);
 
-        $this->assertSame($expected, $provider->provides($expected));
+        $this->assertSame($expected, $provider->provides($str));
     }
 
     /**
