@@ -305,9 +305,9 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     }
 
     /**
-     * Get the video_id
+     * Get the video duration in seconds
      *
-     * @return string
+     * @return int
      */
     public function getDuration()
     {
