@@ -217,6 +217,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
         'title',
         'url_encoded_fmt_stream_map',
         'adaptive_fmts',
+        'length_seconds',
     ];
 
     /**
@@ -301,6 +302,16 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     public function getVideoId()
     {
         return $this->data['video_id'];
+    }
+
+    /**
+     * Get the video duration in seconds
+     *
+     * @return int
+     */
+    public function getDuration()
+    {
+        return $this->data['length_seconds'] ? intval($this->data['length_seconds']) : 0;
     }
 
     /**
