@@ -190,7 +190,13 @@ class SignatureDecipher
 
         $deciphers = explode('(a', $decipherPatterns);
         for ($i=0; $i < count($deciphers); $i++) {
-            $deciphers[$i] = explode('.', explode(';', $deciphers[$i])[1])[0];
+            $z = explode(';', $deciphers[$i], 2)[1];
+            if (strpos($z,'[')!==false) {
+                $deciphers[$i] = explode('[', $z)[0];
+            }
+            else {
+                $deciphers[$i] = explode('.', $z)[0];
+            }
 
             if (count(explode($deciphers[$i], $decipherPatterns))>=2) {
                 // This object was most called, that's mean this is the deciphers
@@ -222,6 +228,8 @@ class SignatureDecipher
 
         // Convert pattern to array
         $decipherPatterns = str_replace($deciphersObjectVar . '.', '', $decipherPatterns);
+        $decipherPatterns = str_replace($deciphersObjectVar . '[', '', $decipherPatterns);
+        $decipherPatterns = str_replace('](a,', '->(', $decipherPatterns);
         $decipherPatterns = str_replace('(a,', '->(', $decipherPatterns);
         $decipherPatterns = explode(';', explode('){', $decipherPatterns)[1]);
 
