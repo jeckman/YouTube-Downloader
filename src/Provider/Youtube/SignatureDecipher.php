@@ -157,7 +157,7 @@ class SignatureDecipher
         }
 
         // Some preparation
-        $signatureCall = explode('("signature",', $decipherScript);
+        $signatureCall = explode('|"signature",', $decipherScript);
         $callCount = count($signatureCall);
 
         // Search for function call for example: e.set("signature",PE(f.s));
