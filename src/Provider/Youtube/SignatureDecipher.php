@@ -156,23 +156,23 @@ class SignatureDecipher
             return '';
         }
 
-        // Some preparation
-        $signatureCall = explode('|"signature",', $decipherScript);
-        $callCount = count($signatureCall);
-
-        // Search for function call for example: e.set("signature",PE(f.s));
-        // We need to get "PE"
-        $signatureFunction = '';
-        for ($i=$callCount-1; $i > 0; $i--) {
-            $signatureCall[$i] = explode(');', $signatureCall[$i])[0];
-
-            if (strpos($signatureCall[$i], '(')) {
-                $signatureFunction = explode('(', $signatureCall[$i])[0];
+        $signatureFunctionPatterns = [
+            '/(["\'])signature\1\s*,\s*([a-zA-Z0-9$]+)\(/',
+            '/\.sig\|\|([a-zA-Z0-9$]+)\(/',
+            '/yt\.akamaized\.net\/\)\s*\|\|\s*.*?\s*c\s*&&\s*d\.set\([^,]+\s*,\s*([a-zA-Z0-9$]+)\(/',
+            '/\bc\s*&&\s*d\.set\([^,]+\s*,\s*([a-zA-Z0-9$]+)\(/',
+        ];
+        // Search for function call. It must match one of patterns
+        foreach ($signatureFunctionPatterns as $pattern) {
+            preg_match($pattern, $decipherScript, $matches);
+            if (!empty($matches[1])) {
+                $signatureFunction = $matches[1];
 
                 break;
-            } elseif ($i==0) {
-                die("\n==== Failed to get signature function ====");
             }
+        }
+        if (empty($signatureFunction)) {
+            die("\n==== Failed to get signature function ====");
         }
 
         $logger->debug(
