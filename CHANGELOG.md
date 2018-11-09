@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - new dictionary for `YoutubeDownloader\Provider\Youtube\SignatureDecipher` to handle the YouTube signature change
 - `composer.lock` as it is needed by some services
 - new method `YoutubeDownloader\Provider\Youtube\SignatureDecipher::extractDecipherOpcode()` for extracting the decipher operation codes
+- new method `YoutubeDownloader\Provider\Youtube\VideoInfo::getDuration()` to get the video duration
+- Autofocus on video search input
+
+### Fixed
+
+- Some bugs fixed in decipher dictionary
 
 ### Deprecated
 
