@@ -155,57 +155,37 @@ class SignatureDecipher
 
             return '';
         }
+        
+        $decipherPatterns = explode('.split("")', $decipherScript);
+        unset($decipherPatterns[0]);
+        foreach ($decipherPatterns as $value) {
 
-        $signatureFunctionPatterns = [
-            '/(["\'])signature\1\s*,\s*([a-zA-Z0-9$]+)\(/',
-            '/\.sig\|\|([a-zA-Z0-9$]+)\(/',
-            '/yt\.akamaized\.net\/\)\s*\|\|\s*.*?\s*c\s*&&\s*d\.set\([^,]+\s*,\s*([a-zA-Z0-9$]+)\(/',
-            '/\bc\s*&&\s*d\.set\([^,]+\s*,\s*([a-zA-Z0-9$]+)\(/',
-        ];
-        // Search for function call. It must match one of patterns
-        foreach ($signatureFunctionPatterns as $pattern) {
-            preg_match($pattern, $decipherScript, $matches);
-            if (!empty($matches[1])) {
-                $signatureFunction = $matches[1];
+            // Make sure it's inside a function and also have join
+            $value = explode('.join("")', explode('}', $value)[0]);
+            if(count($value) === 2){
+                $value = explode(';', $value[0]);
 
+                // Remove first and last index
+                array_pop($value);
+                unset($value[0]);
+
+                $decipherPatterns = implode(';', $value);
                 break;
             }
         }
-        if (empty($signatureFunction)) {
-            die("\n==== Failed to get signature function ====");
-        }
-
-        $logger->debug(
-            '{method}: signatureFunction = {signatureFunction}',
-            ['method' => __METHOD__, 'signatureFunction' => $signatureFunction]
-        );
-
-        $decipherPatterns = explode($signatureFunction . '=function(', $decipherScript)[1];
-        $decipherPatterns = explode('};', $decipherPatterns)[0];
-
+        
         $logger->debug(
             '{method}: decipherPatterns = {decipherPatterns}',
             ['method' => __METHOD__, 'decipherPatterns' => $decipherPatterns]
         );
 
-        $deciphers = explode('(a', $decipherPatterns);
-        for ($i=0; $i < count($deciphers); $i++) {
-            $z = explode(';', $deciphers[$i], 2)[1];
-            if (strpos($z,'[')!==false) {
-                $deciphers[$i] = explode('[', $z)[0];
-            }
-            else {
-                $deciphers[$i] = explode('.', $z)[0];
-            }
-
-            if (count(explode($deciphers[$i], $decipherPatterns))>=2) {
-                // This object was most called, that's mean this is the deciphers
-                $deciphers = $deciphers[$i];
-
-                break;
-            } elseif ($i==count($deciphers)-1) {
-                die("\n==== Failed to get deciphers function ====");
-            }
+        preg_match_all('/(?<=;).*?(?=\[|\.)/', $decipherPatterns, $deciphers);
+        if($deciphers && count($deciphers[0]) > 2){
+            $deciphers = $deciphers[0][0];
+        }
+        else{
+            throw new \Exception("Failed to get deciphers function");
+            return false;
         }
 
         $deciphersObjectVar = $deciphers;
@@ -229,9 +209,8 @@ class SignatureDecipher
         // Convert pattern to array
         $decipherPatterns = str_replace($deciphersObjectVar . '.', '', $decipherPatterns);
         $decipherPatterns = str_replace($deciphersObjectVar . '[', '', $decipherPatterns);
-        $decipherPatterns = str_replace('](a,', '->(', $decipherPatterns);
-        $decipherPatterns = str_replace('(a,', '->(', $decipherPatterns);
-        $decipherPatterns = explode(';', explode('){', $decipherPatterns)[1]);
+        $decipherPatterns = str_replace(['](a,', '(a,'], '->(', $decipherPatterns);
+        $decipherPatterns = explode(';', $decipherPatterns);
 
         return [
             'decipherPatterns' => $decipherPatterns,
@@ -267,89 +246,70 @@ class SignatureDecipher
         );
 
         // Execute every $patterns with $deciphers dictionary
-        $processSignature = $signature;
+        $processSignature = str_split($signature);
         for ($i=0; $i < count($patterns); $i++) {
             // This is the deciphers dictionary, and should be updated if there are different pattern
             // as PHP can't execute javascript
 
-            //Handle non deciphers pattern
-            if (strpos($patterns[$i], '->')===false) {
-                if (strpos($patterns[$i], '.split("")')!==false) {
-                    $processSignature = str_split($processSignature);
+            //Separate commands
+            $executes = explode('->', $patterns[$i]);
+
+            // This is parameter b value for 'function(a,b){}'
+            $number = intval(str_replace(['(', ')'], '', $executes[1]));
+            // Parameter a = $processSignature
+
+            $execute = $deciphers[$executes[0]];
+
+            //Find matched command dictionary
+            $logger->debug(
+                "{method}: Executing $executes[0] -> $number",
+                ['method' => __METHOD__]
+            );
+            switch ($execute) {
+                case 'a.reverse()':
+                    $processSignature = array_reverse($processSignature);
                     $logger->debug(
-                        '{method}: String splitted',
+                        '{method}: (Reversing array)',
                         ['method' => __METHOD__]
                     );
-                } elseif (strpos($patterns[$i], '.join("")')!==false) {
-                    $processSignature = implode('', $processSignature);
+
+                break;
+                case 'var c=a[0];a[0]=a[b%a.length];a[b]=c':
+                    $c = $processSignature[0];
+                    $processSignature[0] = $processSignature[$number%count($processSignature)];
+                    $processSignature[$number] = $c;
                     $logger->debug(
-                        '{method}: String combined',
+                        '{method}: (Swapping array)',
                         ['method' => __METHOD__]
                     );
-                } else {
+
+                break;
+                case 'var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c':
+                    $c = $processSignature[0];
+                    $processSignature[0] = $processSignature[$number%count($processSignature)];
+                    $processSignature[$number%count($processSignature)] = $c;
+                    $logger->debug(
+                        '{method}: (Swapping array)',
+                        ['method' => __METHOD__]
+                    );
+
+                break;
+                case 'a.splice(0,b)':
+                    $processSignature = array_slice($processSignature, $number);
+                    $logger->debug(
+                        '{method}: Removing array',
+                        ['method' => __METHOD__]
+                    );
+
+                break;
+                default:
                     die("\n==== Decipher dictionary was not found ====");
-                }
-            } else {
-                //Separate commands
-                $executes = explode('->', $patterns[$i]);
 
-                // This is parameter b value for 'function(a,b){}'
-                $number = intval(str_replace(['(', ')'], '', $executes[1]));
-                // Parameter a = $processSignature
-
-                $execute = $deciphers[$executes[0]];
-
-                //Find matched command dictionary
-                $logger->debug(
-                    "{method}: Executing $executes[0] -> $number",
-                    ['method' => __METHOD__]
-                );
-                switch ($execute) {
-                    case 'a.reverse()':
-                        $processSignature = array_reverse($processSignature);
-                        $logger->debug(
-                            '{method}: (Reversing array)',
-                            ['method' => __METHOD__]
-                        );
-
-                    break;
-                    case 'var c=a[0];a[0]=a[b%a.length];a[b]=c':
-                        $c = $processSignature[0];
-                        $processSignature[0] = $processSignature[$number%count($processSignature)];
-                        $processSignature[$number] = $c;
-                        $logger->debug(
-                            '{method}: (Swapping array)',
-                            ['method' => __METHOD__]
-                        );
-
-                    break;
-                    case 'var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c':
-                        $c = $processSignature[0];
-                        $processSignature[0] = $processSignature[$number%count($processSignature)];
-                        $processSignature[$number%count($processSignature)] = $c;
-                        $logger->debug(
-                            '{method}: (Swapping array)',
-                            ['method' => __METHOD__]
-                        );
-
-                    break;
-                    case 'a.splice(0,b)':
-                        $processSignature = array_slice($processSignature, $number);
-                        $logger->debug(
-                            '{method}: Removing array',
-                            ['method' => __METHOD__]
-                        );
-
-                    break;
-                    default:
-                        die("\n==== Decipher dictionary was not found ====");
-
-                    break;
-                }
+                break;
             }
         }
 
-        return $processSignature;
+        return implode('', $processSignature);
     }
 
     private static function loadURL($url)
