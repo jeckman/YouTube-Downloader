@@ -180,7 +180,7 @@ class SignatureDecipher
         );
 
         preg_match_all('/(?<=;).*?(?=\[|\.)/', $decipherPatterns, $deciphers);
-        if($deciphers && count($deciphers[0]) > 2){
+        if($deciphers && count($deciphers[0]) >= 2){
             $deciphers = $deciphers[0][0];
         }
         else{
