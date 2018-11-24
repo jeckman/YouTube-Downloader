@@ -73,7 +73,7 @@ return [
     // set to 'high' to get and set highest quality
     // info: highest Youtube audio bitrate is 160k, higher than that is maybe useless
     'MP3TempDir' => realpath(__DIR__ . '/../cache/'), // temporary download location for media
-    'ffmpegPath' => 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe', // ffmpeg location path
+    'ffmpegPath' => 'C:\Program Files (x86)\ffmpeg\ffmpeg.exe', // ffmpeg location path (for Linux users set this to "ffmpeg" and nothing else)
     'aria2Path' => 'C:\cygwin\bin\aria2c.exe', // aria2 location path, @deprecated since 0.6, to be removed in 0.7
 
     /*
