@@ -361,10 +361,19 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
      */
     public function getCleanedTitle()
     {
-        // Removes non-alphanumeric and unicode character.
-        $title = preg_replace('/[^A-Za-z0-9]+/', '-', $this->getTitle());
+        // Removes non-alphanumeric and useless character
+        $special_chars = array(".","?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", chr(0));
+        $filename = str_replace($special_chars,' ',$name);
+        
+        // Emoji is being removed
+        $filename = preg_replace( "#\x{00a0}#siu", ' ', $filename );
+        
+        // Litlle Housekeeping
+        $filename = str_replace( array( '%20', '+', ' '), '-', $filename );
+        $filename = preg_replace( '/[\r\n\t -]+/', '-', $filename );
+        $filename = trim( $filename, '.-_' );
 
-        return trim($title, '-');
+        return $filename;
     }
 
     /**
