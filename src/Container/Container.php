@@ -20,7 +20,7 @@
 
 namespace YoutubeDownloader\Container;
 
-@trigger_error('The ' . __NAMESPACE__ . '\Container class is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Container\ContainerInterface instead.', E_USER_DEPRECATED);
+@trigger_error('The ' . __NAMESPACE__ . '\Container interface is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Container\ContainerInterface instead.', E_USER_DEPRECATED);
 
 use Psr\Container\ContainerInterface;
 

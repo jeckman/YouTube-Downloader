@@ -20,7 +20,7 @@
 
 namespace YoutubeDownloader\Logger;
 
-@trigger_error('The ' . __NAMESPACE__ . '\Logger class is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Log\LoggerInterface instead.', E_USER_DEPRECATED);
+@trigger_error('The ' . __NAMESPACE__ . '\Logger interface is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Log\LoggerInterface instead.', E_USER_DEPRECATED);
 
 use Psr\Log\LoggerInterface;
 

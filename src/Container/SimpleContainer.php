@@ -21,12 +21,11 @@
 namespace YoutubeDownloader\Container;
 
 use Closure;
-use Psr\Container\ContainerInterface;
 
 /**
  * A simple container implementation with a setter
  */
-class SimpleContainer implements ContainerInterface
+class SimpleContainer implements Container
 {
     /**
      * @var array

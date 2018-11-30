@@ -20,17 +20,13 @@
 
 namespace YoutubeDownloader\Logger;
 
+use Psr\Log\LoggerAwareInterface;
+
 /**
  * Describes a logger-aware instance
  *
  * This interface is compatible with PSR-3 Psr\Log\LoggerAwareInterface
  */
-interface LoggerAware
+interface LoggerAware extends LoggerAwareInterface
 {
-    /**
-     * Sets a logger instance on the object
-     *
-     * @param LoggerInterface $logger
-     */
-    public function setLogger(Logger $logger);
 }
