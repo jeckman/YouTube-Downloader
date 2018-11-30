@@ -127,7 +127,20 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
     {
         return [
             ['Replaces all spaces with hyphens.', 'Replaces-all-spaces-with-hyphens'],
-            ['Как делать бэкапы. Cobian Backup.', 'Как-делать-бэкапы-Cobian-Backup'], // Removes useless chars.
+            ['Как делать бэкапы. Cobian Backup.', 'Как-делать-бэкапы-Cobian-Backup'], // Keep kyril chars
+            ['测试', '测试'], // Keep chinese chars
+            ['kiểm tra', 'kiểm-tra'],
+            ['ทดสอบ', 'ทดสอบ'], // Keep korean chars
+            ['טעסטינג', 'טעסטינג'], // Keep jiddish chars
+            ['اختبارات', 'اختبارات'], // Keep arab chars
+            ['test.?[]/\\=<>:;,\'"%26$#*()|~`!{}%+chars', 'test-chars'], // %26 => &
+            ['replace%20space', 'replace-space'], // %20 => " " (space)
+            ["remove\ttabs", 'remove-tabs'],
+            ["remove\rlinebreaks", 'remove-linebreaks'],
+            ["remove\nline-breaks", 'remove-line-breaks'],
+            ["remove-\r\n-linebreaks", 'remove-linebreaks'],
+            // ['remove\xf0\x9f\x98\x80emojis', 'remove-emojis'], // not working
+            // ['remove😍emojis', 'remove-emojis'], // not working
         ];
     }
 
