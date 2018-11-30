@@ -20,10 +20,14 @@
 
 namespace YoutubeDownloader\Logger;
 
+@trigger_error('The ' . __NAMESPACE__ . '\Logger class is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Log\LoggerInterface instead.', E_USER_DEPRECATED);
+
 use Psr\Log\LoggerInterface;
 
 /**
  * Describes a logger instance
+ *
+ * @deprecated since version 0.8, to be removed in 0.9. Use `Psr\Log\LoggerInterface` instead
  *
  * This interface is compatible with PSR-3 Psr\Log\LoggerInterface
  *
@@ -39,4 +43,6 @@ use Psr\Log\LoggerInterface;
  * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
  * for the full interface specification.
  */
-interface Logger extends LoggerInterface {}
+interface Logger extends LoggerInterface
+{
+}

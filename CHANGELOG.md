@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Deprecated
+
+- `YoutubeDownloader\Container\Container` interface will be removed in 0.9, use `Psr\Container\ContainerInterface` instead
+
 ### Removed
 
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\SignatureDecipher::decipherSignatureWithRawPlayerScript()` isn't used anymore and was removed
