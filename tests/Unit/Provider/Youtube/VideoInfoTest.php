@@ -56,8 +56,7 @@ class VideoInfoTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 
         $this->assertSame('123abc', $video_info->getVideoId());
     }
-    
-    
+
     /**
      * @test getDuration()
      */

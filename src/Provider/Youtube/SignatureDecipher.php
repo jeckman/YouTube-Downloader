@@ -162,7 +162,7 @@ class SignatureDecipher
 
             // Make sure it's inside a function and also have join
             $value = explode('.join("")', explode('}', $value)[0]);
-            if(count($value) === 2){
+            if (count($value) === 2) {
                 $value = explode(';', $value[0]);
 
                 // Remove first and last index
@@ -170,6 +170,7 @@ class SignatureDecipher
                 unset($value[0]);
 
                 $decipherPatterns = implode(';', $value);
+
                 break;
             }
         }
@@ -180,11 +181,11 @@ class SignatureDecipher
         );
 
         preg_match_all('/(?<=;).*?(?=\[|\.)/', $decipherPatterns, $deciphers);
-        if($deciphers && count($deciphers[0]) >= 2){
+        if ($deciphers && count($deciphers[0]) >= 2) {
             $deciphers = $deciphers[0][0];
-        }
-        else{
-            throw new \Exception("Failed to get deciphers function");
+        } else {
+            throw new \Exception('Failed to get deciphers function');
+
             return false;
         }
 

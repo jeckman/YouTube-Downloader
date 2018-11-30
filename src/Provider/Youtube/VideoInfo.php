@@ -362,16 +362,16 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     public function getCleanedTitle()
     {
         // Removes non-alphanumeric and useless character
-        $special_chars = array(".","?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", chr(0));
-        $filename = str_replace($special_chars,' ',$this->getTitle());
-        
+        $special_chars = ['.', '?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', chr(0)];
+        $filename = str_replace($special_chars, ' ', $this->getTitle());
+
         // Emoji is being removed
-        $filename = preg_replace( "#\x{00a0}#siu", ' ', $filename);
-        
+        $filename = preg_replace("#\x{00a0}#siu", ' ', $filename);
+
         // Litlle Housekeeping
-        $filename = str_replace( array( '%20', '+', ' '), '-', $filename);
-        $filename = preg_replace( '/[\r\n\t -]+/', '-', $filename);
-        $filename = trim( $filename, '.-_');
+        $filename = str_replace(['%20', '+', ' '], '-', $filename);
+        $filename = preg_replace('/[\r\n\t -]+/', '-', $filename);
+        $filename = trim($filename, '.-_');
 
         return $filename;
     }
