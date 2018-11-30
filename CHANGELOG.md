@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.7] - 2018-11-30
 
 ### Added
 
@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
+- Non-latin letters in the title of downloaded files won't be remove anymore
 - Some bugs fixed in decipher dictionary
 
 ### Deprecated
@@ -195,7 +196,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simple library for using the functionality in other projects
 - Web interface for downloading youtube videos
 
-[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.6...HEAD
+[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.7...HEAD
+[0.7]: https://github.com/jeckman/YouTube-Downloader/compare/0.6...0.7
 [0.6]: https://github.com/jeckman/YouTube-Downloader/compare/0.5.1...0.6
 [0.5.1]: https://github.com/jeckman/YouTube-Downloader/compare/0.5...0.5.1
 [0.5]: https://github.com/jeckman/YouTube-Downloader/compare/0.4...0.5
