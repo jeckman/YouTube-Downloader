@@ -20,35 +20,17 @@
 
 namespace YoutubeDownloader\Container;
 
+@trigger_error('The ' . __NAMESPACE__ . '\Container interface is deprecated since version 0.8 and will be removed in 0.9. Use Psr\Container\ContainerInterface instead.', E_USER_DEPRECATED);
+
+use Psr\Container\ContainerInterface;
+
 /**
  * Describes the interface of a container that exposes methods to read its entries.
  *
+ * @deprecated since version 0.8, to be removed in 0.9. Use `Psr\Container\ContainerInterface` instead
+ *
  * This interface is compatible with PSR-11 Psr\Container\ContainerInterface
  */
-interface Container
+interface Container extends ContainerInterface
 {
-    /**
-     * Finds an entry of the container by its identifier and returns it.
-     *
-     * @param string $id identifier of the entry to look for
-     *
-     * @throws NotFoundExceptionInterface  no entry was found for **this** identifier
-     * @throws ContainerExceptionInterface error while retrieving the entry
-     *
-     * @return mixed entry
-     */
-    public function get($id);
-
-    /**
-     * Returns true if the container can return an entry for the given identifier.
-     * Returns false otherwise.
-     *
-     * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
-     * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
-     *
-     * @param string $id identifier of the entry to look for
-     *
-     * @return bool
-     */
-    public function has($id);
 }

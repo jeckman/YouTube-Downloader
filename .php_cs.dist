@@ -4,6 +4,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in('./')
     ->name('*.php')
     ->exclude([
+        '3rdparty',
         'cache',
         'logs',
         'templates',
