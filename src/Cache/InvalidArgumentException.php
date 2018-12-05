@@ -20,11 +20,13 @@
 
 namespace YoutubeDownloader\Cache;
 
+use Psr\SimpleCache\InvalidArgumentException as ExceptionInterface;
+
 /**
  * invalid argument exception in a cache.
  *
  * This interface must be compatible with PSR-16 Psr\SimpleCache\InvalidArgumentException
  */
-class InvalidArgumentException extends CacheException
+class InvalidArgumentException extends CacheException implements ExceptionInterface
 {
 }

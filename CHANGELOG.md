@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- `YoutubeDownloader\Cache\CacheAware::setCache()` can be a `Psr\SimpleCache\CacheInterface` instance as argument 1
+
 ### Deprecated
 
+- `YoutubeDownloader\Cache\Cache` interface will be removed in 0.9, use `Psr\SimpleCache\CacheInterface` instead
+- `YoutubeDownloader\Cache\CacheAware::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance as argument 1 in 0.9
 - `YoutubeDownloader\Container\Container` interface will be removed in 0.9, use `Psr\Container\ContainerInterface` instead
 
 ### Removed

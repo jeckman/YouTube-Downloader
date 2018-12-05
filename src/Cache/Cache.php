@@ -20,8 +20,12 @@
 
 namespace YoutubeDownloader\Cache;
 
+@trigger_error('The ' . __NAMESPACE__ . '\Cache interface is deprecated since version 0.8 and will be removed in 0.9. Use Psr\SimpleCache\CacheInterface instead.', E_USER_DEPRECATED);
+
 /**
  * Describes the interface of a container that exposes methods to read its entries.
+ *
+ * @deprecated since version 0.8, to be removed in 0.9. Use `Psr\SimpleCache\CacheInterface` instead
  *
  * This interface is compatible with PSR-16 Psr\SimpleCache\CacheInterface
  */

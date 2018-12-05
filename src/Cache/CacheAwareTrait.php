@@ -20,6 +20,8 @@
 
 namespace YoutubeDownloader\Cache;
 
+use Psr\SimpleCache\CacheInterface;
+
 /**
  * Trait for Cache-aware instances
  */
@@ -33,10 +35,17 @@ trait CacheAwareTrait
     /**
      * Sets a cache instance on the object
      *
+     * @deprecated since version 0.8, setCache() will require a Psr\SimpleCache\CacheInterface instance in 0.9
+     *
+     * param Psr\SimpleCache\CacheInterface $cache
+     *
      * @param Cache $cache
      */
-    public function setCache(Cache $cache)
+    public function setCache($cache)
     {
+        if (! $cache instanceof Cache and ! $cache instanceof CacheInterface) {
+            throw new \Exception('Argument 1 passed to ' . __METHOD__ . ' must be an instance of Psr\SimpleCache\CacheInterface or YoutubeDownloader\Cache\Cache');
+        }
         $this->cache = $cache;
     }
 
