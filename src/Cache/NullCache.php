@@ -27,7 +27,7 @@ use Psr\SimpleCache\CacheInterface;
  * A cache instance that does nothing
  */
 
-class NullCache implements Cache, CacheInterface
+class NullCache implements CacheInterface
 {
     /**
      * Fetches a value from the cache.

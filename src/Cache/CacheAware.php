@@ -30,11 +30,7 @@ interface CacheAware
     /**
      * Sets a cache instance on the object
      *
-     * @deprecated since version 0.8, setCache() must be a Psr\SimpleCache\CacheInterface instance as argument 1 in 0.9
-     *
-     * param Psr\SimpleCache\CacheInterface $cache
-     *
-     * @param Cache $cache
+     * @param Psr\SimpleCache\CacheInterface $cache
      */
-    public function setCache(Cache $cache);
+    public function setCache(CacheInterface $cache);
 }

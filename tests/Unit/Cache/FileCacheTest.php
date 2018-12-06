@@ -23,7 +23,6 @@ namespace YoutubeDownloader\Tests\Unit\Cache;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use Psr\SimpleCache\CacheInterface;
-use YoutubeDownloader\Cache\Cache;
 use YoutubeDownloader\Cache\CacheException;
 use YoutubeDownloader\Cache\FileCache;
 use YoutubeDownloader\Tests\Fixture\Cache\DataProviderTrait;
@@ -48,18 +47,15 @@ class FileCacheTest extends TestCase
     }
 
     /**
-     * @test FileCache is is compatible with Psr\SimpleCache\CacheInterface
+     * @test FileCache implements Psr\SimpleCache\CacheInterface
      */
-    public function isPsr16Compatible()
+    public function implementsCacheInterface()
     {
         $root = vfsStream::setup('cache');
 
         $cache = FileCache::createFromDirectory($root->url());
 
-        $adapter = new Psr16CacheAdapter($cache);
-
-        $this->assertInstanceOf(CacheInterface::class, $adapter);
-        $this->assertInstanceOf(Cache::class, $adapter);
+        $this->assertInstanceOf(CacheInterface::class, $cache);
     }
 
     /**

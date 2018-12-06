@@ -20,9 +20,9 @@
 
 namespace YoutubeDownloader\Tests\Unit\Application;
 
+use Psr\Container\ContainerInterface;
 use YoutubeDownloader\Application\ImageController;
 use YoutubeDownloader\Application\App;
-use YoutubeDownloader\Container\Container;
 use YoutubeDownloader\Logger\Logger;
 
 class ImageControllerTest extends \YoutubeDownloader\Tests\Fixture\TestCase
@@ -38,7 +38,7 @@ class ImageControllerTest extends \YoutubeDownloader\Tests\Fixture\TestCase
     {
         $logger = $this->createMock(Logger::class);
 
-        $container = $this->createMock(Container::class);
+        $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with('logger')->willReturn($logger);
 
         $app = $this->createMock(App::class);

@@ -29,7 +29,7 @@ use Psr\SimpleCache\CacheInterface;
  * This interface must be compatible with PSR-16 Psr\SimpleCache\CacheInterface
  */
 
-class FileCache implements Cache, CacheInterface
+class FileCache implements CacheInterface
 {
     /**
      * Create the cache with a directory

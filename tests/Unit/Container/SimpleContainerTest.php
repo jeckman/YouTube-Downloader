@@ -21,36 +21,21 @@
 namespace YoutubeDownloader\Tests\Unit\Container;
 
 use Psr\Container\ContainerInterface;
-use YoutubeDownloader\Container\Container;
 use YoutubeDownloader\Container\ContainerException;
 use YoutubeDownloader\Container\NotFoundException;
 use YoutubeDownloader\Container\SimpleContainer;
 use YoutubeDownloader\Tests\Fixture\TestCase;
-use YoutubeDownloader\Tests\Fixture\Container\Psr11ContainerAdapter;
 
 class SimpleContainerTest extends TestCase
 {
     /**
-     * @test SimpleContainer implements Container
+     * @test SimpleContainer implements Psr\Container\ContainerInterface
      */
-    public function implementsContainer()
+    public function implementsContainerInterface()
     {
         $container = new SimpleContainer();
 
-        $this->assertInstanceOf(Container::class, $container);
-    }
-
-    /**
-     * @test SimpleContainer is compatible with Psr\Container\ContainerInterface
-     */
-    public function isPsr11Compatible()
-    {
-        $container = new SimpleContainer();
-
-        $adapter = new Psr11ContainerAdapter($container);
-
-        $this->assertInstanceOf(ContainerInterface::class, $adapter);
-        $this->assertInstanceOf(Container::class, $adapter);
+        $this->assertInstanceOf(ContainerInterface::class, $container);
     }
 
     /**

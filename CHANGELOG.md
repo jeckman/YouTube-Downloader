@@ -7,18 +7,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
+### Changed
 
-- `YoutubeDownloader\Cache\CacheAware::setCache()` can be a `Psr\SimpleCache\CacheInterface` instance as argument 1
-
-### Deprecated
-
-- `YoutubeDownloader\Cache\Cache` interface will be removed in 0.9, use `Psr\SimpleCache\CacheInterface` instead
-- `YoutubeDownloader\Cache\CacheAware::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance as argument 1 in 0.9
-- `YoutubeDownloader\Container\Container` interface will be removed in 0.9, use `Psr\Container\ContainerInterface` instead
+- **Breaking:** Argument 1 in `YoutubeDownloader\Application\App::__construct()` must be a `Psr\Container\ContainerInterface` instance
+- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAware::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance
+- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAwareTrait::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance
+- **Breaking:** `YoutubeDownloader\Cache\CacheAwareTrait::getCache()` returns a `Psr\SimpleCache\CacheInterface` instance
+- `YoutubeDownloader\Cache\CacheException` implements `Psr\SimpleCache\CacheException`
+- `YoutubeDownloader\Cache\InvalidArgumentException` implements `Psr\SimpleCache\InvalidArgumentException`
+- **Breaking:** `YoutubeDownloader\Cache\FileCache` implements `Psr\SimpleCache\CacheInterface` instead of `YoutubeDownloader\Cache\Cache`
+- **Breaking:** `YoutubeDownloader\Cache\NullCache` implements `Psr\SimpleCache\CacheInterface` instead of `YoutubeDownloader\Cache\Cache`
+- `YoutubeDownloader\Container\ContainerException` implements `Psr\Container\ContainerExceptionInterface`
+- `YoutubeDownloader\Container\NotFoundException` implements `Psr\Container\NotFoundExceptionInterface`
+- **Breaking:** `YoutubeDownloader\Container\SimpleContainer` implements `Psr\Container\ContainerInterface` instead of `YoutubeDownloader\Container\Container`
 
 ### Removed
 
+- **Breaking:** `YoutubeDownloader\Cache\Cache` interface was removed, use `Psr\SimpleCache\CacheInterface` instead
+- **Breaking:** `YoutubeDownloader\Container\Container` interface was removed, use `Psr\Container\ContainerInterface` instead
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\SignatureDecipher::decipherSignatureWithRawPlayerScript()` isn't used anymore and was removed
 
 ## [0.7] - 2018-11-30
