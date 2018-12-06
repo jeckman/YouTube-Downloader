@@ -307,7 +307,7 @@ trait MessageTrait
     /**
      * Gets the body of the message.
      *
-     * @return StreamInterface Returns the body as a stream.
+     * @return StreamInterface returns the body as a stream
      */
     public function getBody()
     {
@@ -323,9 +323,11 @@ trait MessageTrait
      * immutability of the message, and MUST return a new instance that has the
      * new body stream.
      *
-     * @param StreamInterface $body Body.
+     * @param StreamInterface $body body
+     *
+     * @throws \InvalidArgumentException when the body is not valid
+     *
      * @return static
-     * @throws \InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
     {

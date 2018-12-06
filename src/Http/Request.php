@@ -173,9 +173,10 @@ class Request implements RequestInterface
      *
      * This method MUST return a UriInterface instance.
      *
-     * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @return UriInterface Returns a UriInterface instance
-     *     representing the URI of the request.
+     * @see http://tools.ietf.org/html/rfc3986#section-4.3
+     *
+     * @return UriInterface returns a UriInterface instance
+     *                      representing the URI of the request
      */
     public function getUri()
     {
@@ -207,9 +208,11 @@ class Request implements RequestInterface
      * immutability of the message, and MUST return an instance that has the
      * new UriInterface instance.
      *
-     * @link http://tools.ietf.org/html/rfc3986#section-4.3
-     * @param UriInterface $uri New request URI to use.
-     * @param bool $preserveHost Preserve the original state of the Host header.
+     * @see http://tools.ietf.org/html/rfc3986#section-4.3
+     *
+     * @param UriInterface $uri          new request URI to use
+     * @param bool         $preserveHost preserve the original state of the Host header
+     *
      * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false)

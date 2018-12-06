@@ -47,7 +47,7 @@ interface Client
      * $options can be used to set client specific data per request, like curl options
      *
      * @param Psr\Http\Message\RequestInterface $request,
-     * @param array            $options  client specific options for a client instance
+     * @param array                             $options  client specific options for a client instance
      *
      * @return Psr\Http\Message\ResponseInterface
      */

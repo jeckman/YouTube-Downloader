@@ -84,7 +84,7 @@ class SignatureDecipher
     /**
      * extract decipher opcode from raw player script
      *
-     * @param string $decipherScript
+     * @param string                  $decipherScript
      * @param Psr\Log\LoggerInterface $logger
      *
      * @return array return operation codes
@@ -173,9 +173,9 @@ class SignatureDecipher
      *
      * @internal
      *
-     * @param string $patterns
-     * @param string $deciphers
-     * @param string $signature
+     * @param string                  $patterns
+     * @param string                  $deciphers
+     * @param string                  $signature
      * @param Psr\Log\LoggerInterface $logger
      *
      * @return string return deciphered signature
