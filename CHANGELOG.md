@@ -26,14 +26,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Breaking:** Argument 1 in `YoutubeDownloader\Http\Client::send()` must be a `Psr\Http\Message\RequestInterface` instance instead of `YoutubeDownloader\Http\Message\Request`
 - **Breaking:** `YoutubeDownloader\Http\Request` implements `Psr\Http\Message\RequestInterface` instead of `YoutubeDownloader\Http\Message\Request`
 - **Breaking:** `YoutubeDownloader\Http\Response` implements `Psr\Http\Message\ResponseInterface` instead of `YoutubeDownloader\Http\Message\Response`
-- **Breaking:** `YoutubeDownloader\Logger\HandlerAwareLogger` implements `Psr\Logger\LoggerInterface` instead of `YoutubeDownloader\Logger\Logger`
-- **Breaking:** `YoutubeDownloader\Logger\LoggerAwareTrait::getLogger()` returns a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
-- **Breaking:** Argument 1 in `YoutubeDownloader\Logger\LoggerAwareTrait::setLogger()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
-- **Breaking:** `YoutubeDownloader\Provider\Youtube\Format` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
-- **Breaking:** `YoutubeDownloader\Provider\Youtube\Provider` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
-- **Breaking:** Argument 2 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::extractDecipherOpcode()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
-- **Breaking:** Argument 4 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::executeSignaturePattern()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
-- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
+- **Breaking:** `YoutubeDownloader\Logger\HandlerAwareLogger` implements `Psr\Log\LoggerInterface` instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Logger\LoggerAwareTrait::getLogger()` returns a `Psr\Log\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** Argument 1 in `YoutubeDownloader\Logger\LoggerAwareTrait::setLogger()` must be a `Psr\Log\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\Format` implements `Psr\Log\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\Provider` implements `Psr\Log\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
+- **Breaking:** Argument 2 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::extractDecipherOpcode()` must be a `Psr\Log\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** Argument 4 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::executeSignaturePattern()` must be a `Psr\Log\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo` implements `Psr\Log\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
 
 ### Removed
 
@@ -45,10 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - **Breaking:** `YoutubeDownloader\Http\Message\ServerRequest` interface was removed, use `Psr\Http\Message\ServerRequestInterface` instead
 - **Breaking:** `YoutubeDownloader\Http\MessageTrait::getBodyAsString()` was removed
 - **Breaking:** `YoutubeDownloader\Http\MessageTrait::withStringAsBody()` was removed
-- **Breaking:** `YoutubeDownloader\Logger\Logger` interface was removed, use `Psr\Logger\LoggerInterface` instead
-- **Breaking:** `YoutubeDownloader\Logger\LoggerAware` interface was removed, use `Psr\Logger\LoggerAwareInterface` instead
-- **Breaking:** `YoutubeDownloader\Logger\LogLevel` was removed , use `Psr\Logger\LogLevel` instead
-- **Breaking:** `YoutubeDownloader\Logger\NullLogger` was removed , use `Psr\Logger\NullLogger` instead
+- **Breaking:** `YoutubeDownloader\Logger\Logger` interface was removed, use `Psr\Log\LoggerInterface` instead
+- **Breaking:** `YoutubeDownloader\Logger\LoggerAware` interface was removed, use `Psr\Log\LoggerAwareInterface` instead
+- **Breaking:** `YoutubeDownloader\Logger\LogLevel` was removed , use `Psr\Log\LogLevel` instead
+- **Breaking:** `YoutubeDownloader\Logger\NullLogger` was removed , use `Psr\Log\NullLogger` instead
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\SignatureDecipher::decipherSignatureWithRawPlayerScript()` isn't used anymore and was removed
 
 ## [0.7] - 2018-11-30
