@@ -21,10 +21,9 @@
 namespace YoutubeDownloader\Tests\Unit\Cache;
 
 use Psr\Http\Message\MessageInterface;
-use YoutubeDownloader\Http\Message\Message as IMessage;
+use Psr\Http\Message\StreamInterface;
 use YoutubeDownloader\Http\MessageTrait;
 use YoutubeDownloader\Tests\Fixture\Http\Message;
-use YoutubeDownloader\Tests\Fixture\Http\Psr7MessageAdapter;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class MessageTraitTest extends TestCase
@@ -36,10 +35,7 @@ class MessageTraitTest extends TestCase
     {
         $message = new Message();
 
-        $adapter = new Psr7MessageAdapter($message);
-
-        $this->assertInstanceOf(MessageInterface::class, $adapter);
-        $this->assertInstanceOf(IMessage::class, $adapter);
+        $this->assertInstanceOf(MessageInterface::class, $message);
     }
 
     /**
@@ -115,25 +111,12 @@ class MessageTraitTest extends TestCase
     }
 
     /**
-     * @test getBodyAsString()
+     * @test getBody()
      */
-    public function getBodyAsString()
+    public function getBody()
     {
         $message = new Message;
 
-        $this->assertSame('', $message->getBodyAsString());
-    }
-
-    /**
-     * @test withProtocolVersion()
-     */
-    public function withStringAsBody()
-    {
-        $message1 = new Message;
-
-        $message2 = $message1->withStringAsBody('Body message');
-
-        $this->assertFalse($message1 === $message2);
-        $this->assertSame('Body message', $message2->getBodyAsString());
+        $this->assertInstanceOf(StreamInterface::class, $message->getBody());
     }
 }

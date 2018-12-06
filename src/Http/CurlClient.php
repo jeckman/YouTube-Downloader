@@ -20,8 +20,8 @@
 
 namespace YoutubeDownloader\Http;
 
-use YoutubeDownloader\Http\Message\Request as RequestInterface;
-use YoutubeDownloader\Http\Message\Response as ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * A curl http client instance

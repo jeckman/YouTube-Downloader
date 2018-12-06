@@ -21,7 +21,7 @@
 namespace YoutubeDownloader\Http;
 
 use InvalidArgumentException;
-use YoutubeDownloader\Http\Message\Stream;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Trait implementing functionality common to requests and responses.
@@ -305,47 +305,31 @@ trait MessageTrait
     }
 
     /**
-     * Gets the raw body of the message.
+     * Gets the body of the message.
      *
-     * @return string returns the body as a string
+     * @return StreamInterface Returns the body as a stream.
      */
-    public function getBodyAsString()
+    public function getBody()
     {
-        return $this->body;
+        return new StringStream($this->body);
     }
 
     /**
      * Return an instance with the specified message body.
      *
-     * The body MUST be a string.
+     * The body MUST be a StreamInterface object.
      *
      * This method MUST be implemented in such a way as to retain the
      * immutability of the message, and MUST return a new instance that has the
-     * new body string.
+     * new body stream.
      *
-     * @param string $body body
-     *
-     * @throws \InvalidArgumentException when the body is not valid
-     *
+     * @param StreamInterface $body Body.
      * @return static
+     * @throws \InvalidArgumentException When the body is not valid.
      */
-    public function withStringAsBody($body)
+    public function withBody(StreamInterface $body)
     {
-        if (! is_string($body)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument #1 $body must be of type string, but "%s" was given',
-                gettype($body)
-            ));
-        }
-
-        if ($this->body === $body) {
-            return $this;
-        }
-
-        $clone = clone $this;
-        $clone->body = $body;
-
-        return $clone;
+        throw new \Exception(__METHOD__ . ' is not implemented');
     }
 
     /**

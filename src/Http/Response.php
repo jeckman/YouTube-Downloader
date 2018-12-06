@@ -20,11 +20,9 @@
 
 namespace YoutubeDownloader\Http;
 
-use YoutubeDownloader\Http\Message\Response as ResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
- * This interface must be compatible with PSR-7 Psr\Http\Message\ResponseInterface
- *
  * Representation of an outgoing, server-side response.
  *
  * Per the HTTP specification, this interface includes properties for

@@ -21,9 +21,7 @@
 namespace YoutubeDownloader\Tests\Unit\Cache;
 
 use Psr\Http\Message\ResponseInterface;
-use YoutubeDownloader\Http\Message\Response as IResponse;
 use YoutubeDownloader\Http\Response;
-use YoutubeDownloader\Tests\Fixture\Http\Psr7ResponseAdapter;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class ResponseTest extends TestCase
@@ -35,10 +33,7 @@ class ResponseTest extends TestCase
     {
         $response = new Response();
 
-        $adapter = new Psr7ResponseAdapter($response);
-
-        $this->assertInstanceOf(ResponseInterface::class, $adapter);
-        $this->assertInstanceOf(IResponse::class, $adapter);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 
     /**

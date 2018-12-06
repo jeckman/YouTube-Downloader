@@ -150,7 +150,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 
         /* TODO: Check response for status code and Content-Type */
         $video_info = VideoInfo::createFromStringWithOptions(
-            $response->getBodyAsString(),
+            $response->getBody()->__toString(),
             $this->options
         );
 

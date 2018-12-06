@@ -21,7 +21,7 @@
 namespace YoutubeDownloader\Tests\Fixture\Http;
 
 use YoutubeDownloader\Http\MessageTrait;
-use YoutubeDownloader\Http\Message\Message as MessageInterface;
+use Psr\Http\Message\MessageInterface;
 
 /**
  * A simple message instance

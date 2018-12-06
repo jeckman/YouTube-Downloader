@@ -21,9 +21,7 @@
 namespace YoutubeDownloader\Tests\Unit\Cache;
 
 use Psr\Http\Message\RequestInterface;
-use YoutubeDownloader\Http\Message\Request as IRequest;
 use YoutubeDownloader\Http\Request;
-use YoutubeDownloader\Tests\Fixture\Http\Psr7RequestAdapter;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class RequestTest extends TestCase
@@ -35,10 +33,7 @@ class RequestTest extends TestCase
     {
         $request = new Request('GET', 'https://example.org');
 
-        $adapter = new Psr7RequestAdapter($request);
-
-        $this->assertInstanceOf(RequestInterface::class, $adapter);
-        $this->assertInstanceOf(IRequest::class, $adapter);
+        $this->assertInstanceOf(RequestInterface::class, $request);
     }
 
     /**
