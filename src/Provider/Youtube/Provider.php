@@ -20,12 +20,12 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
+use Psr\Log\LoggerAwareInterface;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
 use YoutubeDownloader\Http\HttpClientAware;
 use YoutubeDownloader\Http\HttpClientAwareTrait;
-use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\Toolkit;
 use YoutubeDownloader\VideoInfo\Provider as ProviderInterface;
@@ -34,7 +34,7 @@ use YoutubeDownloader\VideoInfo\InvalidInputException;
 /**
  * Provider instance for Youtube
  */
-final class Provider implements ProviderInterface, CacheAware, HttpClientAware, LoggerAware
+final class Provider implements ProviderInterface, CacheAware, HttpClientAware, LoggerAwareInterface
 {
     use CacheAwareTrait;
     use HttpClientAwareTrait;

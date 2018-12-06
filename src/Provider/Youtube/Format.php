@@ -20,18 +20,18 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
+use Psr\Log\LoggerAwareInterface;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Http\HttpClientAware;
 use YoutubeDownloader\Http\HttpClientAwareTrait;
-use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\VideoInfo\Format as FormatInterface;
 
 /**
  * a video format
  */
-class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAware
+class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwareInterface
 {
     use CacheAwareTrait;
     use HttpClientAwareTrait;
@@ -131,11 +131,11 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
 
             // TODO: Remove signature decipher from Format
             $videoIds = $this->getCache()->get('videoIds', []);
-            
+
             if (!in_array($this->getVideoId(), $videoIds)) {
                 $videoIds[] = $this->getVideoId();
                 $this->getCache()->set('videoIds', $videoIds, 900);
-                
+
                 // getPlayerInfoByVideoId should be run once only for a video
                 $player_info = SignatureDecipher::getPlayerInfoByVideoId($this->getVideoId());
 
@@ -149,7 +149,7 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
                     return $this->parseUrl();
                 }
             }
-        
+
             $playerID = $player_info[0];
             $playerURL = $player_info[1];
 

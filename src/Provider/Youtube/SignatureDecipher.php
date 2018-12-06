@@ -20,8 +20,8 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
-use YoutubeDownloader\Logger\Logger;
-use YoutubeDownloader\Logger\NullLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * a youtube signatur decipher
@@ -85,11 +85,11 @@ class SignatureDecipher
      * extract decipher opcode from raw player script
      *
      * @param string $decipherScript
-     * @param Logger $logger
+     * @param Psr\Log\LoggerInterface $logger
      *
      * @return array return operation codes
      */
-    public static function extractDecipherOpcode($decipherScript, Logger $logger)
+    public static function extractDecipherOpcode($decipherScript, LoggerInterface $logger)
     {
         $logger->debug(
             '{method}: Load player script and execute patterns from player script',
@@ -176,11 +176,11 @@ class SignatureDecipher
      * @param string $patterns
      * @param string $deciphers
      * @param string $signature
-     * @param Logger $logger
+     * @param Psr\Log\LoggerInterface $logger
      *
      * @return string return deciphered signature
      */
-    public static function executeSignaturePattern($patterns, $deciphers, $signature, Logger $logger)
+    public static function executeSignaturePattern($patterns, $deciphers, $signature, LoggerInterface $logger)
     {
         $logger->debug(
             '{method}: Patterns = {patterns}',

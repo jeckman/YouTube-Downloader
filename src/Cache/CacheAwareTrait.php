@@ -28,7 +28,7 @@ use Psr\SimpleCache\CacheInterface;
 trait CacheAwareTrait
 {
     /**
-     * @var YoutubeDownloader\Cache\Cache
+     * @var Psr\SimpleCache\CacheInterface
      */
     private $cache;
 

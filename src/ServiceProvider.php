@@ -20,6 +20,7 @@
 
 namespace YoutubeDownloader;
 
+use Psr\Log\LogLevel;
 use YoutubeDownloader\Container\SimpleContainer;
 
 /**
@@ -70,14 +71,14 @@ class ServiceProvider
         });
 
         // Create Cache
-        $container->set('YoutubeDownloader\Cache\Cache', function ($c) {
+        $container->set('cache', function ($c) {
             return \YoutubeDownloader\Cache\FileCache::createFromDirectory(
                 __DIR__ . \DIRECTORY_SEPARATOR . '..' . \DIRECTORY_SEPARATOR . 'cache'
             );
         });
 
         // Create Logger
-        $container->set('YoutubeDownloader\Logger\Logger', function ($c) {
+        $container->set('logger', function ($c) {
             $logger = new \YoutubeDownloader\Logger\HandlerAwareLogger(
                 new \YoutubeDownloader\Logger\Handler\NullHandler()
             );
@@ -103,14 +104,14 @@ class ServiceProvider
 
                 if (is_resource($stream)) {
                     $handler = new \YoutubeDownloader\Logger\Handler\StreamHandler($stream, [
-                        \YoutubeDownloader\Logger\LogLevel::EMERGENCY,
-                        \YoutubeDownloader\Logger\LogLevel::ALERT,
-                        \YoutubeDownloader\Logger\LogLevel::CRITICAL,
-                        \YoutubeDownloader\Logger\LogLevel::ERROR,
-                        \YoutubeDownloader\Logger\LogLevel::WARNING,
-                        \YoutubeDownloader\Logger\LogLevel::NOTICE,
-                        \YoutubeDownloader\Logger\LogLevel::INFO,
-                        \YoutubeDownloader\Logger\LogLevel::DEBUG,
+                        LogLevel::EMERGENCY,
+                        LogLevel::ALERT,
+                        LogLevel::CRITICAL,
+                        LogLevel::ERROR,
+                        LogLevel::WARNING,
+                        LogLevel::NOTICE,
+                        LogLevel::INFO,
+                        LogLevel::DEBUG,
                     ]);
 
                     $logger->addHandler($handler);
@@ -148,7 +149,7 @@ class ServiceProvider
                 $youtube_provider->setHttpClient($c->get('httpclient'));
             }
 
-            if ($youtube_provider instanceof \YoutubeDownloader\Logger\LoggerAware) {
+            if ($youtube_provider instanceof \Psr\Log\LoggerAwareInterface) {
                 $youtube_provider->setLogger($c->get('logger'));
             }
 
@@ -160,8 +161,6 @@ class ServiceProvider
         $container->set('template', 'YoutubeDownloader\Template\Engine');
         $container->set('controller_factory', 'YoutubeDownloader\Application\ControllerFactory');
         $container->set('toolkit', 'YoutubeDownloader\Toolkit');
-        $container->set('cache', 'YoutubeDownloader\Cache\Cache');
-        $container->set('logger', 'YoutubeDownloader\Logger\Logger');
         $container->set('httpclient', 'YoutubeDownloader\Http\Client');
     }
 }

@@ -20,13 +20,12 @@
 
 namespace YoutubeDownloader\Provider\Youtube;
 
-use YoutubeDownloader\Cache\Cache;
+use Psr\Log\LoggerAwareInterface;
 use YoutubeDownloader\Cache\CacheAware;
 use YoutubeDownloader\Cache\CacheAwareTrait;
 use YoutubeDownloader\Config;
 use YoutubeDownloader\Http\HttpClientAware;
 use YoutubeDownloader\Http\HttpClientAwareTrait;
-use YoutubeDownloader\Logger\LoggerAware;
 use YoutubeDownloader\Logger\LoggerAwareTrait;
 use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
 
@@ -154,7 +153,7 @@ use YoutubeDownloader\VideoInfo\VideoInfo as VideoInfoInterface;
  * - 'reason',
  * - 'errordetail',
  */
-class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, LoggerAware
+class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, LoggerAwareInterface
 {
     use CacheAwareTrait;
     use HttpClientAwareTrait;

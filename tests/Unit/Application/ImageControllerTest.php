@@ -21,9 +21,9 @@
 namespace YoutubeDownloader\Tests\Unit\Application;
 
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use YoutubeDownloader\Application\ImageController;
 use YoutubeDownloader\Application\App;
-use YoutubeDownloader\Logger\Logger;
 
 class ImageControllerTest extends \YoutubeDownloader\Tests\Fixture\TestCase
 {
@@ -36,7 +36,7 @@ class ImageControllerTest extends \YoutubeDownloader\Tests\Fixture\TestCase
      */
     public function validateVideoId($str, $expected)
     {
-        $logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with('logger')->willReturn($logger);

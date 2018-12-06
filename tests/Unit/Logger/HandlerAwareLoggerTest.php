@@ -20,7 +20,7 @@
 
 namespace YoutubeDownloader\Tests\Unit\Logger;
 
-use YoutubeDownloader\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use YoutubeDownloader\Logger\Handler\Handler;
 use YoutubeDownloader\Logger\HandlerAwareLogger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
@@ -30,12 +30,12 @@ class HandlerAwareLoggerTest extends TestCase
     /**
      * @test HandlerAwareLogger implements Logger
      */
-    public function implementsLogger()
+    public function implementsLoggerInterface()
     {
         $handler = $this->createMock(Handler::class);
         $logger = new HandlerAwareLogger($handler);
 
-        $this->assertInstanceOf(Logger::class, $logger);
+        $this->assertInstanceOf(LoggerInterface::class, $logger);
     }
 
     /**

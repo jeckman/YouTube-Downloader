@@ -22,10 +22,10 @@ namespace YoutubeDownloader\Tests\Unit\Application;
 
 use Exception;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use YoutubeDownloader\Application\App;
 use YoutubeDownloader\Application\Controller;
 use YoutubeDownloader\Application\ControllerFactory;
-use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class ControllerFactoryTest extends TestCase
@@ -35,7 +35,7 @@ class ControllerFactoryTest extends TestCase
      */
     public function make()
     {
-        $logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with('logger')->willReturn($logger);

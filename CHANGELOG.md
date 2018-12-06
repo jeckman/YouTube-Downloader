@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
-- **Breaking:** Argument 1 in `YoutubeDownloader\Application\App::__construct()` must be a `Psr\Container\ContainerInterface` instance
-- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAware::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance
-- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAwareTrait::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance
-- **Breaking:** `YoutubeDownloader\Cache\CacheAwareTrait::getCache()` returns a `Psr\SimpleCache\CacheInterface` instance
+- **Breaking:** Argument 1 in `YoutubeDownloader\Application\App::__construct()` must be a `Psr\Container\ContainerInterface` instance instead of `YoutubeDownloader\Cache\Cache`
+- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAware::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance instead of `YoutubeDownloader\Cache\Cache`
+- **Breaking:** Argument 1 in `YoutubeDownloader\Cache\CacheAwareTrait::setCache()` must be a `Psr\SimpleCache\CacheInterface` instance instead of `YoutubeDownloader\Cache\Cache`
+- **Breaking:** `YoutubeDownloader\Cache\CacheAwareTrait::getCache()` returns a `Psr\SimpleCache\CacheInterface` instance instead of `YoutubeDownloader\Cache\Cache`
 - `YoutubeDownloader\Cache\CacheException` implements `Psr\SimpleCache\CacheException`
 - `YoutubeDownloader\Cache\InvalidArgumentException` implements `Psr\SimpleCache\InvalidArgumentException`
 - **Breaking:** `YoutubeDownloader\Cache\FileCache` implements `Psr\SimpleCache\CacheInterface` instead of `YoutubeDownloader\Cache\Cache`
@@ -20,11 +20,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `YoutubeDownloader\Container\ContainerException` implements `Psr\Container\ContainerExceptionInterface`
 - `YoutubeDownloader\Container\NotFoundException` implements `Psr\Container\NotFoundExceptionInterface`
 - **Breaking:** `YoutubeDownloader\Container\SimpleContainer` implements `Psr\Container\ContainerInterface` instead of `YoutubeDownloader\Container\Container`
+- **Breaking:** `YoutubeDownloader\Logger\HandlerAwareLogger` implements `Psr\Logger\LoggerInterface` instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Logger\LoggerAwareTrait::getLogger()` returns a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** Argument 1 in `YoutubeDownloader\Logger\LoggerAwareTrait::setLogger()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\Format` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\Provider` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
+- **Breaking:** Argument 2 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::extractDecipherOpcode()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** Argument 4 in `YoutubeDownloader\Provider\Youtube\SignatureDecipher::executeSignaturePattern()` must be a `Psr\Logger\LoggerInterface` instance instead of `YoutubeDownloader\Logger\Logger`
+- **Breaking:** `YoutubeDownloader\Provider\Youtube\VideoInfo` implements `Psr\Logger\LoggerAwareInterface` instance instead of `YoutubeDownloader\Logger\LoggerAware`
 
 ### Removed
 
 - **Breaking:** `YoutubeDownloader\Cache\Cache` interface was removed, use `Psr\SimpleCache\CacheInterface` instead
 - **Breaking:** `YoutubeDownloader\Container\Container` interface was removed, use `Psr\Container\ContainerInterface` instead
+- **Breaking:** `YoutubeDownloader\Logger\Logger` interface was removed, use `Psr\Logger\LoggerInterface` instead
+- **Breaking:** `YoutubeDownloader\Logger\LoggerAware` interface was removed, use `Psr\Logger\LoggerAwareInterface` instead
+- **Breaking:** `YoutubeDownloader\Logger\LogLevel` war removed , use `Psr\Logger\LogLevel` instead
+- **Breaking:** `YoutubeDownloader\Logger\NullLogger` war removed , use `Psr\Logger\NullLogger` instead
 - **Breaking:** `YoutubeDownloader\Provider\Youtube\SignatureDecipher::decipherSignatureWithRawPlayerScript()` isn't used anymore and was removed
 
 ## [0.7] - 2018-11-30

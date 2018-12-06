@@ -21,6 +21,7 @@
 namespace YoutubeDownloader\Logger;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Trait for logger-aware instances
@@ -28,14 +29,14 @@ use Psr\Log\LoggerInterface;
 trait LoggerAwareTrait
 {
     /**
-     * @var YoutubeDownloader\Logger\Logger
+     * @var Psr\Log\LoggerInterface
      */
     protected $logger;
 
     /**
      * Sets a logger instance on the object
      *
-     * @param Logger $logger
+     * @param Psr\Log\LoggerInterface $logger
      */
     public function setLogger(LoggerInterface $logger)
     {
@@ -43,9 +44,9 @@ trait LoggerAwareTrait
     }
 
     /**
-     * Gets a logger instance
+     * Gets a Psr\Log\LoggerInterface instance
      *
-     * @return Logger
+     * @return Psr\Log\LoggerInterface
      */
     public function getLogger()
     {

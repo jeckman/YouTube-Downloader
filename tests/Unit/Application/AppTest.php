@@ -21,10 +21,10 @@
 namespace YoutubeDownloader\Tests\Unit\Application;
 
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use YoutubeDownloader\Application\App;
 use YoutubeDownloader\Application\Controller;
 use YoutubeDownloader\Application\ControllerFactory;
-use YoutubeDownloader\Logger\Logger;
 use YoutubeDownloader\Tests\Fixture\TestCase;
 
 class AppTest extends TestCase
@@ -34,7 +34,7 @@ class AppTest extends TestCase
      */
     public function getContainer()
     {
-        $logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with('logger')->willReturn($logger);
@@ -49,7 +49,7 @@ class AppTest extends TestCase
      */
     public function getVersion()
     {
-        $logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->with('logger')->willReturn($logger);
@@ -72,7 +72,7 @@ class AppTest extends TestCase
             ->method('make')
             ->willReturn($controller);
 
-        $logger = $this->createMock(Logger::class);
+        $logger = $this->createMock(LoggerInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
         $container->method('get')->will($this->returnValueMap([
