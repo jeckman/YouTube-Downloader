@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Set correct `Psr\Log\LoggerAwareInterface` into `YoutubeDownloader\Provider\Youtube\VideoInfo` in `YoutubeDownloader\Provider\Youtube\Provider`
+- Set correct `Psr\Log\LoggerAwareInterface` into `YoutubeDownloader\Provider\Youtube\Format` in `YoutubeDownloader\Provider\Youtube\VideoInfo`
+
 ## [0.8] - 2018-12-06
 
 ### Added

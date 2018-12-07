@@ -162,7 +162,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
             $video_info->setHttpClient($this->getHttpClient());
         }
 
-        if ($video_info instanceof LoggerAware) {
+        if ($video_info instanceof LoggerAwareInterface) {
             $video_info->setLogger($this->getLogger());
         }
 

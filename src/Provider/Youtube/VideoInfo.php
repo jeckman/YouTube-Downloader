@@ -273,7 +273,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
                 $format->setHttpClient($this->getHttpClient());
             }
 
-            if ($format instanceof LoggerAware) {
+            if ($format instanceof LoggerAwareInterface) {
                 $format->setLogger($this->getLogger());
             }
 
