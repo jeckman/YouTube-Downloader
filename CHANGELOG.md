@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.8] - 2018-12-06
 
+### Added
+
+- Add support for PSR-3 Logger Interface
+- Add support for PSR-7 HTTP Message Interface
+- Add support for PSR-11 Container Interface
+- Add support for PSR-16 Simple Cache
+
 ### Changed
 
 - **Breaking:** Argument 1 in `YoutubeDownloader\Application\App::__construct()` must be a `Psr\Container\ContainerInterface` instance instead of `YoutubeDownloader\Cache\Cache`
