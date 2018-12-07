@@ -85,7 +85,7 @@ abstract class ControllerAbstract implements Controller
 
     protected function getSize($url, $config, $toolkit)
     {
-        $request = $this->get('httpclient')->createRequest('HEAD', $url);
+        $request = $this->get('httpclient')->createFullRequest('HEAD', $url);
 
         $options = ['curl' => []];
         $options['curl'][CURLOPT_NOBODY] = true;
@@ -127,7 +127,7 @@ abstract class ControllerAbstract implements Controller
         // if isn't chrome return false
         return false;
     }
-    
+
     /**
      * Get the full info for a specific format
      *
@@ -188,7 +188,7 @@ abstract class ControllerAbstract implements Controller
 
         return $best_format;
     }
-    
+
     /**
      * Get the download url for a specific format
      *
@@ -326,7 +326,7 @@ abstract class ControllerAbstract implements Controller
 
         return $format;
     }
-    
+
     /**
      * Format a byte integer into a human readable string
      *

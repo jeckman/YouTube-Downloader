@@ -135,7 +135,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
         // thanks to amit kumar @ bloggertale.com for sharing the fix
         $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
 
-        $request = $this->getHttpClient()->createRequest(
+        $request = $this->getHttpClient()->createFullRequest(
             'GET',
             $video_info_url
         );

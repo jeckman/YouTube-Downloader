@@ -22,14 +22,18 @@ namespace YoutubeDownloader\Http;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+// use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * A curl http client instance
  */
-class CurlClient implements Client
+class CurlClient implements Client /* , RequestFactoryInterface */
 {
     /**
      * Factory for a new Request
+     *
+     * @deprecated since version 0.9, to be removed in 0.10. Use YoutubeDownloader\Http\CurlClient::createFullRequest() instead
      *
      * @param string      $method  HTTP method
      * @param string      $target  The target url for this request
@@ -41,7 +45,51 @@ class CurlClient implements Client
      */
     public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1')
     {
-        return new Request($method, $target, $headers, $body, $version);
+        @trigger_error(__METHOD__ . ' is deprecated since version 0.9, to be removed in 0.10. Use YoutubeDownloader\Http\CurlClient::createFullRequest() instead', E_USER_DEPRECATED);
+
+        return $this->createFullRequest($method, $target, $headers, $body, $version);
+    }
+
+    /**
+     * Factory for a new fullfeatured Request
+     *
+     * @param string      $method  HTTP method
+     * @param string      $target  The target url for this request
+     * @param array       $headers Request headers
+     * @param string|null $body    Request body
+     * @param string      $version Protocol version
+     *
+     * @return Request
+     */
+    public function createFullRequest($method, $target, array $headers = [], $body = null, $version = '1.1')
+    {
+        $request = $this->createRequestPsr17($method, $target)
+            ->withProtocolVersion($version)
+            ->withBody(new StringStream($body));
+
+        foreach ($headers as $name => $value) {
+            $request = $request->withAddedHeader($name, $value);
+        }
+
+        return $request;
+    }
+
+    /**
+     * Create a new request.
+     *
+     * @TODO Rename this to createRequest() and make it public to implement PSR-17 RequestFactoryInterface
+     *
+     * @param string $method The HTTP method associated with the request.
+     * @param UriInterface|string $uri The URI associated with the request.
+     *
+     * @return Psr\Http\Message\RequestInterface
+     */
+    private function createRequestPsr17(string $method, $uri) {
+        if ($uri instanceof UriInterface) {
+            $uri = $uri->__toString();
+        }
+
+        return new Request($method, $uri);
     }
 
     /**

@@ -331,7 +331,10 @@ trait MessageTrait
      */
     public function withBody(StreamInterface $body)
     {
-        throw new \Exception(__METHOD__ . ' is not implemented');
+        $clone = clone $this;
+        $clone->body = $body->__toString();
+
+        return $clone;
     }
 
     /**

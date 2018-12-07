@@ -7,10 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- new method `YoutubeDownloader\Http\CurlClient::createFullRequest()` to create a PSR-7 request instance with headers and body
+
 ### Fixed
 
 - Set correct `Psr\Log\LoggerAwareInterface` into `YoutubeDownloader\Provider\Youtube\VideoInfo` in `YoutubeDownloader\Provider\Youtube\Provider`
 - Set correct `Psr\Log\LoggerAwareInterface` into `YoutubeDownloader\Provider\Youtube\Format` in `YoutubeDownloader\Provider\Youtube\VideoInfo`
+
+### Deprecated
+
+- `YoutubeDownloader\Http\CurlClient::createRequest()` will be removed in 0.10, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
 
 ## [0.8] - 2018-12-06
 
