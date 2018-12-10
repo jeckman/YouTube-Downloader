@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.9] - 2018-12-10
 
 ### Added
 
@@ -264,7 +264,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simple library for using the functionality in other projects
 - Web interface for downloading youtube videos
 
-[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.8...HEAD
+[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.9...HEAD
+[0.9]: https://github.com/jeckman/YouTube-Downloader/compare/0.8...0.9
 [0.8]: https://github.com/jeckman/YouTube-Downloader/compare/0.7...0.8
 [0.7]: https://github.com/jeckman/YouTube-Downloader/compare/0.6...0.7
 [0.6]: https://github.com/jeckman/YouTube-Downloader/compare/0.5.1...0.6
