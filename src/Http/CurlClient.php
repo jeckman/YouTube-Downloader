@@ -24,6 +24,7 @@ namespace YoutubeDownloader\Http;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
+
 // use Psr\Http\Message\RequestFactoryInterface;
 
 /**
@@ -80,12 +81,13 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
      *
      * @TODO Rename this to createRequest() and make it public to implement PSR-17 RequestFactoryInterface
      *
-     * @param string $method The HTTP method associated with the request.
-     * @param UriInterface|string $uri The URI associated with the request.
+     * @param string              $method the HTTP method associated with the request
+     * @param UriInterface|string $uri    the URI associated with the request
      *
      * @return Psr\Http\Message\RequestInterface
      */
-    private function createRequestPsr17(string $method, $uri) {
+    private function createRequestPsr17($method, $uri)
+    {
         if ($uri instanceof UriInterface) {
             $uri = $uri->__toString();
         }
@@ -115,9 +117,9 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
      *
      * @param RequestInterface $request
      *
-     * @return ResponseInterface
+     * @throws \Psr\Http\Client\ClientExceptionInterface if an error happens while processing the request
      *
-     * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
+     * @return ResponseInterface
      */
     private function sendRequest(RequestInterface $request)
     {
