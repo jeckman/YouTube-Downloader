@@ -38,17 +38,6 @@ class CurlClientTest extends TestCase
     }
 
     /**
-     * @test createRequest()
-     */
-    public function createRequest()
-    {
-        $client = new CurlClient();
-        $request = $client->createRequest('GET', 'https://example.org');
-
-        $this->assertInstanceOf(RequestInterface::class, $request);
-    }
-
-    /**
      * @test createFullRequest()
      */
     public function createFullRequest()

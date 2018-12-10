@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- `YoutubeDownloader\Http\Client::createRequest()` was renamed to `YoutubeDownloader\Http\Client::createFullRequest()`
+
+### Removed
+
+- `YoutubeDownloader\Http\CurlClient::createRequest()` was removed, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
+
 ## [0.9] - 2018-12-10
 
 ### Added

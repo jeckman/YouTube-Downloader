@@ -33,26 +33,6 @@ use Psr\Http\Message\UriInterface;
 class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface */
 {
     /**
-     * Factory for a new Request
-     *
-     * @deprecated since version 0.9, to be removed in 0.10. Use YoutubeDownloader\Http\CurlClient::createFullRequest() instead
-     *
-     * @param string      $method  HTTP method
-     * @param string      $target  The target url for this request
-     * @param array       $headers Request headers
-     * @param string|null $body    Request body
-     * @param string      $version Protocol version
-     *
-     * @return Request
-     */
-    public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1')
-    {
-        @trigger_error(__METHOD__ . ' is deprecated since version 0.9, to be removed in 0.10. Use YoutubeDownloader\Http\CurlClient::createFullRequest() instead', E_USER_DEPRECATED);
-
-        return $this->createFullRequest($method, $target, $headers, $body, $version);
-    }
-
-    /**
      * Factory for a new fullfeatured Request
      *
      * @param string      $method  HTTP method
@@ -65,7 +45,7 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
      */
     public function createFullRequest($method, $target, array $headers = [], $body = null, $version = '1.1')
     {
-        $request = $this->createRequestPsr17($method, $target)
+        $request = $this->createRequest($method, $target)
             ->withProtocolVersion($version)
             ->withBody(new StringStream($body));
 
@@ -74,25 +54,6 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
         }
 
         return $request;
-    }
-
-    /**
-     * Create a new request.
-     *
-     * @TODO Rename this to createRequest() and make it public to implement PSR-17 RequestFactoryInterface
-     *
-     * @param string              $method the HTTP method associated with the request
-     * @param UriInterface|string $uri    the URI associated with the request
-     *
-     * @return Psr\Http\Message\RequestInterface
-     */
-    private function createRequestPsr17($method, $uri)
-    {
-        if ($uri instanceof UriInterface) {
-            $uri = $uri->__toString();
-        }
-
-        return new Request($method, $uri);
     }
 
     /**
@@ -108,6 +69,25 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
     public function send(RequestInterface $request, array $options = [])
     {
         $this->sendRequest($request, $options);
+    }
+
+    /**
+     * Create a new request.
+     *
+     * @TODO Make this public to implement PSR-17 RequestFactoryInterface
+     *
+     * @param string              $method the HTTP method associated with the request
+     * @param UriInterface|string $uri    the URI associated with the request
+     *
+     * @return Psr\Http\Message\RequestInterface
+     */
+    private function createRequest($method, $uri)
+    {
+        if ($uri instanceof UriInterface) {
+            $uri = $uri->__toString();
+        }
+
+        return new Request($method, $uri);
     }
 
     /**
