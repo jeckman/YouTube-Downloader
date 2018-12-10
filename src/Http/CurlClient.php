@@ -20,6 +20,7 @@
 
 namespace YoutubeDownloader\Http;
 
+// use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
@@ -28,7 +29,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * A curl http client instance
  */
-class CurlClient implements Client /* , RequestFactoryInterface */
+class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface */
 {
     /**
      * Factory for a new Request
@@ -103,6 +104,22 @@ class CurlClient implements Client /* , RequestFactoryInterface */
      * @return Response
      */
     public function send(RequestInterface $request, array $options = [])
+    {
+        $this->sendRequest($request, $options);
+    }
+
+    /**
+     * Sends a PSR-7 request and returns a PSR-7 response.
+     *
+     * @TODO make this public to implement PSR-18 HTTP Client
+     *
+     * @param RequestInterface $request
+     *
+     * @return ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
+     */
+    private function sendRequest(RequestInterface $request)
     {
         $curl_options = $this->createCurlOptions($request, $options);
 

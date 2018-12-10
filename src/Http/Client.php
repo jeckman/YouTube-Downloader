@@ -31,6 +31,8 @@ interface Client
     /**
      * Factory for a new Request
      *
+     * @deprecated since version 0.9, to be renamed in 0.10.
+     *
      * @param string      $method  HTTP method
      * @param string      $target  The target url for this request
      * @param array       $headers Request headers
@@ -39,6 +41,7 @@ interface Client
      *
      * @return Psr\Http\Message\RequestInterface
      */
+    // public function createFullRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
     public function createRequest($method, $target, array $headers = [], $body = null, $version = '1.1');
 
     /**
