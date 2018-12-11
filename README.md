@@ -55,9 +55,13 @@ There are multiple ways to set up YouTube-Downloader
 ### Git
 
 1. Clone the code on your server with
+
         git clone https://github.com/jeckman/YouTube-Downloader.git
+
 2. Checkout the latest release tag with
+
         git checkout $(git describe --abbrev=0 --tags)
+
 3. Open the folder with your browser
 
 ### Composer
@@ -134,7 +138,7 @@ Fetch the master branch and checkout the latest annotated tag.
 
 ```shell
 git remote update
-git fetch origin
+git fetch origin master
 git checkout $(git describe --abbrev=0 --tags master)
 ```
 
