@@ -32,6 +32,8 @@ use Psr\Http\Message\UriInterface;
  */
 class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface */
 {
+    private $curlOptions = [];
+
     /**
      * Factory for a new fullfeatured Request
      *
@@ -68,7 +70,10 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
      */
     public function send(RequestInterface $request, array $options = [])
     {
-        $this->sendRequest($request, $options);
+        // Save curl options in class property, because PSR-18 sendRequest() has no 2nd argument
+        $this->curlOptions = $this->createCurlOptions($request, $options);
+
+        return $this->sendRequest($request);
     }
 
     /**
@@ -103,11 +108,9 @@ class CurlClient implements Client /* , ClientInterface, RequestFactoryInterface
      */
     private function sendRequest(RequestInterface $request)
     {
-        $curl_options = $this->createCurlOptions($request, $options);
-
         $curl_handler = curl_init();
 
-        $http_response = $this->getHttpResponseFromCurl($curl_handler, $curl_options);
+        $http_response = $this->getHttpResponseFromCurl($curl_handler, $this->curlOptions);
 
         curl_close($curl_handler);
 

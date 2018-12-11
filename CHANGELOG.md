@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - `YoutubeDownloader\Http\Client::createRequest()` was renamed to `YoutubeDownloader\Http\Client::createFullRequest()`
 
+### Fixed
+
+- CurlClient respects curl options again
+
 ### Removed
 
 - `YoutubeDownloader\Http\CurlClient::createRequest()` was removed, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
@@ -127,7 +131,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- A bug in the downlaoder with adaptive format was fixed
+- A bug in the downloader with adaptive format was fixed
 - The path to the yearly logs folder was fixed
 
 ### Deprecated
