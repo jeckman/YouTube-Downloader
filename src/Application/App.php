@@ -30,7 +30,7 @@ class App
     /**
      * @var string
      */
-    private $version = '0.10-dev';
+    private $version = '0.10';
 
     /**
      * @var Psr\Container\ContainerInterface

@@ -7,9 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Changed
-
-- `YoutubeDownloader\Http\Client::createRequest()` was renamed to `YoutubeDownloader\Http\Client::createFullRequest()`
+## [0.10] - 2018-12-20
 
 ### Fixed
 
@@ -17,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 
-- `YoutubeDownloader\Http\CurlClient::createRequest()` was removed, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
+- **Breaking:** `YoutubeDownloader\Http\CurlClient::createRequest()` was removed, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
 
 ## [0.9] - 2018-12-10
 
@@ -34,7 +32,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Deprecated
 
 - `YoutubeDownloader\Http\CurlClient::createRequest()` will be removed in 0.10, use `YoutubeDownloader\Http\CurlClient::createFullRequest()` instead
-- `YoutubeDownloader\Http\Client::createRequest()` will be renamed to `YoutubeDownloader\Http\Client::createFullRequest()` in 0.10
 
 ## [0.8] - 2018-12-06
 
@@ -278,7 +275,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Simple library for using the functionality in other projects
 - Web interface for downloading youtube videos
 
-[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.9...HEAD
+[Unreleased]: https://github.com/jeckman/YouTube-Downloader/compare/0.10...HEAD
+[0.10]: https://github.com/jeckman/YouTube-Downloader/compare/0.9...0.10
 [0.9]: https://github.com/jeckman/YouTube-Downloader/compare/0.8...0.9
 [0.8]: https://github.com/jeckman/YouTube-Downloader/compare/0.7...0.8
 [0.7]: https://github.com/jeckman/YouTube-Downloader/compare/0.6...0.7
