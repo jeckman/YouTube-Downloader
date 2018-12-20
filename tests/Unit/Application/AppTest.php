@@ -56,7 +56,7 @@ class AppTest extends TestCase
 
         $app = new App($container);
 
-        $this->assertSame('0.10', $app->getVersion());
+        $this->assertSame('0.11-dev', $app->getVersion());
     }
 
     /**
