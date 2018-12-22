@@ -151,7 +151,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
         $response = $this->getHttpClient()->send($request, $options);
 		
 		//But just incase it doesn't, we can fallback to the old URL.
-		*if (strpos($response->getBodyAsString(), 'status=fail') !== false) {
+		if (strpos($response->getBodyAsString(), 'status=fail') !== false) {
 			$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
             $request = $this->getHttpClient()->createRequest(
                 'GET',
