@@ -40,7 +40,7 @@ return [
     /*
      * Video Download Link Configuration
      * 'direct' => show only direct download link
-     * 'proxy'  => show only by proxy download link
+     * 'proxy'  => show only by proxy download link, this will also force the get video command to download through the proxy (ex: getvideo.mp4?videoid=GkvvH8pBoTg&format=ipad)
      * 'both'   => show both direct and by proxy download links
      */
     'VideoLinkMode' => 'both',
