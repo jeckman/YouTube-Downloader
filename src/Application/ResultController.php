@@ -85,7 +85,7 @@ class ResultController extends ControllerAbstract
              * Thanks to the python based youtube-dl for info on the formats
              *   							http://rg3.github.com/youtube-dl/
              */
-            if (!empty($_GET['proxy']) && $_GET['proxy'] !== false) {
+            if (!empty($_GET['proxy']) && $_GET['proxy'] !== false || $config->get('VideoLinkMode') === 'proxy') {
                 $best_format = $this->getFullInfoByFormat($video_info, $_GET['format']);
             
                 $proxylink = 'download.php?mime=' . $best_format->getType()
