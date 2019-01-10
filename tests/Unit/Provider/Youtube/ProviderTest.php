@@ -66,6 +66,7 @@ class ProviderTest extends \YoutubeDownloader\Tests\Fixture\TestCase
             ['http://m.youtube.com/watch?feature=player_embedded&v=dQw4w9WgXcQ', true],
             ['http://m.youtube.com/?feature=player_embedded&v=dQw4w9WgXcQ', true],
             ['http://m.youtube.com/v/dQw4w9WgXcQ?fs=1&hl=en_US', true],
+            ['https://m.youtube-nocookie.com/embed/dQw4w9WgXcQ', true],
         ];
     }
 }
