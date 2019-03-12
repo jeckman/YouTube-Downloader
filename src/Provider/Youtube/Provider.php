@@ -133,7 +133,9 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
         /* First get the video info page for this video id */
         // $my_video_info = 'http://www.youtube.com/get_video_info?&video_id='. $input;
         // thanks to amit kumar @ bloggertale.com for sharing the fix
-        $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
+		
+		//This URL *should* allow age restricted videos and regular videos to download
+        $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&hl=en_US';
 
         $request = $this->getHttpClient()->createFullRequest(
             'GET',
@@ -147,7 +149,17 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
         }
 
         $response = $this->getHttpClient()->send($request, $options);
-
+		
+		//But just incase it doesn't, we can fallback to the old URL.
+		if (strpos($response->getBody()->__toString(), 'status=fail') !== false) {
+			$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
+            $request = $this->getHttpClient()->createFullRequest(
+                'GET',
+                $video_info_url
+            );
+            $response = $this->getHttpClient()->send($request, $options);
+        }
+		
         /* TODO: Check response for status code and Content-Type */
         $video_info = VideoInfo::createFromStringWithOptions(
             $response->getBody()->__toString(),
