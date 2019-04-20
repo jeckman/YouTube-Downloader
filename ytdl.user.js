@@ -63,7 +63,7 @@ function YoutubeDownloader() {
     if (downloadButton) {
         downloadButton.href = link;
     } else {
-        var wrapper = document.querySelector('ytd-subscribe-button-renderer'),
+        var wrapper = document.querySelector('#top-row ytd-video-owner-renderer'),
             btn = document.createElement('a');
         if (wrapper && vid) {
             // Assemble the button:
