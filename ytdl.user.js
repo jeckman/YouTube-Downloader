@@ -69,7 +69,7 @@ function YoutubeDownloader() {
             // Assemble the button:
             btn.setAttribute('href', link);
             btn.setAttribute('id', "downloadButton");
-            btn.setAttribute('style', 'text-decoration: none');
+            btn.setAttribute('style', 'text-decoration: none; margin: 7px 5px;');
 
             // Child elements:
             btn.innerHTML = '<paper-button class="ytd-subscribe-button-renderer">Download</paper-button>';
