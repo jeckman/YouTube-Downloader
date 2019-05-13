@@ -103,6 +103,12 @@ abstract class ControllerAbstract implements Controller
         ));
 
         $response = $this->get('httpclient')->send($request, $options);
+//        echo "++++++Get Size response: ", $url, "<br/>";
+//        print_r($response);
+//        echo "<br/>--------------<br/>";
+//        print_r($response->getHeaderLine('Content-Length'));
+//        echo "<br/>";
+//        echo "++++++END<br/>";
 
         return intval($response->getHeaderLine('Content-Length'));
     }

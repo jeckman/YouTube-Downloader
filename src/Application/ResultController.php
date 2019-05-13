@@ -172,6 +172,16 @@ class ResultController extends ControllerAbstract
             $proxylink = 'download.php?mime=' . $avail_format->getType() . '&title=' . urlencode($my_title) . '&token=' . base64_encode(base64_encode($avail_format->getUrl()));
 
             $size = $this->getSize($avail_format->getUrl(), $config, $toolkit);
+            if ($size == 0) {
+                $reload_time = $_GET['reload'];
+                $queryString = $_SERVER['QUERY_STRING'];
+                $queryString = preg_replace('/&reload=\d+/', '', $queryString);
+                if ($reload_time < 10) {
+                    $reload_time ++ ;
+                    header('Location: getvideo.php?'. $queryString. '&reload='. $reload_time);
+                    exit;
+                }
+            }
             
             if ($config->get('localCache')) {
                 $proxylink = $proxylink . '&cache=true';
@@ -203,16 +213,30 @@ class ResultController extends ControllerAbstract
                 $proxylink = $proxylink . '&cache=true';
             }
 
-            $template_data['formats'][] = [
-                'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
-                'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
-                'direct_url' => $directlink,
-                'proxy_url' => $proxylink,
-                'type' => $avail_format->getType(),
-                'itag' => $avail_format->getItag(),
-                'quality' => $avail_format->getQuality(),
-                'size' => $this->formatBytes($size),
-            ];
+            if (strpos($avail_format->getType(), 'video') !== false) {
+                $template_data['video_formats'][] = [
+                    'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
+                    'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
+                    'direct_url' => $directlink,
+                    'proxy_url' => $proxylink,
+                    'type' => $avail_format->getType(),
+                    'itag' => $avail_format->getItag(),
+                    'quality' => $avail_format->getQuality(),
+                    'size' => $this->formatBytes($size),
+                ];
+            } else if (strpos($avail_format->getType(), 'audio') !== false) {
+                $template_data['audio_formats'][] = [
+                    'show_direct_url' => ($config->get('VideoLinkMode') === 'direct' || $config->get('VideoLinkMode') === 'both'),
+                    'show_proxy_url' => ($config->get('VideoLinkMode') === 'proxy' || $config->get('VideoLinkMode') === 'both'),
+                    'direct_url' => $directlink,
+                    'proxy_url' => $proxylink,
+                    'type' => $avail_format->getType(),
+                    'itag' => $avail_format->getItag(),
+                    'quality' => $avail_format->getQuality(),
+                    'size' => $this->formatBytes($size),
+                ];
+            }
+
         }
 
         if ($config->get('MP3Enable')) {

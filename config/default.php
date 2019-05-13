@@ -26,7 +26,7 @@ return [
      * false => decipher is disabled
      * true => decipher is enabled
      */
-    'enable_youtube_decipher_signature' => false,
+    'enable_youtube_decipher_signature' => true,
 
     /*
      * Thumbnail Image Configuration
@@ -43,7 +43,7 @@ return [
      * 'proxy'  => show only by proxy download link, this will also force the get video command to download through the proxy (ex: getvideo.mp4?videoid=GkvvH8pBoTg&format=ipad)
      * 'both'   => show both direct and by proxy download links
      */
-    'VideoLinkMode' => 'both',
+    'VideoLinkMode' => 'direct',
     
     /*
      * Caching mode. If normal proxy mode won't work, this makes a copy of the file on the

@@ -43,9 +43,9 @@ else
 <?php } ?>
 	</ul>
 	<hr />
-	<h2>Separated video and audio format</h2>
+	<h2>Video Without Sound</h2>
 	<ul class="dl-list">
-<?php foreach($this->get('formats', []) as $format) { ?>
+<?php foreach($this->get('video_formats', []) as $format) { ?>
 	<li>
 		<a class="btn btn-default btn-type disabled" href="#"><?php echo $format['type']; ?> - <?php echo $format['quality']; ?></a>
 <?php if ($format['show_direct_url'] === true) { ?>
@@ -59,6 +59,24 @@ else
 	</li>
 <?php } ?>
 	</ul>
+
+    <h2>Audio Only</h2>
+    <ul class="dl-list">
+        <?php foreach($this->get('audio_formats', []) as $format) { ?>
+            <li>
+                <a class="btn btn-default btn-type disabled" href="#"><?php echo $format['type']; ?> - <?php echo $format['quality']; ?></a>
+                <?php if ($format['show_direct_url'] === true) { ?>
+                    <a class="btn btn-default btn-download" href="<?php echo $format['direct_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Direct</a>
+                <?php } ?>
+                <?php if ($format['show_proxy_url'] === true) { ?>
+                    <a class="btn btn-primary btn-download" href="<?php echo $format['proxy_url']; ?>" class="mime"><i class="glyphicon glyphicon-download-alt"></i> Proxy</a>
+                <?php } ?>
+                <div class="label label-warning"><?php echo $format['size']; ?></div>
+                <div class="label label-default"><?php echo $format['itag']; ?></div>
+            </li>
+        <?php } ?>
+    </ul>
+
 <?php if ($this->get('showMP3Download', false) === true) { ?>
 	<h2>Convert and Download to .mp3</h2>
 	<ul class="dl-list">
