@@ -135,7 +135,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
         // thanks to amit kumar @ bloggertale.com for sharing the fix
 		
 		//This URL *should* allow age restricted videos and regular videos to download
-        $video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&hl=en_US';
+        $video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&hl=en_US';
 
         $request = $this->getHttpClient()->createFullRequest(
             'GET',
@@ -152,7 +152,7 @@ final class Provider implements ProviderInterface, CacheAware, HttpClientAware, 
 		
 		//But just incase it doesn't, we can fallback to the old URL.
 		if (strpos($response->getBody()->__toString(), 'status=fail') !== false) {
-			$video_info_url = 'http://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
+			$video_info_url = 'https://www.youtube.com/get_video_info?&video_id=' . $input . '&asv=3&el=detailpage&hl=en_US';
             $request = $this->getHttpClient()->createFullRequest(
                 'GET',
                 $video_info_url
