@@ -4,8 +4,9 @@
 			<h1 class="form-download-heading">Youtube Downloader</h1>
 				<div class="input-group">
 				  <input type="text" name="videoid" id="videoid" class="form-control input-lg" placeholder="YouTube Link or VideoID" autofocus>
-				  <span class="input-group-btn">
-					<input class="btn btn-primary btn-lg" type="submit" name="type" id="type" value="Download" />
+					<input type="hidden" name="type" id="type" value="Download"/>
+					<span class="input-group-btn">
+					<input class="btn btn-primary btn-lg" type="submit" name="submit" value="Start Download" />
 				  </span>
 				</div><!-- /input-group -->
 			<div class="video-info">
