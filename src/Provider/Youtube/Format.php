@@ -177,6 +177,8 @@ class Format implements FormatInterface, CacheAware, HttpClientAware, LoggerAwar
             }
 
             $signature = '&sig=' . $sig;
+			if(!$signature)
+				$signature = '&signature='.$sig;
         }
 
         $this->data['url'] = $this->raw_data['url'] . $signature;
