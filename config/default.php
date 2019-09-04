@@ -53,6 +53,13 @@ return [
      */
     'localCache' => false,
 
+	/*
+	* false => don't erase the copy of the file on cache folder
+	* true => erase the copy of the file on cache folder
+	*
+	*/
+	'EraseCacheFile' => false,
+	
     /*
      * MP3 Download Link Configuration
      *
