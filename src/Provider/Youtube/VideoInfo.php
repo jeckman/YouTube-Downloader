@@ -236,7 +236,11 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
             if (isset($video_info[$key])) {
                 $this->data[$key] = $video_info[$key];
             } elseif (isset($video_info['player_response'])) {
-                $this->data['player_response'] = $video_info['player_response'];
+                $filename = $video_info['player_response'];
+                $filename = json_decode($filename);
+                $filename = str_replace(str_split('\\\:*?"<>|=;'."\t\r\n\f"), '_', html_entity_decode(trim($filename->videoDetails->title), ENT_QUOTES));
+                $this->data['title'] = $filename;
+
             } else {
                 $this->data[$key] = null;
             }
@@ -343,9 +347,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
      */
     public function getTitle()
     {
-        $filename = json_decode($this->data['player_response']);
-        $filename = str_replace(str_split('\\\:*?"<>|=;'."\t\r\n\f"), '_', html_entity_decode(trim($filename->videoDetails->title), ENT_QUOTES));
-        return $filename;
+        return $this->data['title'];
     }
 
     /**
