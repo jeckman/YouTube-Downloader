@@ -217,6 +217,8 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
         'title',
         'url_encoded_fmt_stream_map',
         'adaptive_fmts',
+        'length_seconds',
+        'player_response',        
     ];
 
     /**
@@ -340,7 +342,9 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
      */
     public function getTitle()
     {
-        return $this->data['title'];
+        $player_response = json_decode($this->data['player_response']);
+        $filename = str_replace(str_split('\\\:*?"<>|=;'."\t\r\n\f"), '_', html_entity_decode(trim($player_response->videoDetails->title), ENT_QUOTES));
+        return $filename;
     }
 
     /**
