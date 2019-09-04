@@ -218,7 +218,6 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
         'url_encoded_fmt_stream_map',
         'adaptive_fmts',
         'length_seconds',
-        'player_response',        
     ];
 
     /**
@@ -236,6 +235,8 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
         foreach ($this->allowed_keys as $key) {
             if (isset($video_info[$key])) {
                 $this->data[$key] = $video_info[$key];
+            } elseif (isset($video_info['player_response'])) {
+                $this->data['player_response'] = $video_info['player_response'];
             } else {
                 $this->data[$key] = null;
             }
