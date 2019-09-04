@@ -117,7 +117,9 @@ class DownloadController extends ControllerAbstract
             if (!empty($_GET['cache']) && $_GET['cache'] !== false) {
                 file_put_contents('cache/' . $name, fopen($url, 'r'));
                 readfile('cache/' . $name);
-                unlink('cache/' . $name);
+				if ($config->get('EraseCacheFile') === true) {
+					unlink('cache/' . $name);
+				}
                 exit;
             }
             readfile($url);
