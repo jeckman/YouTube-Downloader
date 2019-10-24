@@ -160,15 +160,15 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     use LoggerAwareTrait;
 
     /**
+     *
      * Creates a VideoInfo from string with an options array
      *
-     * @param string $video_id
-     * @param array  $options
-     * @param mixed  $string
-     *
+     * @param $string
+     * @param array $options
+     * @param null $video_id
      * @return VideoInfo
      */
-    public static function createFromStringWithOptions($string, array $options, $video_id)
+    public static function createFromStringWithOptions($string, array $options, $video_id = null)
     {
         $default = [
             'decipher_signature' => false,
@@ -182,8 +182,10 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
 
         parse_str($string, $video_info);
 
-        // $string may not contain video_id, so we append it manually
-        $video_info['video_id'] = $video_id;
+        // $string may not contain video_id, so we should append it manually if we have it beforehand
+        if(empty($video_info['video_id']) && !empty($video_id)) {
+            $video_info['video_id'] = $video_id;
+        }
 
         return new self($video_info, $options);
     }
