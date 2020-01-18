@@ -437,7 +437,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
             if (isset($this->data['url_encoded_fmt_stream_map'])) {
                 $formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
                 $this->formats = $this->parseFormats($formats, $this->options);
-            } elseif (isset($this->player_response)) {
+            } elseif (isset($this->player_response) && isset($this->player_response['streamingData']) && isset($this->player_response['streamingData']['formats'])) {
                 $streaming_formats = $this->player_response['streamingData']['formats'];
                 $this->formats = $this->parseStreamingFormats($streaming_formats, $this->options);
             } else {
@@ -460,7 +460,7 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
             if (isset($this->data['adaptive_fmts'])) {
                 $adaptive_formats = explode(',', $this->data['adaptive_fmts']);
                 $this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
-            } elseif (isset($this->player_response)) {
+            } elseif (isset($this->player_response) && isset($this->player_response['streamingData']) && isset($this->player_response['streamingData']['adaptiveFormats'])) {
                 $streaming_formats = $this->player_response['streamingData']['adaptiveFormats'];
                 $this->adaptive_formats = $this->parseStreamingFormats($streaming_formats, $this->options);
             } else {
