@@ -240,11 +240,9 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
             if (isset($video_info[$key])) {
                 $this->data[$key] = $video_info[$key];
             } elseif (isset($video_info['player_response'])) {
-                $filename = $video_info['player_response'];
-                $filename = json_decode($filename);
-                $filename = str_replace(str_split('\\\:*?"<>|=;'."\t\r\n\f"), '_', html_entity_decode(trim($filename->videoDetails->title), ENT_QUOTES));
+                $this->player_response = json_decode($video_info['player_response'], true);
+                $filename = str_replace(str_split('\\\:*?"<>|=;'."\t\r\n\f"), '_', html_entity_decode(trim($this->player_response['videoDetails']['title']), ENT_QUOTES));
                 $this->data['title'] = $filename;
-
             } else {
                 $this->data[$key] = null;
             }
@@ -274,6 +272,44 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
                 continue;
             }
 
+            $format = Format::createFromArray($this, $format_info, $config);
+
+            if ($format instanceof CacheAware) {
+                $format->setCache($this->getCache());
+            }
+
+            if ($format instanceof HttpClientAware) {
+                $format->setHttpClient($this->getHttpClient());
+            }
+
+            if ($format instanceof LoggerAwareInterface) {
+                $format->setLogger($this->getLogger());
+            }
+
+            $formats[] = $format;
+        }
+
+        return $formats;
+    }
+
+    /**
+     * Parses an array of streaming formats
+     *
+     * @param array $format_array
+     * @param array $config
+     *
+     * @return array
+     */
+    private function parseStreamingFormats(array $format_array, array $config)
+    {
+        $formats = [];
+        foreach ($format_array as $format) {
+            $format_info = array(
+                'url' => $format['url'],
+                'type' => $format['mimeType'],
+                'quality' => $format['quality'],
+                'itag' => $format['itag'],
+            );
             $format = Format::createFromArray($this, $format_info, $config);
 
             if ($format instanceof CacheAware) {
@@ -398,8 +434,15 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     {
         if ($this->formats === null) {
             // get the url_encoded_fmt_stream_map, and explode on comma
-            $formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
-            $this->formats = $this->parseFormats($formats, $this->options);
+            if (isset($this->data['url_encoded_fmt_stream_map'])) {
+                $formats = explode(',', $this->data['url_encoded_fmt_stream_map']);
+                $this->formats = $this->parseFormats($formats, $this->options);
+            } elseif (isset($this->player_response) && isset($this->player_response['streamingData']) && isset($this->player_response['streamingData']['formats'])) {
+                $streaming_formats = $this->player_response['streamingData']['formats'];
+                $this->formats = $this->parseStreamingFormats($streaming_formats, $this->options);
+            } else {
+                // no url_encoded_fmt_stream_map nor player_response found!!!
+            }
         }
 
         return $this->formats;
@@ -414,8 +457,15 @@ class VideoInfo implements VideoInfoInterface, CacheAware, HttpClientAware, Logg
     {
         if ($this->adaptive_formats === null) {
             // get the adaptive_fmts, and explode on comma
-            $adaptive_formats = explode(',', $this->data['adaptive_fmts']);
-            $this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
+            if (isset($this->data['adaptive_fmts'])) {
+                $adaptive_formats = explode(',', $this->data['adaptive_fmts']);
+                $this->adaptive_formats = $this->parseFormats($adaptive_formats, $this->options);
+            } elseif (isset($this->player_response) && isset($this->player_response['streamingData']) && isset($this->player_response['streamingData']['adaptiveFormats'])) {
+                $streaming_formats = $this->player_response['streamingData']['adaptiveFormats'];
+                $this->adaptive_formats = $this->parseStreamingFormats($streaming_formats, $this->options);
+            } else {
+                // no adaptive_fmts nor player_response found!!!
+            }
         }
 
         return $this->adaptive_formats;
