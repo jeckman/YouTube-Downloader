@@ -6,6 +6,9 @@
 [![Build Status](https://img.shields.io/travis/jeckman/YouTube-Downloader/master.svg)](https://travis-ci.org/jeckman/YouTube-Downloader)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jeckman-YouTube-Downloader/Lobby)
 
+
+# THIS PROJECT IS NO LONGER ACTIVELY DEVELOPED
+
 PHP Library with Web UI to download videos from YouTube.
 
 ## Goals
